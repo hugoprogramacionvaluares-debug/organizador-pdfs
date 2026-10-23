@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador de Expedientes (Dark Mode)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF-lib para fusionar los PDFs de cada categoría -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- JSZip para empaquetar los 8 archivos en una sola descarga -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        /* Estilos personalizados para el scrollbar en modo oscuro */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    </style>
+</head>
+<body class="bg-black text-gray-300 font-sans min-h-screen p-6">
+    <div class="max-w-[1400px] mx-auto">
+        <!-- Encabezado -->
+        <header class="bg-gray-900 shadow-lg rounded-2xl p-6 mb-6 border border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-blue-500"></i> Generador de Expediente (8 Archivos)
+                </h1>
+                <p class="text-gray-400 text-sm mt-1">Sube, organiza visualmente y exporta tu expediente en archivos separados.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <label class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl cursor-pointer font-bold text-sm transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-upload"></i> 1. Subir PDFs
+                    <input type="file" id="fileInput" multiple accept=".pdf" class="hidden" onchange="handleFiles(this.files)">
+                </label>
+                <button onclick="generarArchivosSeparados()" id="btnGenerar" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente (ZIP)
+                </button>
+                <button onclick="resetApp()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 px-3 py-2 rounded-xl text-sm font-medium transition">
+                    <i class="fa-solid fa-rotate-right"></i> Reiniciar
+                </button>
+            </div>
+        </header>
+
+        <!-- Mensaje de Estado / Procesamiento -->
+        <div id="status-message" class="hidden bg-gray-800 border border-blue-500 text-blue-400 px-4 py-3 rounded-xl mb-6 font-medium text-sm flex items-center gap-3">
+            <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
+            <span id="status-text">Procesando y generando tu carpeta de expedientes...</span>
+        </div>
+
+        <!-- Panel de Datos del Correo -->
+        <div class="bg-gray-900 p-5 rounded-2xl shadow-lg border border-gray-800 mb-6">
+            <details class="group" open>
+                <summary class="font-semibold text-white cursor-pointer flex items-center justify-between select-none">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-address-card text-emerald-500"></i> Referencias para Auto-Clasificar (Compradores y Propietarios)
+                    </span>
+                    <i class="fa-solid fa-chevron-down group-open:rotate-180 transition text-gray-500"></i>
+                </summary>
+                <div class="mt-4 pt-3 border-t border-gray-800 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <textarea id="emailDataInput" rows="3" class="w-full text-xs p-3 border border-gray-700 rounded-xl focus:outline-none focus:border-blue-500 font-Black Ops One bg-black text-gray-500">Referencias </textarea>
+                    </div>
+                    <div class="flex flex-col justify-end">
+                        <button onclick="autoClassifyFiles()" class="w-full bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition shadow-xs flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-yellow-400"></i> Forzar auto-clasificación
+                        </button>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- Contenedor Principal -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Zona sin clasificar (Bandeja de entrada) -->
+            <div class="lg:col-span-1 bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[650px]">
+                <h2 class="font-semibold text-white mb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-inbox text-amber-500 mr-1"></i> Sin Clasificar</span>
+                    <span id="unclassified-count" class="bg-gray-800 text-amber-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </h2>
+                <div id="unclassified-container" class="flex-1 overflow-y-auto space-y-3 pr-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black">
+                    <div class="text-center text-gray-600 py-12 text-sm">
+                        <i class="fa-regular fa-file-pdf text-3xl mb-2 block"></i>
+                        PDFs sueltos aquí
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categorías (Carpetas) - 8 Categorías en grid -->
+            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-[650px] overflow-y-auto pr-2">
+                
+                <!-- 1. Escritura -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="escritura">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-file-contract text-blue-500"></i> Escritura
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-blue-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 2. Predio -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="predio">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-house-flag text-orange-500"></i> Predio
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-orange-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 3. Agua -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="agua">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-faucet-drip text-cyan-500"></i> Agua
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-cyan-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 4. Alineamiento -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="alineamiento">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-map-location-dot text-indigo-500"></i> Alineamiento
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-indigo-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 5. Colindancia -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="colindancia">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-border-all text-pink-500"></i> Colindancia
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-pink-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 6. Plano -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="plano">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-pen-ruler text-yellow-500"></i> Plano
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-yellow-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 7. Datos Comprador -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="comprador">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-user-check text-emerald-500"></i> Datos Comprador
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-emerald-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+                <!-- 8. Datos Vendedor -->
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-lg border border-gray-800 flex flex-col h-[280px]" data-category="vendedor">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-user-tag text-purple-500"></i> Datos Vendedor
+                        </h3>
+                        <span class="count-badge bg-gray-800 text-purple-400 border border-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700 rounded-xl p-2 bg-black"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let filesList = [];
+
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type === "application/pdf") {
+                    const fileObj = {
+                        id: 'file-' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                        category: 'unclassified',
+                        fileUrl: URL.createObjectURL(file),
+                        file: file
+                    };
+                    filesList.push(fileObj);
+                }
+            }
+            autoClassifyFiles();
+        }
+
+        function autoClassifyFiles() {
+            filesList.forEach(item => {
+                const name = item.name.toLowerCase();
+
+                if (name.includes('escritura') || name.includes('propiedad')) {
+                    item.category = 'escritura';
+                } else if (name.includes('agua') || name.includes('drenaje')) {
+                    item.category = 'agua';
+                } else if (name.includes('predio') || name.includes('predial')) {
+                    item.category = 'predio';
+                } else if (name.includes('alineamiento') || name.includes('oficial') || name.includes('numero')) {
+                    item.category = 'alineamiento';
+                } else if (name.includes('colinda') || name.includes('colindancia')) {
+                    item.category = 'colindancia';
+                } else if (name.includes('plano') || name.includes('croquis') || name.includes('arquitectonico')) {
+                    item.category = 'plano';
+                } else if (name.includes('comprador') || name.includes('nss') || name.includes('román') || name.includes('rogelio') || name.includes('roman')) {
+                    item.category = 'comprador';
+                } else if (name.includes('vendedor') || name.includes('vendedora') || name.includes('propietari') || name.includes('cedula') || name.includes('rfc') || name.includes('curp') || name.includes('fabiola') || name.includes('graciela') || name.includes('viridiana') || name.includes('ignacio')) {
+                    item.category = 'vendedor';
+                }
+            });
+            renderFiles();
+        }
+
+        function renderFiles() {
+            const unclassifiedContainer = document.getElementById('unclassified-container');
+            unclassifiedContainer.innerHTML = '';
+            
+            document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
+            let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
+
+            filesList.forEach(item => {
+                counts[item.category]++;
+                // Diseño de Tarjeta AMPLIO y CLARO para modo oscuro
+                const card = document.createElement('div');
+                card.className = "bg-gray-800 p-3 rounded-xl border border-gray-700 shadow-sm flex items-center justify-between gap-3 text-xs group hover:border-blue-500 transition mb-2";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <a href="${item.fileUrl}" target="_blank" title="Ver PDF" class="text-red-500 hover:text-red-400 text-lg shrink-0">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </a>
+                        <div class="truncate">
+                            <a href="${item.fileUrl}" target="_blank" class="font-semibold text-gray-200 truncate hover:text-blue-400 block" title="${item.name}">${item.name}</a>
+                            <span class="text-[10px] text-gray-500">${item.size}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        ${item.category !== 'unclassified' ? `<button onclick="moveFile('${item.id}', 'unclassified')" title="Regresar a Sin Clasificar" class="text-gray-500 hover:text-amber-500 p-1"><i class="fa-solid fa-arrow-left"></i></button>` : ''}
+                        <select onchange="moveFile('${item.id}', this.value)" class="text-[11px] bg-gray-900 border border-gray-600 rounded-lg px-2 py-1.5 text-gray-300 focus:outline-none focus:border-blue-500">
+                            <option value="unclassified" ${item.category === 'unclassified' ? 'selected' : ''}>Sin clasificar</option>
+                            <option value="escritura" ${item.category === 'escritura' ? 'selected' : ''}>Escritura</option>
+                            <option value="predio" ${item.category === 'predio' ? 'selected' : ''}>Predio</option>
+                            <option value="agua" ${item.category === 'agua' ? 'selected' : ''}>Agua</option>
+                            <option value="alineamiento" ${item.category === 'alineamiento' ? 'selected' : ''}>Alineamiento</option>
+                            <option value="colindancia" ${item.category === 'colindancia' ? 'selected' : ''}>Colindancia</option>
+                            <option value="plano" ${item.category === 'plano' ? 'selected' : ''}>Plano</option>
+                            <option value="comprador" ${item.category === 'comprador' ? 'selected' : ''}>Comprador</option>
+                            <option value="vendedor" ${item.category === 'vendedor' ? 'selected' : ''}>Vendedor</option>
+                        </select>
+                    </div>
+                `;
+
+                if (item.category === 'unclassified') {
+                    unclassifiedContainer.appendChild(card);
+                } else {
+                    const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
+                    if (zone) zone.appendChild(card);
+                }
+            });
+
+            document.getElementById('unclassified-count').innerText = counts.unclassified;
+            document.querySelectorAll('.category-box').forEach(box => {
+                const cat = box.getAttribute('data-category');
+                box.querySelector('.count-badge').innerText = counts[cat];
+            });
+
+            if (filesList.length === 0) {
+                unclassifiedContainer.innerHTML = `
+                    <div class="text-center text-gray-600 py-12 text-sm">
+                        <i class="fa-regular fa-file-pdf text-3xl mb-2 block"></i>
+                        PDFs sueltos aquí
+                    </div>`;
+            }
+        }
+
+        function moveFile(id, newCategory) {
+            const file = filesList.find(f => f.id === id);
+            if (file) {
+                file.category = newCategory;
+                renderFiles();
+            }
+        }
+
+        async function generarArchivosSeparados() {
+            if (filesList.length === 0) {
+                alert("Primero debes subir archivos PDF para procesarlos.");
+                return;
+            }
+
+            const statusMsg = document.getElementById('status-message');
+            const statusText = document.getElementById('status-text');
+            const btn = document.getElementById('btnGenerar');
+            
+            statusMsg.classList.remove('hidden');
+            statusMsg.classList.replace('bg-emerald-900', 'bg-gray-800');
+            statusMsg.classList.replace('border-emerald-700', 'border-blue-500');
+            statusMsg.classList.replace('text-emerald-400', 'text-blue-400');
+            statusText.innerText = "Fusionando cada sección y empaquetando en ZIP...";
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            try {
+                const zip = new JSZip();
+                const { PDFDocument } = PDFLib;
+
+                const categoriasSalida = [
+                    { id: 'escritura', nombreArchivo: '1_Escritura.pdf' },
+                    { id: 'predio', nombreArchivo: '2_Predio.pdf' },
+                    { id: 'agua', nombreArchivo: '3_Agua.pdf' },
+                    { id: 'alineamiento', nombreArchivo: '4_Alineamiento.pdf' },
+                    { id: 'colindancia', nombreArchivo: '5_Colindancia.pdf' },
+                    { id: 'plano', nombreArchivo: '6_Plano.pdf' },
+                    { id: 'comprador', nombreArchivo: '7_Datos_Comprador.pdf' },
+                    { id: 'vendedor', nombreArchivo: '8_Datos_Vendedor.pdf' }
+                ];
+
+                let archivosCreados = 0;
+
+                for (const cat of categoriasSalida) {
+                    const archivosDeCategoria = filesList.filter(f => f.category === cat.id);
+                    
+                    if (archivosDeCategoria.length > 0) {
+                        const categoryPdf = await PDFDocument.create();
+                        
+                        for (const archivoObj of archivosDeCategoria) {
+                            try {
+                                const arrayBuffer = await archivoObj.file.arrayBuffer();
+                                const pdf = await PDFDocument.load(arrayBuffer);
+                                const paginasCopiadas = await categoryPdf.copyPages(pdf, pdf.getPageIndices());
+                                paginasCopiadas.forEach((pagina) => categoryPdf.addPage(pagina));
+                            } catch (err) {
+                                console.error(`Error procesando ${archivoObj.name}:`, err);
+                            }
+                        }
+
+                        const pdfBytes = await categoryPdf.save();
+                        zip.file(cat.nombreArchivo, pdfBytes);
+                        archivosCreados++;
+                    }
+                }
+
+                if (archivosCreados === 0) {
+                    throw new Error("No hay archivos clasificados en ninguna de las 8 categorías.");
+                }
+
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(zipBlob);
+                link.download = `Expediente_Separado_${new Date().toISOString().slice(0,10)}.zip`;
+                link.click();
+
+                // Éxito
+                statusMsg.classList.replace('bg-gray-800', 'bg-emerald-900');
+                statusMsg.classList.replace('border-blue-500', 'border-emerald-700');
+                statusMsg.classList.replace('text-blue-400', 'text-emerald-400');
+                statusMsg.innerHTML = `<i class="fa-solid fa-check-circle text-lg"></i> <span>¡Éxito! Carpeta ZIP con ${archivosCreados} PDFs generada correctamente.</span>`;
+                
+            } catch (error) {
+                console.error("Error general:", error);
+                statusMsg.classList.replace('bg-gray-800', 'bg-red-900');
+                statusMsg.classList.replace('border-blue-500', 'border-red-700');
+                statusMsg.classList.replace('text-blue-400', 'text-red-400');
+                statusMsg.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-lg"></i> <span>Hubo un problema procesando los PDFs.</span>';
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                setTimeout(() => statusMsg.classList.add('hidden'), 5000);
+            }
+        }
+
+        function resetApp() {
+            filesList = [];
+            document.getElementById('fileInput').value = '';
+            renderFiles();
+        }
+    </script>
+</body>
+</html>

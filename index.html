@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organizador de Expedientes AI (Dark Mode)</title>
+    <!-- Tailwind para el diseño -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF-lib para fusionar y dividir PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- JSZip para empaquetar -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- PDF.js para leer texto de los PDFs (Extracción de medidas) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
+        /* FONDO ANIMADO LIGERO (Sin saturar la PC) */
         body {
             background: linear-gradient(-45deg, #000000, #0f172a, #1e1b4b, #020617);
             background-size: 400% 400%;
@@ -21,17 +27,18 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        /* Scrollbar elegante */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.5); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.8); }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.8); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 1); }
     </style>
 </head>
 <body class="font-sans min-h-screen p-6 relative">
     <div class="max-w-[1400px] mx-auto relative z-10">
         
-        <!-- Encabezado con efecto cristal -->
-        <header class="bg-gray-900/70 backdrop-blur-md shadow-2xl rounded-2xl p-6 mb-6 border border-gray-700/50 flex flex-col md:flex-row justify-between items-center gap-4">
+        <!-- Encabezado -->
+        <header class="bg-gray-900 shadow-2xl rounded-2xl p-6 mb-6 border border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-white flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-blue-500"></i> Generador de Expediente AI
@@ -50,13 +57,13 @@
         </header>
 
         <!-- Módulo IA y Herramientas Especiales -->
-        <div class="bg-gray-900/70 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-gray-700/50 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-gray-900 p-5 rounded-2xl shadow-xl border border-gray-700 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Inteligencia Artificial -->
-            <div class="border border-gray-700/50 p-4 rounded-xl bg-black/40">
+            <div class="border border-gray-600 p-4 rounded-xl bg-black/60">
                 <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400"></i> Clasificación Inteligente (Gemini Vision)</h3>
                 <p class="text-xs text-gray-400 mb-3">La IA leerá visualmente los documentos escaneados que no se acomoden por nombre.</p>
                 <div class="flex gap-2">
-                    <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini aquí..." class="w-full text-xs p-2 border border-gray-700/50 rounded-lg bg-gray-900/80 text-white focus:border-purple-500 outline-none transition">
+                    <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini aquí..." class="w-full text-xs p-2 border border-gray-600 rounded-lg bg-gray-800 text-white focus:border-purple-500 outline-none transition">
                     <button onclick="clasificarSinClasificarConIA()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-lg shadow-purple-500/20 shrink-0">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Clasificar IA
                     </button>
@@ -64,7 +71,7 @@
             </div>
 
             <!-- Extracción de Escrituras -->
-            <div class="border border-gray-700/50 p-4 rounded-xl bg-black/40 flex flex-col justify-between">
+            <div class="border border-gray-600 p-4 rounded-xl bg-black/60 flex flex-col justify-between">
                 <div>
                     <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-scissors text-pink-400"></i> Extraer Medidas y Colindancias</h3>
                     <p class="text-xs text-gray-400 mb-3">Busca dentro del texto de la Escritura la página de medidas y la mueve a Colindancia automáticamente.</p>
@@ -76,58 +83,106 @@
         </div>
 
         <!-- Mensaje de Estado -->
-        <div id="status-message" class="hidden bg-gray-800/90 backdrop-blur-md border border-blue-500 text-blue-400 px-4 py-3 rounded-xl mb-6 font-medium text-sm flex items-center gap-3 shadow-lg">
+        <div id="status-message" class="hidden bg-gray-800 border border-blue-500 text-blue-400 px-4 py-3 rounded-xl mb-6 font-medium text-sm flex items-center gap-3 shadow-lg">
             <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
             <span id="status-text">Procesando...</span>
         </div>
 
         <!-- Contenedor Principal -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
             <!-- Zona sin clasificar -->
-            <div class="lg:col-span-1 bg-gray-900/70 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/50 flex flex-col h-[650px]">
+            <div class="lg:col-span-1 bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[650px]">
                 <h2 class="font-semibold text-white mb-3 flex items-center justify-between">
                     <span><i class="fa-solid fa-inbox text-amber-500 mr-1"></i> Sin Clasificar</span>
                     <span id="unclassified-count" class="bg-gray-800 text-amber-400 border border-amber-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
                 </h2>
-                <div id="unclassified-container" class="flex-1 overflow-y-auto space-y-3 pr-2 border-2 border-dashed border-gray-700/50 rounded-xl p-2 bg-black/30"></div>
+                <div id="unclassified-container" class="flex-1 overflow-y-auto space-y-3 pr-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
             </div>
 
-            <!-- Categorías -->
-            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-[650px] overflow-y-auto pr-2" id="categories-container">
-                <!-- Se inyectan las categorías por JS -->
+            <!-- Categorías Estáticas -->
+            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-[650px] overflow-y-auto pr-2">
+                
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="escritura">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-file-contract text-blue-400"></i> Escritura</h3>
+                        <span class="count-badge bg-gray-800 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="predio">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-house-flag text-orange-400"></i> Predio</h3>
+                        <span class="count-badge bg-gray-800 text-orange-400 border border-orange-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="agua">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-faucet-drip text-cyan-400"></i> Agua</h3>
+                        <span class="count-badge bg-gray-800 text-cyan-400 border border-cyan-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="alineamiento">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> Alineamiento</h3>
+                        <span class="count-badge bg-gray-800 text-indigo-400 border border-indigo-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="colindancia">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-border-all text-pink-400"></i> Colindancia</h3>
+                        <span class="count-badge bg-gray-800 text-pink-400 border border-pink-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="plano">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-pen-ruler text-yellow-400"></i> Plano</h3>
+                        <span class="count-badge bg-gray-800 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="comprador">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-check text-emerald-400"></i> Comprador</h3>
+                        <span class="count-badge bg-gray-800 text-emerald-400 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
+                <div class="category-box bg-gray-900 p-4 rounded-2xl shadow-xl border border-gray-700 flex flex-col h-[280px]" data-category="vendedor">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-tag text-purple-400"></i> Vendedor</h3>
+                        <span class="count-badge bg-gray-800 text-purple-400 border border-purple-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </div>
+                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600 rounded-xl p-2 bg-black/50"></div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
         let filesList = [];
-        const categorias = [
-            { id: 'escritura', icon: 'fa-file-contract', colorText: 'text-blue-400', borderText: 'border-blue-500/30', title: 'Escritura' },
-            { id: 'predio', icon: 'fa-house-flag', colorText: 'text-orange-400', borderText: 'border-orange-500/30', title: 'Predio' },
-            { id: 'agua', icon: 'fa-faucet-drip', colorText: 'text-cyan-400', borderText: 'border-cyan-500/30', title: 'Agua' },
-            { id: 'alineamiento', icon: 'fa-map-location-dot', colorText: 'text-indigo-400', borderText: 'border-indigo-500/30', title: 'Alineamiento' },
-            { id: 'colindancia', icon: 'fa-border-all', colorText: 'text-pink-400', borderText: 'border-pink-500/30', title: 'Colindancia' },
-            { id: 'plano', icon: 'fa-pen-ruler', colorText: 'text-yellow-400', borderText: 'border-yellow-500/30', title: 'Plano' },
-            { id: 'comprador', icon: 'fa-user-check', colorText: 'text-emerald-400', borderText: 'border-emerald-500/30', title: 'Comprador' },
-            { id: 'vendedor', icon: 'fa-user-tag', colorText: 'text-purple-400', borderText: 'border-purple-500/30', title: 'Vendedor' }
+        const listaCategoriasParaDropdown = [
+            { id: 'escritura', title: 'Escritura' },
+            { id: 'predio', title: 'Predio' },
+            { id: 'agua', title: 'Agua' },
+            { id: 'alineamiento', title: 'Alineamiento' },
+            { id: 'colindancia', title: 'Colindancia' },
+            { id: 'plano', title: 'Plano' },
+            { id: 'comprador', title: 'Comprador' },
+            { id: 'vendedor', title: 'Vendedor' }
         ];
-
-        const catContainer = document.getElementById('categories-container');
-        categorias.forEach(cat => {
-            catContainer.innerHTML += `
-                <div class="category-box bg-gray-900/70 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/50 flex flex-col h-[280px]" data-category="${cat.id}">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm">
-                            <i class="fa-solid ${cat.icon} ${cat.colorText}"></i> ${cat.title}
-                        </h3>
-                        <span class="count-badge bg-gray-800 ${cat.colorText} border ${cat.borderText} text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                    </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-700/50 rounded-xl p-2 bg-black/30"></div>
-                </div>
-            `;
-        });
 
         function handleFiles(files) {
             for (let i = 0; i < files.length; i++) {
@@ -165,7 +220,8 @@
 
         function renderFiles() {
             const unclassifiedContainer = document.getElementById('unclassified-container');
-            unclassifiedContainer.innerHTML = '';
+            if(unclassifiedContainer) unclassifiedContainer.innerHTML = '';
+            
             document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
             
             let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
@@ -173,42 +229,59 @@
             filesList.forEach(item => {
                 counts[item.category]++;
                 const card = document.createElement('div');
-                card.className = "bg-gray-800/80 backdrop-blur-sm p-3 rounded-xl border border-gray-700/50 shadow flex items-center justify-between gap-3 text-xs mb-2 hover:border-gray-500 transition-colors";
+                card.className = "bg-gray-800 p-3 rounded-xl border border-gray-600 shadow flex items-center justify-between gap-3 text-xs mb-2 hover:border-blue-500 transition-colors";
                 card.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden">
-                        <i class="fa-solid fa-file-pdf text-red-500 text-lg shrink-0 drop-shadow-md"></i>
+                        <i class="fa-solid fa-file-pdf text-red-500 text-lg shrink-0"></i>
                         <div class="truncate">
                             <span class="font-semibold text-gray-200 truncate block" title="${item.name}">${item.name}</span>
                         </div>
                     </div>
                     <select onchange="moveFile('${item.id}', this.value)" class="text-[11px] bg-gray-900 border border-gray-600 rounded-lg px-1 py-1 text-gray-300 focus:border-blue-500 outline-none">
                         <option value="unclassified" ${item.category === 'unclassified' ? 'selected' : ''}>Sin clasificar</option>
-                        ${categorias.map(c => `<option value="${c.id}" ${item.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
+                        ${listaCategoriasParaDropdown.map(c => `<option value="${c.id}" ${item.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
                     </select>
                 `;
                 
-                if (item.category === 'unclassified') unclassifiedContainer.appendChild(card);
-                else document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`).appendChild(card);
+                if (item.category === 'unclassified') {
+                    if(unclassifiedContainer) unclassifiedContainer.appendChild(card);
+                } else {
+                    const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
+                    if(zone) zone.appendChild(card);
+                }
             });
 
-            document.getElementById('unclassified-count').innerText = counts.unclassified;
-            categorias.forEach(cat => {
-                document.querySelector(`.category-box[data-category="${cat.id}"] .count-badge`).innerText = counts[cat.id];
+            const unclassCountEl = document.getElementById('unclassified-count');
+            if(unclassCountEl) unclassCountEl.innerText = counts.unclassified;
+            
+            listaCategoriasParaDropdown.forEach(cat => {
+                const badge = document.querySelector(`.category-box[data-category="${cat.id}"] .count-badge`);
+                if(badge) badge.innerText = counts[cat.id];
             });
         }
 
         function moveFile(id, newCategory) {
-            filesList.find(f => f.id === id).category = newCategory;
-            renderFiles();
+            const docToMove = filesList.find(f => f.id === id);
+            if(docToMove) {
+                docToMove.category = newCategory;
+                renderFiles();
+            }
         }
 
         function mostrarStatus(texto) {
             const statusMsg = document.getElementById('status-message');
-            document.getElementById('status-text').innerText = texto;
-            statusMsg.classList.remove('hidden');
+            const statusText = document.getElementById('status-text');
+            if(statusMsg && statusText) {
+                statusText.innerText = texto;
+                statusMsg.classList.remove('hidden');
+            }
         }
 
         async function extraerColindanciasDeEscritura() {
+            if (typeof pdfjsLib !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            }
+
             const escrituras = filesList.filter(f => f.category === 'escritura');
             if (escrituras.length === 0) return alert("No hay escrituras clasificadas para analizar.");
             
@@ -251,16 +324,17 @@
                             fileUrl: URL.createObjectURL(fileExtracted),
                             file: fileExtracted
                         });
-                        alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} y extraída con éxito!`);
+                        alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} de ${doc.name}!`);
                     } else {
-                        alert("No se detectaron palabras clave de colindancias en esta escritura.");
+                        alert(`No se detectaron palabras clave de colindancias en ${doc.name}.`);
                     }
                 } catch (e) {
                     console.error("Error al procesar escritura:", e);
                 }
             }
             renderFiles();
-            document.getElementById('status-message').classList.add('hidden');
+            const statusMsg = document.getElementById('status-message');
+            if(statusMsg) statusMsg.classList.add('hidden');
         }
 
         async function clasificarSinClasificarConIA() {
@@ -315,7 +389,8 @@ Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin 
                         let categoriaDetectada = data.candidates[0].content.parts[0].text.trim().toLowerCase();
                         categoriaDetectada = categoriaDetectada.replace(/[^a-z]/g, ''); 
                         
-                        if (categorias.map(c => c.id).includes(categoriaDetectada)) {
+                        const categoriasValidas = ['escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'];
+                        if (categoriasValidas.includes(categoriaDetectada)) {
                             doc.category = categoriaDetectada;
                         }
                     }
@@ -324,7 +399,8 @@ Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin 
                 }
             }
             renderFiles();
-            document.getElementById('status-message').classList.add('hidden');
+            const statusMsg = document.getElementById('status-message');
+            if(statusMsg) statusMsg.classList.add('hidden');
         }
 
         async function generarArchivosSeparados() {
@@ -339,8 +415,7 @@ Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin 
 
             let archivosCreados = 0;
 
-            for (let i = 0; i < categorias.length; i++) {
-                const cat = categorias[i];
+            for (const cat of listaCategoriasParaDropdown) {
                 let archivos = filesList.filter(f => f.category === cat.id);
                 
                 if (archivos.length > 0) {
@@ -378,13 +453,15 @@ Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin 
                     }
 
                     const pdfBytes = await categoryPdf.save();
-                    zip.file(`${i + 1}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
+                    const index = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
+                    zip.file(`${index}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
                     archivosCreados++;
                 }
             }
 
+            const statusMsg = document.getElementById('status-message');
             if (archivosCreados === 0) {
-                document.getElementById('status-message').classList.add('hidden');
+                if(statusMsg) statusMsg.classList.add('hidden');
                 return alert("No hay archivos clasificados para descargar.");
             }
 
@@ -393,7 +470,7 @@ Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin 
             link.href = URL.createObjectURL(zipBlob);
             link.download = `Expediente_${new Date().toISOString().slice(0,10)}.zip`;
             link.click();
-            document.getElementById('status-message').classList.add('hidden');
+            if(statusMsg) statusMsg.classList.add('hidden');
         }
     </script>
 </body>

@@ -20,37 +20,24 @@
 :root{
   --bg:#04060d;
   --ink:#cbd5e1;
-  --muted:#94a3b8;
-  --violet:#a78bfa;
-  --blue:#60a5fa;
-  --cyan:#22d3ee;
-  --pink:#f472b6;
   --line:rgba(148,163,255,.14);
 }
 html{background:var(--bg)}
 body{
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--ink);
+  margin:0; min-height:100vh;
+  background:var(--bg); color:var(--ink);
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 ::selection{background:rgba(139,92,246,.35);color:#fff}
-
-:focus-visible{
-  outline:2px solid rgba(167,139,250,.75);
-  outline-offset:2px;
-  border-radius:10px;
-}
+:focus-visible{outline:2px solid rgba(167,139,250,.75);outline-offset:2px;border-radius:10px}
 
 /* ============================================================
-   1. FONDO ANIMADO FLUIDO (GPU)
+   1. FONDO ANIMADO (capa 0)
    ============================================================ */
 #bg-layer{
   position:fixed; inset:0; z-index:0;
-  pointer-events:none;
-  overflow:hidden;
+  pointer-events:none; overflow:hidden;
   contain:layout paint style;
   background:#04060d;
   transform:translateZ(0);
@@ -66,64 +53,41 @@ body{
   animation:baseFlow 30s ease-in-out infinite;
   will-change:background-position;
 }
-@keyframes baseFlow{
-  0%,100%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-}
+@keyframes baseFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 
 .orb{
-  position:absolute;
-  border-radius:50%;
-  filter:blur(72px);
-  opacity:.5;
-  will-change:transform;
-  transform:translate3d(0,0,0);
+  position:absolute; border-radius:50%;
+  filter:blur(72px); opacity:.5;
+  will-change:transform; transform:translate3d(0,0,0);
   backface-visibility:hidden;
 }
 .orb-1{
-  width:48vw;height:48vw;min-width:340px;min-height:340px;
-  left:-12vw;top:-16vh;
+  width:48vw;height:48vw;min-width:340px;min-height:340px;left:-12vw;top:-16vh;
   background:radial-gradient(circle at 35% 35%,rgba(99,102,241,.9),rgba(37,99,235,.12) 62%,transparent 74%);
   animation:drift1 26s ease-in-out infinite;
 }
 .orb-2{
-  width:42vw;height:42vw;min-width:300px;min-height:300px;
-  right:-10vw;top:-10vh;
+  width:42vw;height:42vw;min-width:300px;min-height:300px;right:-10vw;top:-10vh;
   background:radial-gradient(circle at 60% 40%,rgba(168,85,247,.85),rgba(139,92,246,.1) 60%,transparent 72%);
   animation:drift2 34s ease-in-out infinite;
 }
 .orb-3{
-  width:52vw;height:52vw;min-width:360px;min-height:360px;
-  left:22vw;bottom:-26vh;
+  width:52vw;height:52vw;min-width:360px;min-height:360px;left:22vw;bottom:-26vh;
   background:radial-gradient(circle at 50% 50%,rgba(34,211,238,.6),rgba(14,116,144,.1) 58%,transparent 72%);
   animation:drift3 30s ease-in-out infinite;
 }
-@keyframes drift1{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  33%{transform:translate3d(7vw,-5vh,0) scale(1.14)}
-  66%{transform:translate3d(-5vw,6vh,0) scale(.92)}
-}
-@keyframes drift2{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  40%{transform:translate3d(-8vw,7vh,0) scale(1.18)}
-  75%{transform:translate3d(4vw,-4vh,0) scale(.95)}
-}
-@keyframes drift3{
-  0%,100%{transform:translate3d(0,0,0) scale(1)}
-  50%{transform:translate3d(-9vw,-8vh,0) scale(1.2)}
-}
+@keyframes drift1{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(7vw,-5vh,0) scale(1.14)}66%{transform:translate3d(-5vw,6vh,0) scale(.92)}}
+@keyframes drift2{0%,100%{transform:translate3d(0,0,0) scale(1)}40%{transform:translate3d(-8vw,7vh,0) scale(1.18)}75%{transform:translate3d(4vw,-4vh,0) scale(.95)}}
+@keyframes drift3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-9vw,-8vh,0) scale(1.2)}}
 
 .bg-aurora{
   position:absolute; left:50%; top:50%;
-  width:130vmax;height:130vmax;
-  margin:-65vmax 0 0 -65vmax;
+  width:130vmax;height:130vmax;margin:-65vmax 0 0 -65vmax;
   background:conic-gradient(from 0deg,
     rgba(139,92,246,.11), rgba(34,211,238,.08),
     rgba(236,72,153,.09), rgba(59,130,246,.09), rgba(139,92,246,.11));
-  filter:blur(38px);
-  opacity:.6;
-  will-change:transform;
-  animation:spin 70s linear infinite;
+  filter:blur(38px); opacity:.6;
+  will-change:transform; animation:spin 70s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
@@ -142,11 +106,34 @@ body{
 }
 
 /* ============================================================
-   2. GLASSMORPHISM
+   2. CANVAS DE PARTÍCULAS (capa 1, entre fondo y cristal)
+   ============================================================ */
+#fx-canvas{
+  position:fixed; inset:0;
+  z-index:1;
+  display:block;
+  width:100%; height:100%;
+  pointer-events:none;           /* el ratón se lee desde window */
+  opacity:.95;
+  transition:opacity .45s ease;
+}
+body.fx-off #fx-canvas{opacity:0}
+
+/* ============================================================
+   3. ESTADOS DE RENDIMIENTO
+   ============================================================ */
+body.bg-paused #bg-layer *{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){ #bg-layer *{animation:none!important} }
+@media (max-width:768px){
+  .orb{filter:blur(52px);opacity:.4}
+  .bg-aurora{filter:blur(26px)}
+}
+
+/* ============================================================
+   4. GLASSMORPHISM
    ============================================================ */
 .glass{
-  position:relative;
-  border-radius:18px;
+  position:relative; border-radius:18px;
   background:linear-gradient(158deg,rgba(32,40,68,.55),rgba(9,13,24,.74));
   border:1px solid var(--line);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
@@ -158,10 +145,7 @@ body{
   transition:border-color .35s ease, box-shadow .35s ease, transform .35s ease;
 }
 .glass::before{
-  content:"";
-  position:absolute; inset:0;
-  border-radius:inherit;
-  padding:1px;
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
   background:linear-gradient(135deg,
     rgba(167,139,250,.55), rgba(96,165,250,.12) 34%,
     rgba(34,211,238,.12) 66%, rgba(244,114,182,.42));
@@ -169,8 +153,7 @@ body{
   -webkit-mask-composite:xor;
   mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
   mask-composite:exclude;
-  opacity:.7;
-  pointer-events:none;
+  opacity:.7; pointer-events:none;
 }
 .glass-hover:hover{
   border-color:rgba(167,139,250,.42);
@@ -179,126 +162,83 @@ body{
     0 0 0 1px rgba(167,139,250,.16),
     0 26px 56px -24px rgba(139,92,246,.55);
 }
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+  .glass{background:linear-gradient(158deg,rgba(24,31,54,.94),rgba(8,11,20,.96))}
+}
 
 /* ============================================================
-   3. BOTONES
+   5. BOTONES
    ============================================================ */
 .btn{
-  position:relative;
-  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
   font-weight:700; font-size:.8rem; line-height:1;
-  padding:.62rem 1rem;
-  border-radius:12px;
-  border:1px solid transparent;
-  cursor:pointer;
-  white-space:nowrap;
+  padding:.62rem 1rem; border-radius:12px; border:1px solid transparent;
+  cursor:pointer; white-space:nowrap;
   transition:transform .16s ease, box-shadow .25s ease, filter .25s ease, background .25s ease;
   will-change:transform;
 }
 .btn:active{transform:translateY(1px) scale(.985)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-
-.btn-blue{
-  background:linear-gradient(135deg,#3b82f6,#6366f1); color:#fff;
-  box-shadow:0 0 0 1px rgba(99,102,241,.5),0 10px 28px -10px rgba(59,130,246,.95);
-}
-.btn-blue:hover{filter:brightness(1.13);box-shadow:0 0 0 1px rgba(129,140,248,.75),0 14px 34px -10px rgba(99,102,241,1)}
-
-.btn-emerald{
-  background:linear-gradient(135deg,#059669,#10b981); color:#fff;
-  box-shadow:0 0 0 1px rgba(16,185,129,.5),0 10px 28px -10px rgba(5,150,105,.95);
-}
-.btn-emerald:hover{filter:brightness(1.13);box-shadow:0 0 0 1px rgba(52,211,153,.75),0 14px 34px -10px rgba(16,185,129,1)}
-
-.btn-violet{
-  background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff;
-  box-shadow:0 0 0 1px rgba(168,85,247,.5),0 10px 26px -10px rgba(124,58,237,.95);
-}
+.btn-blue{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 0 0 1px rgba(99,102,241,.5),0 10px 28px -10px rgba(59,130,246,.95)}
+.btn-blue:hover{filter:brightness(1.13)}
+.btn-emerald{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 0 0 1px rgba(16,185,129,.5),0 10px 28px -10px rgba(5,150,105,.95)}
+.btn-emerald:hover{filter:brightness(1.13)}
+.btn-violet{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 0 0 1px rgba(168,85,247,.5),0 10px 26px -10px rgba(124,58,237,.95)}
 .btn-violet:hover{filter:brightness(1.13)}
-
-.btn-pink{
-  background:linear-gradient(135deg,#db2777,#ec4899); color:#fff;
-  box-shadow:0 0 0 1px rgba(236,72,153,.5),0 10px 26px -10px rgba(219,39,119,.95);
-}
+.btn-pink{background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;box-shadow:0 0 0 1px rgba(236,72,153,.5),0 10px 26px -10px rgba(219,39,119,.95)}
 .btn-pink:hover{filter:brightness(1.13)}
+.btn-ghost{background:rgba(255,255,255,.045);border-color:var(--line);color:#c7d2fe}
+.btn-ghost:hover{background:rgba(139,92,246,.14);border-color:rgba(167,139,250,.45)}
+.btn-ghost.is-off{opacity:.5;text-decoration:line-through}
 
 .icon-btn{
   display:inline-grid; place-items:center;
-  width:26px;height:26px;
-  border-radius:8px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.04);
-  color:#a5b4fc;
-  cursor:pointer;
-  font-size:11px;
-  transition:background .2s, color .2s, border-color .2s, transform .15s;
+  width:26px;height:26px;border-radius:8px;
+  border:1px solid var(--line); background:rgba(255,255,255,.04);
+  color:#a5b4fc; cursor:pointer; font-size:11px;
+  transition:background .2s,color .2s,border-color .2s,transform .15s;
 }
 .icon-btn:hover{background:rgba(139,92,246,.18);color:#e9d5ff;border-color:rgba(167,139,250,.5)}
 .icon-btn:active{transform:scale(.92)}
 .icon-btn.danger:hover{background:rgba(244,63,94,.18);color:#fda4af;border-color:rgba(244,63,94,.5)}
 
 /* ============================================================
-   4. TARJETAS DE CATEGORÍA / ZONAS DE SOLTADO
+   6. CATEGORÍAS / DROPZONES
    ============================================================ */
 .category-box{
   --accent:#8b5cf6;
   display:flex; flex-direction:column;
-  height:272px;
-  padding:1rem;
-  overflow:hidden;
+  height:272px; padding:1rem; overflow:hidden;
 }
 .category-box::after{
-  content:"";
-  position:absolute; top:0; left:14%; right:14%; height:1px;
+  content:""; position:absolute; top:0; left:14%; right:14%; height:1px;
   background:linear-gradient(90deg,transparent,var(--accent),transparent);
-  opacity:.65;
-  pointer-events:none;
+  opacity:.65; pointer-events:none;
 }
-.category-box:hover{
-  border-color:color-mix(in srgb,var(--accent) 42%,transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.09),
-    0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),
-    0 26px 56px -26px var(--accent);
-}
-.cat-head{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:.5rem; margin-bottom:.6rem;
-}
+.cat-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem}
 .cat-title{
   display:flex; align-items:center; gap:.5rem;
   font-size:.78rem; font-weight:800; letter-spacing:.02em;
   color:#e2e8f0; text-transform:uppercase;
 }
 .cat-title i{filter:drop-shadow(0 0 6px currentColor)}
-
 .badge{
   min-width:24px; text-align:center;
-  font-size:.65rem; font-weight:800;
-  padding:.15rem .45rem;
-  border-radius:999px;
-  background:rgba(255,255,255,.05);
+  font-size:.65rem; font-weight:800; padding:.15rem .45rem;
+  border-radius:999px; background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.12);
   font-variant-numeric:tabular-nums;
 }
-
 .dropzone{
-  flex:1;
-  overflow-y:auto;
+  flex:1; overflow-y:auto;
   border:2px dashed rgba(148,163,255,.2);
-  border-radius:14px;
-  padding:.5rem;
+  border-radius:14px; padding:.5rem;
   background:linear-gradient(180deg,rgba(2,6,18,.5),rgba(2,6,18,.28));
   transition:border-color .3s ease, background .3s ease, box-shadow .3s ease;
 }
 .dropzone:empty::after{
-  content:attr(data-empty);
-  display:block;
-  text-align:center;
-  font-size:.68rem;
-  line-height:1.5;
-  color:rgba(148,163,255,.42);
-  padding:1.3rem .6rem;
+  content:attr(data-empty); display:block; text-align:center;
+  font-size:.68rem; line-height:1.5;
+  color:rgba(148,163,255,.42); padding:1.3rem .6rem;
 }
 .dropzone.dz-over{
   border-color:var(--accent,rgba(167,139,250,.9));
@@ -307,505 +247,1014 @@ body{
 }
 
 /* ============================================================
-   5. TARJETA DE ARCHIVO
+   7. TARJETAS DE ARCHIVO
    ============================================================ */
 .file-card{
-  display:flex; align-items:center; justify-content:between; gap:.5rem;
-  background:rgba(15,23,42,.75);
-  border:1px solid rgba(148,163,255,.12);
-  padding:.5rem .65rem;
-  border-radius:10px;
-  margin-bottom:.45rem;
-  transition:border-color .2s, background .2s, transform .15s;
+  position:relative; border-radius:12px; padding:.55rem .6rem; margin-bottom:.45rem;
+  background:linear-gradient(150deg,rgba(32,40,68,.6),rgba(11,16,30,.82));
+  border:1px solid rgba(148,163,255,.1);
+  transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  animation:fadeUp .35s ease backwards;
 }
 .file-card:hover{
   border-color:rgba(167,139,250,.45);
-  background:rgba(30,41,59,.85);
+  transform:translateX(2px);
+  box-shadow:0 8px 22px -14px rgba(139,92,246,.9);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fc-top{display:flex;align-items:flex-start;gap:.5rem}
+.fc-icon{color:#f87171;font-size:1rem;flex-shrink:0;margin-top:2px}
+.fc-text{min-width:0;flex:1}
+.fc-name{display:block;font-size:.7rem;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-size{display:block;font-size:.6rem;color:#64748b;margin-top:1px;font-variant-numeric:tabular-nums}
+.fc-actions{display:flex;gap:.25rem;flex-shrink:0}
+.fc-select{
+  width:100%; margin-top:.4rem; font-size:11px;
+  padding:.3rem 1.4rem .3rem .5rem; border-radius:9px;
+  background-color:rgba(6,10,20,.9);
+  border:1px solid rgba(148,163,255,.16);
+  color:#cbd5e1; outline:none; cursor:pointer;
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right .4rem center; background-size:13px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.fc-select:hover,.fc-select:focus{border-color:rgba(167,139,250,.6);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+option{background:#0b1020;color:#cbd5e1}
+
+/* ============================================================
+   8. ESTADO / TOASTS / OVERLAY
+   ============================================================ */
+#status-message{position:relative;overflow:hidden}
+#status-message::after{
+  content:""; position:absolute; top:0; bottom:0; left:0; width:38%;
+  background:linear-gradient(90deg,transparent,rgba(96,165,250,.28),transparent);
+  animation:sweep 1.9s linear infinite; will-change:transform;
+}
+@keyframes sweep{from{transform:translateX(-130%)}to{transform:translateX(330%)}}
+
+#toast-wrap{
+  position:fixed; top:1rem; right:1rem; z-index:60;
+  display:flex; flex-direction:column; gap:.5rem;
+  max-width:min(340px,90vw); pointer-events:none;
+}
+.toast{
+  display:flex; align-items:flex-start; gap:.6rem;
+  padding:.7rem .85rem; border-radius:13px;
+  font-size:.75rem; line-height:1.45; font-weight:600; color:#e2e8f0;
+  background:linear-gradient(150deg,rgba(24,32,56,.94),rgba(8,12,22,.96));
+  border:1px solid var(--line);
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.95);
+  animation:toastIn .3s cubic-bezier(.2,.9,.3,1) both;
+}
+.toast.ok{border-color:rgba(52,211,153,.45);color:#a7f3d0}
+.toast.warn{border-color:rgba(251,191,36,.45);color:#fde68a}
+.toast.err{border-color:rgba(248,113,113,.45);color:#fecaca}
+.toast.info{border-color:rgba(96,165,250,.45);color:#bfdbfe}
+.toast.out{animation:toastOut .28s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(18px) scale(.97)}}
+
+#drop-overlay{
+  position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+  background:rgba(4,6,13,.62);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden;
+  transition:opacity .22s ease, visibility .22s;
+}
+body.dragging #drop-overlay{opacity:1;visibility:visible}
+.drop-box{
+  padding:2.4rem 3rem; border-radius:22px;
+  border:2px dashed rgba(167,139,250,.6);
+  background:rgba(12,16,30,.75); text-align:center;
 }
 
-/* Scrollbars */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(148,163,255,.18);border-radius:99px}
-::-webkit-scrollbar-thumb:hover{background:rgba(167,139,250,.4)}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(139,92,246,.6),rgba(59,130,246,.5));
+  border-radius:99px; border:2px solid transparent; background-clip:padding-box;
+}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(167,139,250,.9),rgba(96,165,250,.8));background-clip:padding-box}
+
+.enter{animation:enterIn .5s ease backwards}
+@keyframes enterIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.logo-badge{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:13px;
+  background:linear-gradient(140deg,rgba(59,130,246,.28),rgba(139,92,246,.28));
+  border:1px solid rgba(167,139,250,.35);
+  box-shadow:0 0 22px -6px rgba(139,92,246,.8);
+}
+.grad-title{
+  background:linear-gradient(100deg,#e2e8f0 10%,#a5b4fc 45%,#67e8f9 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
 </style>
 </head>
 
-<body class="relative min-h-screen p-4 md:p-6">
+<body class="relative min-h-screen p-4 sm:p-6">
 
-    <!-- FONDO ANIMADO HIGH-TECH -->
-    <div id="bg-layer" aria-hidden="true">
-        <div class="bg-base"></div>
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="bg-aurora"></div>
-        <div class="bg-grid"></div>
-        <div class="bg-vignette"></div>
+<!-- ============ CAPA 0: FONDO ============ -->
+<div id="bg-layer" aria-hidden="true">
+  <div class="bg-base"></div>
+  <div class="bg-aurora"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<!-- ============ CAPA 1: PARTÍCULAS ============ -->
+<canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+<!-- ============ OVERLAY ARRASTRE ============ -->
+<div id="drop-overlay">
+  <div class="drop-box">
+    <i class="fa-solid fa-file-arrow-down text-3xl text-violet-300"></i>
+    <p class="mt-3 font-bold text-white text-sm">Suelta los PDFs para agregarlos</p>
+    <p class="text-[11px] text-slate-400 mt-1">O déjalos sobre una categoría para clasificarlos directo</p>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+
+<!-- ============ CAPA 10: CONTENIDO ============ -->
+<div class="max-w-[1400px] mx-auto relative z-10">
+
+  <header class="glass glass-hover enter rounded-2xl p-5 sm:p-6 mb-5 flex flex-col lg:flex-row justify-between items-center gap-5">
+    <div class="flex items-center gap-4">
+      <div class="logo-badge"><i class="fa-solid fa-layer-group text-blue-300 text-lg"></i></div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-extrabold grad-title tracking-tight">Generador de Expediente AI</h1>
+        <p class="text-slate-400 text-xs mt-1">
+          Organiza, extrae medidas y clasifica documentos escaneados con IA.
+          <span class="text-slate-500">·</span>
+          <span class="text-indigo-300 font-semibold"><span id="totalFiles">0</span> archivos cargados</span>
+        </p>
+      </div>
     </div>
 
-    <div class="max-w-[1400px] mx-auto relative z-10">
-        
-        <!-- ENCABEZADO -->
-        <header class="glass glass-hover p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-extrabold text-white flex items-center gap-2.5">
-                    <i class="fa-solid fa-layer-group text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,.8)]"></i> 
-                    Generador de Expediente AI
-                </h1>
-                <p class="text-slate-400 text-xs mt-1">Organización inteligente, extracción de medidas y clasificación automatizada con Gemini Vision.</p>
-            </div>
-            <div class="flex flex-wrap gap-3 items-center">
-                <label class="btn btn-blue cursor-pointer">
-                    <i class="fa-solid fa-upload"></i> 1. Subir PDFs
-                    <input type="file" id="fileInput" multiple accept=".pdf" class="hidden" onchange="handleFiles(this.files)">
-                </label>
-                <button onclick="generarArchivosSeparados()" id="btnGenerar" class="btn btn-emerald">
-                    <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente (ZIP)
-                </button>
-            </div>
-        </header>
-
-        <!-- PANEL DE HERRAMIENTAS IA & EXTRACCIÓN -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-            <!-- Inteligencia Artificial -->
-            <div class="glass glass-hover p-5">
-                <h3 class="text-white font-bold text-xs uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                    <i class="fa-solid fa-robot text-violet-400"></i> Clasificación Inteligente (Gemini Vision)
-                </h3>
-                <p class="text-[11px] text-slate-400 mb-3">La IA analiza visualmente los documentos escaneados o sin nombre claro.</p>
-                <div class="flex gap-2">
-                    <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini aquí..." 
-                        class="w-full text-xs px-3 py-2 rounded-xl bg-slate-950/70 border border-slate-700/60 text-white focus:border-violet-500 outline-none">
-                    <button onclick="clasificarSinClasificarConIA()" class="btn btn-violet shrink-0 text-xs">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Clasificar IA
-                    </button>
-                </div>
-            </div>
-
-            <!-- Extracción de Escrituras -->
-            <div class="glass glass-hover p-5 flex flex-col justify-between">
-                <div>
-                    <h3 class="text-white font-bold text-xs uppercase tracking-wider mb-1.5 flex items-center gap-2">
-                        <i class="fa-solid fa-scissors text-pink-400"></i> Extraer Medidas y Colindancias
-                    </h3>
-                    <p class="text-[11px] text-slate-400 mb-3">Busca dentro del texto de la Escritura la página de medidas y colindancias para moverla de inmediato.</p>
-                </div>
-                <button onclick="extraerColindanciasDeEscritura()" class="btn btn-pink w-full text-xs">
-                    <i class="fa-solid fa-magnifying-glass-location"></i> Procesar Escrituras
-                </button>
-            </div>
-        </div>
-
-        <!-- MENSAJE DE ESTADO -->
-        <div id="status-message" class="hidden glass px-4 py-3 rounded-xl mb-6 font-medium text-xs flex items-center gap-3 border-blue-500/40 text-blue-300">
-            <i class="fa-solid fa-circle-notch fa-spin text-base"></i>
-            <span id="status-text">Procesando...</span>
-        </div>
-
-        <!-- CONTENEDOR PRINCIPAL -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            
-            <!-- ZONA SIN CLASIFICAR -->
-            <div class="glass category-box lg:col-span-1" style="--accent:#f59e0b">
-                <div class="cat-head">
-                    <span class="cat-title">
-                        <i class="fa-solid fa-inbox text-amber-400"></i> Sin Clasificar
-                    </span>
-                    <span id="unclassified-count" class="badge text-amber-300 border-amber-500/30">0</span>
-                </div>
-                <div id="unclassified-container" class="dropzone" data-empty="Arrastra PDFs aquí o súbelos arriba. Se auto-clasificarán por su nombre."></div>
-            </div>
-
-            <!-- CATEGORÍAS (CARPETAS DEL EXPEDIENTE) -->
-            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                
-                <!-- 1. Escritura -->
-                <div class="glass category-box" style="--accent:#3b82f6" data-category="escritura">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-file-contract text-blue-400"></i> 1. Escritura</span>
-                        <span class="count-badge badge text-blue-400 border-blue-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Escritura"></div>
-                </div>
-
-                <!-- 2. Predio -->
-                <div class="glass category-box" style="--accent:#f97316" data-category="predio">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-house-flag text-orange-400"></i> 2. Predio</span>
-                        <span class="count-badge badge text-orange-400 border-orange-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin boletas de Predio"></div>
-                </div>
-
-                <!-- 3. Agua -->
-                <div class="glass category-box" style="--accent:#06b6d4" data-category="agua">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-faucet-drip text-cyan-400"></i> 3. Agua</span>
-                        <span class="count-badge badge text-cyan-400 border-cyan-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin recibos de Agua"></div>
-                </div>
-
-                <!-- 4. Alineamiento -->
-                <div class="glass category-box" style="--accent:#6366f1" data-category="alineamiento">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> 4. Alineamiento</span>
-                        <span class="count-badge badge text-indigo-400 border-indigo-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin constancias de Alineamiento"></div>
-                </div>
-
-                <!-- 5. Colindancia -->
-                <div class="glass category-box" style="--accent:#ec4899" data-category="colindancia">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-border-all text-pink-400"></i> 5. Colindancia</span>
-                        <span class="count-badge badge text-pink-400 border-pink-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin páginas de Colindancias"></div>
-                </div>
-
-                <!-- 6. Plano -->
-                <div class="glass category-box" style="--accent:#eab308" data-category="plano">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-pen-ruler text-yellow-400"></i> 6. Plano</span>
-                        <span class="count-badge badge text-yellow-400 border-yellow-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin Planos o Croquis"></div>
-                </div>
-
-                <!-- 7. Datos Comprador -->
-                <div class="glass category-box" style="--accent:#10b981" data-category="comprador">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-user-check text-emerald-400"></i> 7. Datos Comprador</span>
-                        <span class="count-badge badge text-emerald-400 border-emerald-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Comprador"></div>
-                </div>
-
-                <!-- 8. Datos Vendedor -->
-                <div class="glass category-box" style="--accent:#a855f7" data-category="vendedor">
-                    <div class="cat-head">
-                        <span class="cat-title"><i class="fa-solid fa-user-tag text-purple-400"></i> 8. Datos Vendedor</span>
-                        <span class="count-badge badge text-purple-400 border-purple-500/30">0</span>
-                    </div>
-                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Vendedor"></div>
-                </div>
-
-            </div>
-        </div>
+    <div class="flex flex-wrap items-center justify-center gap-2.5">
+      <label class="btn btn-blue">
+        <i class="fa-solid fa-upload"></i> 1. Subir PDFs
+        <input type="file" id="fileInput" multiple accept=".pdf" class="hidden">
+      </label>
+      <button id="btnGenerar" class="btn btn-emerald">
+        <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente
+      </button>
+      <button id="btnFX" class="btn btn-ghost" title="Activar / desactivar partículas">
+        <i class="fa-solid fa-atom"></i>
+      </button>
+      <button id="btnFondo" class="btn btn-ghost" title="Modo rendimiento: congela fondo y partículas">
+        <i class="fa-solid fa-gauge-high"></i>
+      </button>
+      <button id="btnLimpiar" class="btn btn-ghost" title="Vaciar todo">
+        <i class="fa-solid fa-broom"></i>
+      </button>
     </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+    <section class="glass glass-hover enter rounded-2xl p-5" style="animation-delay:.05s">
+      <h3 class="text-white font-bold mb-2 flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-robot text-violet-300" style="filter:drop-shadow(0 0 8px rgba(167,139,250,.9))"></i>
+        Clasificación Inteligente · Gemini Vision
+      </h3>
+      <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+        La IA leerá visualmente los documentos escaneados que no se acomoden por nombre de archivo.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini…"
+          class="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-950/70 border border-slate-600/40 text-white placeholder-slate-500 outline-none transition focus:border-violet-400 focus:shadow-[0_0_0_3px_rgba(139,92,246,.15)]">
+        <button id="btnIA" class="btn btn-violet shrink-0">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Clasificar IA
+        </button>
+      </div>
+    </section>
+
+    <section class="glass glass-hover enter rounded-2xl p-5 flex flex-col justify-between" style="animation-delay:.1s">
+      <div>
+        <h3 class="text-white font-bold mb-2 flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-scissors text-pink-300" style="filter:drop-shadow(0 0 8px rgba(244,114,182,.9))"></i>
+          Extraer Medidas y Colindancias
+        </h3>
+        <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+          Rastrea el texto de cada Escritura, detecta la página de medidas y la mueve a Colindancia.
+        </p>
+      </div>
+      <button id="btnColindancia" class="btn btn-pink w-full">
+        <i class="fa-solid fa-magnifying-glass-location"></i> Procesar Escrituras
+      </button>
+    </section>
+  </div>
+
+  <div id="status-message" class="hidden glass rounded-2xl border-blue-500/40 px-4 py-3 mb-5 text-sm font-semibold text-blue-300 items-center gap-3">
+    <i class="fa-solid fa-circle-notch fa-spin text-base shrink-0"></i>
+    <span id="status-text">Procesando…</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
+    <section class="glass glass-hover enter rounded-2xl p-4 flex flex-col h-[640px]" data-drop="unclassified" style="animation-delay:.15s">
+      <h2 class="font-bold text-white mb-3 flex items-center justify-between text-sm">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-inbox text-amber-400" style="filter:drop-shadow(0 0 6px rgba(245,158,11,.8))"></i>
+          Sin Clasificar
+        </span>
+        <span id="unclassified-count" class="badge text-amber-300">0</span>
+      </h2>
+      <div id="unclassified-container" class="dropzone" data-empty="Suelta aquí los PDFs sin clasificar"></div>
+    </section>
+
+    <div id="categorias" class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 h-[640px] overflow-y-auto pr-1"></div>
+  </div>
+
+  <footer class="text-center text-[10px] text-slate-600 mt-6 pb-2">
+    Procesamiento 100% local en tu navegador · Nada sale de tu equipo excepto lo que envíes a Gemini
+  </footer>
+</div>
 
 <script>
+/* ============================================================
+   MOTOR DE ANTIGRAVEDAD — partículas + nodos interactivos
+   Canvas 2D, sprites pre-renderizados, rejilla espacial.
+   Sin librerías. Sin fugas. Pausable.
+   ============================================================ */
+const ParticleFX = (function(){
+  const canvas = document.getElementById('fx-canvas');
+  const ctx = canvas && canvas.getContext('2d', { alpha:true, desynchronized:true });
+  const API = { toggle(){}, on(){}, off(){}, burst(){}, isOn(){ return enabled; }, setLowPower(){} };
+  if (!ctx) return API;
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const PALETTE = ['#a78bfa','#60a5fa','#22d3ee','#f472b6','#818cf8','#67e8f9'];
+
+  const CFG = {
+    cell: 132,
+    linkDist: 122,
+    linkDist2: 122*122,
+    mouseLink: 190,
+    mouseLink2: 190*190,
+    mouseRadius: 168,
+    repel: 1.15,
+    swirl: 0.42,
+    mousePush: 0.42,
+    spring: 0.022,
+    damping: 0.965,
+    maxCount: 150,
+    minCount: 34,
+    speedScale: reduce ? 0.45 : 1
+  };
+
+  let W=0,H=0,DPR=1;
+  let parts=[], sprites=[], glowSprite=null;
+  let raf=null, last=performance.now(), running=false;
+  let enabled=true, lowPower=false;
+  let gridCols=0, gridRows=0, grid=null;
+
+  const mouse = { x:-1e4, y:-1e4, vx:0, vy:0, has:false, gx:0, gy:0, gAlpha:0 };
+
+  /* ---------- utilidades ---------- */
+  function rgba(hex,a){
+    const n = parseInt(hex.slice(1),16);
+    return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+  }
+  function makeSprite(color, size){
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d');
+    const r = size/2;
+    const grd = g.createRadialGradient(r,r,0,r,r,r);
+    grd.addColorStop(0,    rgba(color,1));
+    grd.addColorStop(0.18, rgba(color,0.85));
+    grd.addColorStop(0.45, rgba(color,0.30));
+    grd.addColorStop(1,    rgba(color,0));
+    g.fillStyle = grd;
+    g.fillRect(0,0,size,size);
+    return c;
+  }
+
+  /* ---------- dimensiones ---------- */
+  function targetCount(){
+    const area = W*H;
+    let n = Math.round(area * 0.000072);
+    const cores = navigator.hardwareConcurrency || 4;
+    if (cores <= 4) n = Math.round(n*0.72);
+    if (W < 768)    n = Math.round(n*0.62);
+    if (reduce)     n = Math.round(n*0.7);
+    return Math.max(CFG.minCount, Math.min(CFG.maxCount, n));
+  }
+
+  function resize(){
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = Math.max(1, Math.floor(W*DPR));
+    canvas.height = Math.max(1, Math.floor(H*DPR));
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    buildGridLayout();
+    syncCount(targetCount());
+  }
+
+  function buildGridLayout(){
+    gridCols = Math.ceil(W/CFG.cell) + 2;
+    gridRows = Math.ceil(H/CFG.cell) + 2;
+    if (!grid || grid.length !== gridCols*gridRows){
+      grid = new Array(gridCols*gridRows);
+      for (let i=0;i<grid.length;i++) grid[i] = [];
+    } else {
+      for (let i=0;i<grid.length;i++) grid[i].length = 0;
+    }
+  }
+
+  /* ---------- partículas ---------- */
+  function spawn(p, fromBottom){
+    p.x = Math.random()*W;
+    p.y = fromBottom ? H + 20 + Math.random()*90 : Math.random()*H;
+    p.r = 0.55 + Math.random()*1.75;
+    p.buoy = (0.10 + Math.random()*0.42) * CFG.speedScale;
+    p.vx = (Math.random()-0.5)*0.16;
+    p.vy = -p.buoy;
+    p.a = 0.18 + Math.random()*0.42;
+    p.ci = (Math.random()*PALETTE.length)|0;
+    p.sprite = sprites[p.ci];
+    p.phase = Math.random()*Math.PI*2;
+    p.wob = 0.4 + Math.random()*0.9;
+    p.depth = 0.35 + Math.random()*0.65;
+    return p;
+  }
+
+  function syncCount(n){
+    while (parts.length < n) parts.push(spawn({}, false));
+    if (parts.length > n) parts.length = n;
+  }
+
+  /* ---------- rejilla espacial ---------- */
+  function rebuildGrid(){
+    for (let i=0;i<grid.length;i++) grid[i].length = 0;
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      let cx = ((p.x / CFG.cell)|0) + 1;
+      let cy = ((p.y / CFG.cell)|0) + 1;
+      if (cx < 0) cx = 0; if (cx >= gridCols) cx = gridCols-1;
+      if (cy < 0) cy = 0; if (cy >= gridRows) cy = gridRows-1;
+      grid[cy*gridCols + cx].push(i);
+    }
+  }
+
+  /* ---------- física ---------- */
+  function update(dt){
+    const R = CFG.mouseRadius, R2 = R*R;
+    const dtl = Math.min(dt, 2.4);
+
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+
+      // Oscilación orgánica (deriva tipo fluido)
+      p.phase += 0.006*dtl;
+      p.vx += Math.sin(p.phase*1.3) * 0.0075 * p.wob * dtl;
+      p.vy += Math.cos(p.phase*0.9) * 0.0045 * p.wob * dtl;
+
+      // Antigravedad: muelle hacia la velocidad de flotación
+      p.vy += (-p.buoy - p.vy) * CFG.spring * dtl;
+      p.vx += (0 - p.vx) * CFG.spring * dtl;
+
+      // Interacción con el cursor
+      if (mouse.has){
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const d2 = dx*dx + dy*dy;
+        if (d2 < R2 && d2 > 0.5){
+          const d = Math.sqrt(d2);
+          const f = (1 - d/R);
+          const nx = dx/d, ny = dy/d;
+          p.vx += nx * f * CFG.repel * dtl;
+          p.vy += ny * f * CFG.repel * dtl;
+          // remolino tangencial → sensación fluida
+          p.vx += -ny * f * CFG.swirl * dtl;
+          p.vy +=  nx * f * CFG.swirl * dtl;
+          // arrastre por velocidad del cursor
+          p.vx += mouse.vx * f * CFG.mousePush * dtl;
+          p.vy += mouse.vy * f * CFG.mousePush * dtl;
+        }
+      }
+
+      p.vx *= Math.pow(CFG.damping, dtl);
+      p.vy *= Math.pow(CFG.damping, dtl);
+
+      p.x += p.vx * dtl;
+      p.y += p.vy * dtl;
+
+      // Reciclado
+      if (p.y < -40) spawn(p, true);
+      else if (p.y > H + 60) p.y = -30;
+      if (p.x < -40) p.x = W + 30;
+      else if (p.x > W + 40) p.x = -30;
+    }
+
+    mouse.vx *= 0.90;
+    mouse.vy *= 0.90;
+    mouse.gx += (mouse.x - mouse.gx) * 0.16;
+    mouse.gy += (mouse.y - mouse.gy) * 0.16;
+    mouse.gAlpha += ((mouse.has ? 1 : 0) - mouse.gAlpha) * 0.08;
+  }
+
+  /* ---------- dibujo ---------- */
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation = 'lighter';
+
+    // Halo del cursor
+    if (mouse.gAlpha > 0.01 && glowSprite){
+      const s = 300;
+      ctx.globalAlpha = 0.20 * mouse.gAlpha;
+      ctx.drawImage(glowSprite, mouse.gx - s/2, mouse.gy - s/2, s, s);
+    }
+
+    // Nodos: partículas cercanas entre sí
+    const LD2 = CFG.linkDist2;
+    ctx.lineWidth = 0.65;
+    for (let i=0;i<parts.length;i++){
+      const a = parts[i];
+      const cx = ((a.x / CFG.cell)|0) + 1;
+      const cy = ((a.y / CFG.cell)|0) + 1;
+
+      for (let oy=-1; oy<=1; oy++){
+        const ry = cy+oy;
+        if (ry < 0 || ry >= gridRows) continue;
+        for (let ox=-1; ox<=1; ox++){
+          const rx = cx+ox;
+          if (rx < 0 || rx >= gridCols) continue;
+          const bucket = grid[ry*gridCols + rx];
+          for (let k=0;k<bucket.length;k++){
+            const j = bucket[k];
+            if (j <= i) continue;
+            const b = parts[j];
+            const dx = a.x-b.x, dy = a.y-b.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 > LD2) continue;
+            const t = 1 - Math.sqrt(d2)/CFG.linkDist;
+            ctx.globalAlpha = t*t*0.30;
+            ctx.strokeStyle = PALETTE[a.ci];
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Conexiones al cursor
+    if (mouse.has){
+      const ML2 = CFG.mouseLink2;
+      for (let i=0;i<parts.length;i++){
+        const p = parts[i];
+        const dx = p.x-mouse.x, dy = p.y-mouse.y;
+        const d2 = dx*dx+dy*dy;
+        if (d2 > ML2) continue;
+        const t = 1 - Math.sqrt(d2)/CFG.mouseLink;
+        ctx.globalAlpha = t*t*0.55;
+        ctx.strokeStyle = '#c4b5fd';
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(mouse.x,mouse.y);
+        ctx.stroke();
+      }
+    }
+
+    // Partículas
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      const size = p.r * 8;
+      ctx.globalAlpha = p.a * (0.55 + p.depth*0.45);
+      ctx.drawImage(p.sprite, p.x - size/2, p.y - size/2, size, size);
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  /* ---------- bucle ---------- */
+  function frame(now){
+    raf = requestAnimationFrame(frame);
+    const dt = (now - last) / 16.667;
+    last = now;
+    if (dt <= 0) return;
+    update(dt);
+    rebuildGrid();
+    draw();
+  }
+
+  function start(){
+    if (running || !enabled || lowPower || document.hidden) return;
+    running = true;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+  function stop(){
+    if (!running) return;
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+    ctx.clearRect(0,0,W,H);
+  }
+  function sync(){ (enabled && !lowPower && !document.hidden) ? start() : stop(); }
+
+  /* ---------- eventos ---------- */
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 160);
+  }, { passive:true });
+
+  window.addEventListener('pointermove', e => {
+    if (!mouse.has){ mouse.gx = e.clientX; mouse.gy = e.clientY; }
+    mouse.vx = e.clientX - mouse.x;
+    mouse.vy = e.clientY - mouse.y;
+    if (!isFinite(mouse.vx)) mouse.vx = 0;
+    if (!isFinite(mouse.vy)) mouse.vy = 0;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.has = true;
+  }, { passive:true });
+
+  window.addEventListener('pointerdown', e => { API.burst(e.clientX, e.clientY, 2.6); }, { passive:true });
+  window.addEventListener('pointerleave', () => { mouse.has = false; }, { passive:true });
+  window.addEventListener('blur',        () => { mouse.has = false; });
+  document.addEventListener('visibilitychange', sync);
+
+  /* ---------- API ---------- */
+  API.burst = function(x, y, power){
+    if (x === undefined) x = W/2;
+    if (y === undefined) y = H/2;
+    power = power || 2.2;
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      const dx = p.x - x, dy = p.y - y;
+      const d = Math.hypot(dx,dy) || 1;
+      if (d > 380) continue;
+      const f = (1 - d/380) * power;
+      p.vx += (dx/d) * f;
+      p.vy += (dy/d) * f;
+    }
+    if (!running) start();
+  };
+  API.on  = function(){ enabled = true;  document.body.classList.remove('fx-off'); sync(); };
+  API.off = function(){ enabled = false; document.body.classList.add('fx-off'); sync(); };
+  API.toggle = function(){ enabled ? API.off() : API.on(); return enabled; };
+  API.setLowPower = function(v){ lowPower = !!v; sync(); };
+
+  /* ---------- init ---------- */
+  sprites = PALETTE.map(c => makeSprite(c, 64));
+  glowSprite = makeSprite('#a78bfa', 256);
+  resize();
+  sync();
+  window.addEventListener('load', resize);
+
+  return API;
+})();
+
+/* ============================================================
+   APP — configuración y lógica
+   ============================================================ */
+const CATS = [
+  {id:'escritura',    title:'Escritura',    icon:'fa-file-contract',    accent:'#60a5fa'},
+  {id:'predio',       title:'Predio',       icon:'fa-house-flag',       accent:'#fb923c'},
+  {id:'agua',         title:'Agua',         icon:'fa-faucet-drip',      accent:'#22d3ee'},
+  {id:'alineamiento', title:'Alineamiento', icon:'fa-map-location-dot', accent:'#818cf8'},
+  {id:'colindancia',  title:'Colindancia',  icon:'fa-border-all',       accent:'#f472b6'},
+  {id:'plano',        title:'Plano',        icon:'fa-pen-ruler',        accent:'#facc15'},
+  {id:'comprador',    title:'Comprador',    icon:'fa-user-check',       accent:'#34d399'},
+  {id:'vendedor',     title:'Vendedor',     icon:'fa-user-tag',         accent:'#c084fc'}
+];
+const listaCategoriasParaDropdown = CATS.map(c => ({id:c.id, title:c.title}));
+
+let filesList = [];
+let uid = 0;
+const newId = () => 'f' + (++uid) + Math.random().toString(36).slice(2,7);
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, m =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+/* ---------- toasts ---------- */
+const TOAST_ICON = {ok:'fa-circle-check', warn:'fa-triangle-exclamation', err:'fa-circle-xmark', info:'fa-circle-info'};
+function toast(msg, type='info'){
+  const wrap = $('#toast-wrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = '<i class="fa-solid ' + TOAST_ICON[type] + ' mt-[2px]"></i><span>' + esc(msg) + '</span>';
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 4300);
+}
+
+/* ---------- estado ---------- */
+function mostrarStatus(txt){
+  $('#status-text').textContent = txt;
+  $('#status-message').classList.remove('hidden');
+  $('#status-message').classList.add('flex');
+}
+function ocultarStatus(){
+  $('#status-message').classList.add('hidden');
+  $('#status-message').classList.remove('flex');
+}
+
+/* ---------- categorías ---------- */
+function buildCategorias(){
+  $('#categorias').innerHTML = CATS.map((c,i) =>
+    '<section class="glass category-box enter" data-category="' + c.id + '" data-drop="' + c.id + '" ' +
+            'style="--accent:' + c.accent + ';animation-delay:' + (0.16 + i*0.03) + 's">' +
+      '<header class="cat-head">' +
+        '<h3 class="cat-title"><i class="fa-solid ' + c.icon + '" style="color:' + c.accent + '"></i><span>' + c.title + '</span></h3>' +
+        '<span class="badge" style="color:' + c.accent + '">0</span>' +
+      '</header>' +
+      '<div class="dropzone category-dropzone" data-empty="Suelta aquí los PDF de ' + c.title + '"></div>' +
+    '</section>').join('');
+}
+
+/* ---------- carga ---------- */
+function handleFiles(files, forcedCategory){
+  const nuevos = [];
+  for (const file of files){
+    const esPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    if (!esPdf) continue;
+    const item = {
+      id: newId(),
+      name: file.name,
+      size: (file.size/1024/1024).toFixed(2) + ' MB',
+      category: forcedCategory || 'unclassified',
+      fileUrl: URL.createObjectURL(file),
+      file
+    };
+    filesList.push(item);
+    nuevos.push(item);
+  }
+  if (!nuevos.length){ toast('No se encontraron archivos PDF válidos.', 'warn'); return; }
+
+  autoClassifyFiles(nuevos);
+  renderFiles();
+  ParticleFX.burst(window.innerWidth*0.5, window.innerHeight*0.35, 1.6);
+  toast(nuevos.length + ' PDF agregado' + (nuevos.length>1?'s':'') +
+        (forcedCategory && forcedCategory!=='unclassified' ? ' en ' + forcedCategory : '') + '.', 'ok');
+}
+
+function autoClassifyFiles(soloEstos){
+  const objetivo = soloEstos && soloEstos.length ? soloEstos : filesList;
+  objetivo.forEach(item => {
+    if (item.category !== 'unclassified') return;
+    const n = item.name.toLowerCase();
+    if      (n.includes('escritura') || n.includes('propiedad'))  item.category = 'escritura';
+    else if (n.includes('agua') || n.includes('drenaje'))         item.category = 'agua';
+    else if (n.includes('predio') || n.includes('predial'))       item.category = 'predio';
+    else if (n.includes('alineamiento') || n.includes('oficial')) item.category = 'alineamiento';
+    else if (n.includes('colinda'))                               item.category = 'colindancia';
+    else if (n.includes('plano') || n.includes('croquis') || n.includes('arquitectonico')) item.category = 'plano';
+    else if (n.includes('comprador') || n.includes('solicitud') || n.includes('ine') ||
+             n.includes('curp') || n.includes('nss') || n.includes('precalificacion'))     item.category = 'comprador';
+    else if (n.includes('vendedor'))                              item.category = 'vendedor';
+  });
+}
+
+/* ---------- render ---------- */
+function renderFiles(){
+  const un = $('#unclassified-container');
+  un.innerHTML = '';
+  document.querySelectorAll('.category-dropzone').forEach(z => z.innerHTML = '');
+
+  const counts = {unclassified:0};
+  CATS.forEach(c => counts[c.id] = 0);
+
+  filesList.forEach(item => {
+    if (!(item.category in counts)) item.category = 'unclassified';
+    counts[item.category]++;
+
+    const card = document.createElement('div');
+    card.className = 'file-card';
+    card.innerHTML =
+      '<div class="fc-top">' +
+        '<i class="fa-solid fa-file-pdf fc-icon"></i>' +
+        '<div class="fc-text">' +
+          '<span class="fc-name" title="' + esc(item.name) + '">' + esc(item.name) + '</span>' +
+          '<span class="fc-size">' + esc(item.size) + '</span>' +
+        '</div>' +
+        '<div class="fc-actions">' +
+          '<button class="icon-btn" title="Abrir PDF" data-act="ver"><i class="fa-solid fa-eye"></i></button>' +
+          '<button class="icon-btn danger" title="Quitar" data-act="del"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>' +
+      '</div>' +
+      '<select class="fc-select">' +
+        '<option value="unclassified"' + (item.category==='unclassified'?' selected':'') + '>Sin clasificar</option>' +
+        listaCategoriasParaDropdown.map(c =>
+          '<option value="' + c.id + '"' + (item.category===c.id?' selected':'') + '>' + c.title + '</option>').join('') +
+      '</select>';
+
+    card.querySelector('[data-act="ver"]').onclick = () => window.open(item.fileUrl, '_blank');
+    card.querySelector('[data-act="del"]').onclick = () => quitarArchivo(item.id);
+    card.querySelector('select').onchange = e => moveFile(item.id, e.target.value);
+
+    if (item.category === 'unclassified') un.appendChild(card);
+    else {
+      const zone = document.querySelector('.category-box[data-category="' + item.category + '"] .category-dropzone');
+      (zone || un).appendChild(card);
+    }
+  });
+
+  $('#unclassified-count').textContent = counts.unclassified;
+  CATS.forEach(c => {
+    const b = document.querySelector('.category-box[data-category="' + c.id + '"] .badge');
+    if (b) b.textContent = counts[c.id];
+  });
+  $('#totalFiles').textContent = filesList.length;
+}
+
+function moveFile(id, cat){
+  const f = filesList.find(x => x.id === id);
+  if (f){ f.category = cat; renderFiles(); }
+}
+
+function quitarArchivo(id){
+  const i = filesList.findIndex(x => x.id === id);
+  if (i === -1) return;
+  URL.revokeObjectURL(filesList[i].fileUrl);
+  filesList.splice(i, 1);
+  renderFiles();
+}
+
+/* ---------- drag & drop ---------- */
+let dragDepth = 0;
+function initDnD(){
+  document.querySelectorAll('[data-drop]').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      if (!e.dataTransfer || !e.dataTransfer.types || e.dataTransfer.types.indexOf('Files') === -1) return;
+      e.preventDefault(); e.stopPropagation();
+      zone.classList.add('dz-over');
+    });
+    zone.addEventListener('dragleave', e => {
+      if (!zone.contains(e.relatedTarget)) zone.classList.remove('dz-over');
+    });
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      zone.classList.remove('dz-over');
+      document.body.classList.remove('dragging');
+      dragDepth = 0;
+      handleFiles(e.dataTransfer.files, zone.dataset.drop);
+    });
+  });
+}
+window.addEventListener('dragenter', e => {
+  if (!e.dataTransfer || !e.dataTransfer.types || e.dataTransfer.types.indexOf('Files') === -1) return;
+  dragDepth++;
+  document.body.classList.add('dragging');
+});
+window.addEventListener('dragleave', () => {
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) document.body.classList.remove('dragging');
+});
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dragDepth = 0;
+  document.body.classList.remove('dragging');
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+});
+
+/* ---------- colindancias ---------- */
+async function extraerColindanciasDeEscritura(){
+  if (window.pdfjsLib && !pdfjsLib.GlobalWorkerOptions.workerSrc){
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+  const escrituras = filesList.filter(f => f.category === 'escritura');
+  if (!escrituras.length){ toast('No hay escrituras clasificadas para analizar.', 'warn'); return; }
 
-    let filesList = [];
-    const listaCategoriasParaDropdown = [
-        { id: 'escritura', title: 'Escritura' },
-        { id: 'predio', title: 'Predio' },
-        { id: 'agua', title: 'Agua' },
-        { id: 'alineamiento', title: 'Alineamiento' },
-        { id: 'colindancia', title: 'Colindancia' },
-        { id: 'plano', title: 'Plano' },
-        { id: 'comprador', title: 'Comprador' },
-        { id: 'vendedor', title: 'Vendedor' }
-    ];
+  mostrarStatus('Leyendo escrituras para buscar Medidas y Colindancias…');
+  const { PDFDocument } = PDFLib;
+  let encontradas = 0, sinResultado = 0;
 
-    function handleFiles(files) {
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.type === "application/pdf") {
-                filesList.push({
-                    id: 'file-' + Math.random().toString(36).substr(2, 9),
-                    name: file.name,
-                    size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                    category: 'unclassified',
-                    fileUrl: URL.createObjectURL(file),
-                    file: file
-                });
-            }
+  for (const doc of escrituras){
+    try{
+      const arrayBuffer = await doc.file.arrayBuffer();
+      const pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+
+      let pagina = -1;
+      for (let i = 1; i <= pdfJsDoc.numPages; i++){
+        const page = await pdfJsDoc.getPage(i);
+        const tc = await page.getTextContent();
+        const text = tc.items.map(s => s.str).join(' ').toLowerCase();
+        if (text.includes('medidas y colindancias') || (text.includes('al norte') && text.includes('al sur'))){
+          pagina = i - 1; break;
         }
-        autoClassifyFiles();
+      }
+      if (pagina === -1){ sinResultado++; continue; }
+
+      const originalPdf = await PDFDocument.load(arrayBuffer);
+      const newPdf = await PDFDocument.create();
+      const [copied] = await newPdf.copyPages(originalPdf, [pagina]);
+      newPdf.addPage(copied);
+
+      const bytes = await newPdf.save();
+      const blob = new Blob([bytes], {type:'application/pdf'});
+      const archivo = new File([blob], 'Colindancias_Extraidas_' + doc.name, {type:'application/pdf'});
+
+      filesList.push({
+        id: newId(),
+        name: archivo.name,
+        size: (archivo.size/1024/1024).toFixed(2) + ' MB',
+        category: 'colindancia',
+        fileUrl: URL.createObjectURL(archivo),
+        file: archivo
+      });
+      encontradas++;
+    }catch(err){
+      console.error('Error al procesar escritura:', doc.name, err);
+      sinResultado++;
+    }
+  }
+
+  renderFiles();
+  ocultarStatus();
+  if (encontradas) toast('Se extrajeron ' + encontradas + ' página(s) de colindancias.', 'ok');
+  if (sinResultado) toast(sinResultado + ' escritura(s) sin palabras clave de colindancia.', 'warn');
+}
+
+/* ---------- Gemini Vision ---------- */
+async function clasificarSinClasificarConIA(){
+  const apiKey = $('#geminiApiKey').value.trim();
+  if (!apiKey){ toast('Ingresa tu API Key de Gemini.', 'warn'); return; }
+
+  const pendientes = filesList.filter(f => f.category === 'unclassified');
+  if (!pendientes.length){ toast('No hay archivos sin clasificar.', 'info'); return; }
+
+  const fileToBase64 = file => new Promise((res, rej) => {
+    const r = new FileReader();
+    r.readAsDataURL(file);
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+  });
+
+  const prompt = "Eres un perito valuador experto en México revisando expedientes inmobiliarios. " +
+    "Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: " +
+    "'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'.\n\n" +
+    "REGLAS ESTRICTAS:\n" +
+    "- Si ves un INE, pasaporte, RFC, CURP, NSS o precalificación de Infonavit, clasifícalo SIEMPRE como 'comprador'.\n" +
+    "- Si ves boletas de cobro de agua, recibos de SAPASE, CAEM o comisiones de agua municipales, es 'agua'.\n" +
+    "- Si ves un formato de pago de impuesto predial, tesorería municipal o catastro, es 'predio'.\n" +
+    "- Si ves croquis, planos arquitectónicos, dibujos con cotas o trazos de AutoCAD, es 'plano'.\n" +
+    "- Si ves un documento notarial con sellos, folios del Registro Público de la Propiedad o testimonios, es 'escritura'.\n" +
+    "- Si ves un documento oficial del municipio sobre número oficial, uso de suelo o constancia de alineamiento, es 'alineamiento'.\n\n" +
+    "Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin puntos, sin comillas y sin explicaciones extra.";
+
+  const validas = ['escritura','predio','agua','alineamiento','colindancia','plano','comprador','vendedor'];
+  let clasificados = 0, i = 0;
+
+  for (const doc of pendientes){
+    i++;
+    mostrarStatus('La IA está escaneando ' + i + ' de ' + pendientes.length + ': ' + doc.name);
+    try{
+      const base64Data = await fileToBase64(doc.file);
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey;
+
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          contents:[{ parts:[
+            { text: prompt },
+            { inlineData:{ mimeType:'application/pdf', data: base64Data } }
+          ]}]
+        })
+      });
+
+      const data = await res.json();
+      if (data && data.candidates){
+        let cat = (data.candidates[0].content.parts[0].text || '').trim().toLowerCase().replace(/[^a-z]/g,'');
+        if (validas.indexOf(cat) !== -1){ doc.category = cat; clasificados++; }
+      }
+    }catch(e){
+      console.error('Error con Gemini Vision en:', doc.name, e);
+    }
+  }
+
+  renderFiles();
+  ocultarStatus();
+  toast(clasificados ? ('La IA clasificó ' + clasificados + ' documento(s).')
+                     : 'La IA no pudo clasificar los documentos pendientes.', clasificados ? 'ok' : 'warn');
+}
+
+/* ---------- ZIP final ---------- */
+async function generarArchivosSeparados(){
+  if (!filesList.length){ toast('Primero debes subir archivos PDF.', 'warn'); return; }
+
+  mostrarStatus('Fusionando secciones (aplicando reglas de orden)…');
+  const zip = new JSZip();
+  const { PDFDocument } = PDFLib;
+
+  const jerarquiaDocs = ['solicitud','ine','curp','rfc','precalificacion','nss'];
+  const identificadoresSegundo = ['conyuge','cónyuge','coacreditado','solicitante 2','titular 2','segundo'];
+  let creados = 0;
+
+  for (const cat of listaCategoriasParaDropdown){
+    const archivos = filesList.filter(f => f.category === cat.id);
+    if (!archivos.length) continue;
+
+    if (cat.id === 'comprador' || cat.id === 'vendedor'){
+      archivos.sort((a,b) => {
+        const na = a.name.toLowerCase(), nb = b.name.toLowerCase();
+        const sA = identificadoresSegundo.some(k => na.indexOf(k) !== -1);
+        const sB = identificadoresSegundo.some(k => nb.indexOf(k) !== -1);
+        if (sA && !sB) return 1;
+        if (!sA && sB) return -1;
+        let iA = jerarquiaDocs.findIndex(k => na.indexOf(k) !== -1);
+        let iB = jerarquiaDocs.findIndex(k => nb.indexOf(k) !== -1);
+        if (iA === -1) iA = 99;
+        if (iB === -1) iB = 99;
+        return iA - iB;
+      });
     }
 
-    function autoClassifyFiles() {
-        filesList.forEach(item => {
-            if (item.category !== 'unclassified') return;
-            const name = item.name.toLowerCase();
-            
-            if (name.includes('escritura') || name.includes('propiedad')) item.category = 'escritura';
-            else if (name.includes('agua') || name.includes('drenaje')) item.category = 'agua';
-            else if (name.includes('predio') || name.includes('predial')) item.category = 'predio';
-            else if (name.includes('alineamiento') || name.includes('oficial')) item.category = 'alineamiento';
-            else if (name.includes('colinda')) item.category = 'colindancia';
-            else if (name.includes('plano') || name.includes('croquis') || name.includes('arquitectonico')) item.category = 'plano';
-            else if (name.includes('comprador') || name.includes('solicitud') || name.includes('ine') || name.includes('curp') || name.includes('nss') || name.includes('precalificacion')) item.category = 'comprador';
-            else if (name.includes('vendedor')) item.category = 'vendedor';
-        });
-        renderFiles();
+    const pdfCat = await PDFDocument.create();
+    for (const obj of archivos){
+      try{
+        const buf = await obj.file.arrayBuffer();
+        const pdf = await PDFDocument.load(buf);
+        const pags = await pdfCat.copyPages(pdf, pdf.getPageIndices());
+        pags.forEach(p => pdfCat.addPage(p));
+      }catch(err){
+        console.error('Error procesando ' + obj.name + ':', err);
+      }
     }
 
-    function renderFiles() {
-        const unclassifiedContainer = document.getElementById('unclassified-container');
-        if(unclassifiedContainer) unclassifiedContainer.innerHTML = '';
-        
-        document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
-        
-        let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
+    const bytes = await pdfCat.save();
+    const idx = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
+    zip.file(idx + '_' + cat.title.replace(/ /g,'_') + '.pdf', bytes);
+    creados++;
+  }
 
-        filesList.forEach(item => {
-            counts[item.category]++;
-            const card = document.createElement('div');
-            card.className = "file-card";
-            card.innerHTML = `
-                <div class="flex items-center gap-2.5 overflow-hidden">
-                    <i class="fa-solid fa-file-pdf text-red-500 text-sm shrink-0"></i>
-                    <div class="truncate">
-                        <span class="font-semibold text-slate-200 truncate block text-[11px]" title="${item.name}">${item.name}</span>
-                        <span class="text-[9px] text-slate-500">${item.size}</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-1 shrink-0">
-                    <a href="${item.fileUrl}" target="_blank" title="Ver PDF" class="icon-btn"><i class="fa-solid fa-eye"></i></a>
-                    <select onchange="moveFile('${item.id}', this.value)" class="text-[10px] bg-slate-950 border border-slate-700 rounded-lg px-1.5 py-1 text-slate-300 focus:border-violet-500 outline-none">
-                        <option value="unclassified" ${item.category === 'unclassified' ? 'selected' : ''}>Sin clasificar</option>
-                        ${listaCategoriasParaDropdown.map(c => `<option value="${c.id}" ${item.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
-                    </select>
-                </div>
-            `;
-            
-            if (item.category === 'unclassified') {
-                if(unclassifiedContainer) unclassifiedContainer.appendChild(card);
-            } else {
-                const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
-                if(zone) zone.appendChild(card);
-            }
-        });
+  if (!creados){ ocultarStatus(); toast('No hay archivos clasificados para descargar.', 'warn'); return; }
 
-        const unclassCountEl = document.getElementById('unclassified-count');
-        if(unclassCountEl) unclassCountEl.innerText = counts.unclassified;
-        
-        listaCategoriasParaDropdown.forEach(cat => {
-            const box = document.querySelector(`.category-box[data-category="${cat.id}"]`);
-            if(box) {
-                const badge = box.querySelector('.count-badge');
-                if(badge) badge.innerText = counts[cat.id];
-            }
-        });
-    }
+  const blob = await zip.generateAsync({type:'blob'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'Expediente_' + new Date().toISOString().slice(0,10) + '.zip';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 4000);
 
-    function moveFile(id, newCategory) {
-        const docToMove = filesList.find(f => f.id === id);
-        if(docToMove) {
-            docToMove.category = newCategory;
-            renderFiles();
-        }
-    }
+  ocultarStatus();
+  toast('Expediente generado con ' + creados + ' sección(es).', 'ok');
+}
 
-    function mostrarStatus(texto) {
-        const statusMsg = document.getElementById('status-message');
-        const statusText = document.getElementById('status-text');
-        if(statusMsg && statusText) {
-            statusText.innerText = texto;
-            statusMsg.classList.remove('hidden');
-        }
-    }
+/* ---------- init ---------- */
+function init(){
+  buildCategorias();
+  initDnD();
+  renderFiles();
 
-    async function extraerColindanciasDeEscritura() {
-        if (typeof pdfjsLib !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        }
+  if (window.pdfjsLib && !pdfjsLib.GlobalWorkerOptions.workerSrc){
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
 
-        const escrituras = filesList.filter(f => f.category === 'escritura');
-        if (escrituras.length === 0) return alert("No hay escrituras clasificadas para analizar.");
-        
-        mostrarStatus("Leyendo escritura para buscar Medidas y Colindancias...");
-        const { PDFDocument } = PDFLib;
+  $('#fileInput').addEventListener('change', function(){
+    handleFiles(this.files);
+    this.value = '';
+  });
 
-        for (let doc of escrituras) {
-            try {
-                const arrayBuffer = await doc.file.arrayBuffer();
-                const pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-                
-                let paginaEncontrada = -1;
-                
-                for (let i = 1; i <= pdfJsDoc.numPages; i++) {
-                    const page = await pdfJsDoc.getPage(i);
-                    const textContent = await page.getTextContent();
-                    const text = textContent.items.map(s => s.str).join(' ').toLowerCase();
-                    
-                    if (text.includes('medidas y colindancias') || (text.includes('al norte') && text.includes('al sur'))) {
-                        paginaEncontrada = i - 1;
-                        break; 
-                    }
-                }
+  $('#btnGenerar').addEventListener('click', generarArchivosSeparados);
+  $('#btnIA').addEventListener('click', clasificarSinClasificarConIA);
+  $('#btnColindancia').addEventListener('click', extraerColindanciasDeEscritura);
 
-                if (paginaEncontrada !== -1) {
-                    const originalPdf = await PDFDocument.load(arrayBuffer);
-                    const newPdf = await PDFDocument.create();
-                    const [copiedPage] = await newPdf.copyPages(originalPdf, [paginaEncontrada]);
-                    newPdf.addPage(copiedPage);
-                    
-                    const pdfBytes = await newPdf.save();
-                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                    const fileExtracted = new File([blob], `Colindancias_Extraidas_${doc.name}`, {type: 'application/pdf'});
-                    
-                    filesList.push({
-                        id: 'file-' + Math.random().toString(36).substr(2, 9),
-                        name: fileExtracted.name,
-                        size: (fileExtracted.size / 1024 / 1024).toFixed(2) + ' MB',
-                        category: 'colindancia',
-                        fileUrl: URL.createObjectURL(fileExtracted),
-                        file: fileExtracted
-                    });
-                    alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} de ${doc.name}!`);
-                } else {
-                    alert(`No se detectaron palabras clave de colindancias en ${doc.name}.`);
-                }
-            } catch (e) {
-                console.error("Error al procesar escritura:", e);
-            }
-        }
-        renderFiles();
-        const statusMsg = document.getElementById('status-message');
-        if(statusMsg) statusMsg.classList.add('hidden');
-    }
+  $('#btnLimpiar').addEventListener('click', () => {
+    if (!filesList.length) return;
+    filesList.forEach(f => URL.revokeObjectURL(f.fileUrl));
+    filesList = [];
+    renderFiles();
+    ParticleFX.burst(window.innerWidth*0.5, window.innerHeight*0.5, 3);
+    toast('Lista vaciada.', 'info');
+  });
 
-    async function clasificarSinClasificarConIA() {
-        const apiKey = document.getElementById('geminiApiKey').value.trim();
-        if (!apiKey) return alert("Ingresa tu API Key de Gemini.");
-        
-        const noClasificados = filesList.filter(f => f.category === 'unclassified');
-        if(noClasificados.length === 0) return alert("No hay archivos sin clasificar.");
+  // Toggle de partículas
+  const btnFX = $('#btnFX');
+  btnFX.addEventListener('click', () => {
+    const on = ParticleFX.toggle();
+    btnFX.classList.toggle('is-off', !on);
+    toast(on ? 'Partículas activadas.' : 'Partículas desactivadas.', 'info');
+  });
 
-        mostrarStatus("La IA está escaneando visualmente los documentos...");
+  // Modo rendimiento: congela fondo + partículas
+  const btnFondo = $('#btnFondo');
+  btnFondo.addEventListener('click', () => {
+    const pausado = !document.body.classList.contains('bg-paused');
+    document.body.classList.toggle('bg-paused', pausado);
+    btnFondo.classList.toggle('is-off', pausado);
+    ParticleFX.setLowPower(pausado);
+    toast(pausado ? 'Modo rendimiento: efectos congelados.' : 'Efectos reactivados.', 'info');
+  });
+}
 
-        const fileToBase64 = (file) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-        });
-
-        for (let doc of noClasificados) {
-            try {
-                const base64Data = await fileToBase64(doc.file);
-                
-                const prompt = `Eres un perito valuador experto en México revisando expedientes inmobiliarios. Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: 'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'. 
-
-REGLAS ESTRICTAS:
-- Si ves un INE, pasaporte, RFC, CURP, NSS (Número de Seguridad Social) o precalificación de Infonavit, clasifícalo SIEMPRE como 'comprador'.
-- Si ves boletas de cobro de agua, recibos de SAPASE, CAEM o comisiones de agua municipales, es 'agua'.
-- Si ves un formato de pago de impuesto predial, tesorería municipal o catastro, es 'predio'.
-- Si ves croquis, planos arquitectónicos, dibujos con cotas o trazos de AutoCAD, es 'plano'.
-- Si ves un documento notarial con sellos, folios del Registro Público de la Propiedad o testimonios, es 'escritura'.
-- Si ves un documento oficial del municipio sobre número oficial, uso de suelo o constancia de alineamiento, es 'alineamiento'.
-
-Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin puntos, sin comillas y sin explicaciones extra.`;
-
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: prompt },
-                                { inlineData: { mimeType: "application/pdf", data: base64Data } }
-                            ]
-                        }]
-                    })
-                });
-                
-                const data = await response.json();
-                if(data.candidates) {
-                    let categoriaDetectada = data.candidates[0].content.parts[0].text.trim().toLowerCase();
-                    categoriaDetectada = categoriaDetectada.replace(/[^a-z]/g, ''); 
-                    
-                    const categoriasValidas = ['escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'];
-                    if (categoriasValidas.includes(categoriaDetectada)) {
-                        doc.category = categoriaDetectada;
-                    }
-                }
-            } catch(e) {
-                console.error("Error con Gemini Vision en archivo:", doc.name, e);
-            }
-        }
-        renderFiles();
-        const statusMsg = document.getElementById('status-message');
-        if(statusMsg) statusMsg.classList.add('hidden');
-    }
-
-    async function generarArchivosSeparados() {
-        if (filesList.length === 0) return alert("Primero debes subir archivos PDF.");
-        
-        mostrarStatus("Fusionando secciones (Aplicando Reglas de Orden)...");
-        const zip = new JSZip();
-        const { PDFDocument } = PDFLib;
-
-        const jerarquiaDocs = ['solicitud', 'ine', 'curp', 'rfc', 'precalificacion', 'nss'];
-        const identificadoresSegundo = ['conyuge', 'cónyuge', 'coacreditado', 'solicitante 2', 'titular 2', 'segundo'];
-
-        let archivosCreados = 0;
-
-        for (const cat of listaCategoriasParaDropdown) {
-            let archivos = filesList.filter(f => f.category === cat.id);
-            
-            if (archivos.length > 0) {
-                if (cat.id === 'comprador' || cat.id === 'vendedor') {
-                    archivos.sort((a, b) => {
-                        const nameA = a.name.toLowerCase();
-                        const nameB = b.name.toLowerCase();
-
-                        const esSegundoA = identificadoresSegundo.some(kw => nameA.includes(kw));
-                        const esSegundoB = identificadoresSegundo.some(kw => nameB.includes(kw));
-                        
-                        if (esSegundoA && !esSegundoB) return 1;
-                        if (!esSegundoA && esSegundoB) return -1;
-
-                        let indexA = jerarquiaDocs.findIndex(kw => nameA.includes(kw));
-                        let indexB = jerarquiaDocs.findIndex(kw => nameB.includes(kw));
-                        
-                        if (indexA === -1) indexA = 99;
-                        if (indexB === -1) indexB = 99;
-
-                        return indexA - indexB;
-                    });
-                }
-
-                const categoryPdf = await PDFDocument.create();
-                for (const archivoObj of archivos) {
-                    try {
-                        const arrayBuffer = await archivoObj.file.arrayBuffer();
-                        const pdf = await PDFDocument.load(arrayBuffer);
-                        const paginas = await categoryPdf.copyPages(pdf, pdf.getPageIndices());
-                        paginas.forEach(p => categoryPdf.addPage(p));
-                    } catch (err) {
-                        console.error(`Error procesando ${archivoObj.name}:`, err);
-                    }
-                }
-
-                const pdfBytes = await categoryPdf.save();
-                const index = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
-                zip.file(`${index}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
-                archivosCreados++;
-            }
-        }
-
-        const statusMsg = document.getElementById('status-message');
-        if (archivosCreados === 0) {
-            if(statusMsg) statusMsg.classList.add('hidden');
-            return alert("No hay archivos clasificados para descargar.");
-        }
-
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(zipBlob);
-        link.download = `Expediente_${new Date().toISOString().slice(0,10)}.zip`;
-        link.click();
-        if(statusMsg) statusMsg.classList.add('hidden');
-    }
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>

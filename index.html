@@ -1,382 +1,697 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizador de Expedientes AI (Dark Mode)</title>
-    <!-- Tailwind para el diseño -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PDF-lib para fusionar y dividir PDFs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-    <!-- JSZip para empaquetar -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <!-- PDF.js para leer texto de los PDFs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <style>
-        /* FONDO ANIMADO FLUIDO (Estilo Argon / High-Tech) */
-        body {
-            background: linear-gradient(135deg, #020617, #090d16, #0f172a, #1e1b4b, #020617);
-            background-size: 400% 400%;
-            animation: gradientFlow 12s ease infinite;
-            color: #d1d5db;
-            min-height: 100vh;
-            margin: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Generador de Expediente AI · High-Tech</title>
 
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
-        /* Efecto de brillo sutil en tarjetas al pasar el mouse */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
-        }
+<style>
+/* ============================================================
+   0. BASE
+   ============================================================ */
+:root{
+  --bg:#04060d;
+  --ink:#cbd5e1;
+  --muted:#94a3b8;
+  --violet:#a78bfa;
+  --blue:#60a5fa;
+  --cyan:#22d3ee;
+  --pink:#f472b6;
+  --line:rgba(148,163,255,.14);
+}
+html{background:var(--bg)}
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(139,92,246,.35);color:#fff}
 
-        /* Scrollbar elegante */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.8); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 1); }
-    </style>
+:focus-visible{
+  outline:2px solid rgba(167,139,250,.75);
+  outline-offset:2px;
+  border-radius:10px;
+}
+
+/* ============================================================
+   1. FONDO ANIMADO FLUIDO (GPU)
+   ============================================================ */
+#bg-layer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+  contain:layout paint style;
+  background:#04060d;
+  transform:translateZ(0);
+}
+.bg-base{
+  position:absolute; inset:-25%;
+  background:
+    radial-gradient(58% 52% at 12% 18%, rgba(59,130,246,.20), transparent 62%),
+    radial-gradient(55% 48% at 88% 12%, rgba(139,92,246,.22), transparent 64%),
+    radial-gradient(70% 60% at 50% 105%, rgba(14,116,144,.20), transparent 66%),
+    linear-gradient(160deg,#04060d 0%,#070b16 45%,#0b0a1e 72%,#04060d 100%);
+  background-size:180% 180%;
+  animation:baseFlow 30s ease-in-out infinite;
+  will-change:background-position;
+}
+@keyframes baseFlow{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(72px);
+  opacity:.5;
+  will-change:transform;
+  transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+}
+.orb-1{
+  width:48vw;height:48vw;min-width:340px;min-height:340px;
+  left:-12vw;top:-16vh;
+  background:radial-gradient(circle at 35% 35%,rgba(99,102,241,.9),rgba(37,99,235,.12) 62%,transparent 74%);
+  animation:drift1 26s ease-in-out infinite;
+}
+.orb-2{
+  width:42vw;height:42vw;min-width:300px;min-height:300px;
+  right:-10vw;top:-10vh;
+  background:radial-gradient(circle at 60% 40%,rgba(168,85,247,.85),rgba(139,92,246,.1) 60%,transparent 72%);
+  animation:drift2 34s ease-in-out infinite;
+}
+.orb-3{
+  width:52vw;height:52vw;min-width:360px;min-height:360px;
+  left:22vw;bottom:-26vh;
+  background:radial-gradient(circle at 50% 50%,rgba(34,211,238,.6),rgba(14,116,144,.1) 58%,transparent 72%);
+  animation:drift3 30s ease-in-out infinite;
+}
+@keyframes drift1{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  33%{transform:translate3d(7vw,-5vh,0) scale(1.14)}
+  66%{transform:translate3d(-5vw,6vh,0) scale(.92)}
+}
+@keyframes drift2{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  40%{transform:translate3d(-8vw,7vh,0) scale(1.18)}
+  75%{transform:translate3d(4vw,-4vh,0) scale(.95)}
+}
+@keyframes drift3{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-9vw,-8vh,0) scale(1.2)}
+}
+
+.bg-aurora{
+  position:absolute; left:50%; top:50%;
+  width:130vmax;height:130vmax;
+  margin:-65vmax 0 0 -65vmax;
+  background:conic-gradient(from 0deg,
+    rgba(139,92,246,.11), rgba(34,211,238,.08),
+    rgba(236,72,153,.09), rgba(59,130,246,.09), rgba(139,92,246,.11));
+  filter:blur(38px);
+  opacity:.6;
+  will-change:transform;
+  animation:spin 70s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.bg-grid{
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(148,163,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,255,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(circle at 50% 25%,#000 25%,transparent 80%);
+  mask-image:radial-gradient(circle at 50% 25%,#000 25%,transparent 80%);
+}
+.bg-vignette{
+  position:absolute; inset:0;
+  background:radial-gradient(120% 85% at 50% 0%,transparent 38%,rgba(0,0,0,.62) 100%);
+}
+
+/* ============================================================
+   2. GLASSMORPHISM
+   ============================================================ */
+.glass{
+  position:relative;
+  border-radius:18px;
+  background:linear-gradient(158deg,rgba(32,40,68,.55),rgba(9,13,24,.74));
+  border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  backdrop-filter:blur(14px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 20px 48px -22px rgba(0,0,0,.9);
+  transition:border-color .35s ease, box-shadow .35s ease, transform .35s ease;
+}
+.glass::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg,
+    rgba(167,139,250,.55), rgba(96,165,250,.12) 34%,
+    rgba(34,211,238,.12) 66%, rgba(244,114,182,.42));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  opacity:.7;
+  pointer-events:none;
+}
+.glass-hover:hover{
+  border-color:rgba(167,139,250,.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.09),
+    0 0 0 1px rgba(167,139,250,.16),
+    0 26px 56px -24px rgba(139,92,246,.55);
+}
+
+/* ============================================================
+   3. BOTONES
+   ============================================================ */
+.btn{
+  position:relative;
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  font-weight:700; font-size:.8rem; line-height:1;
+  padding:.62rem 1rem;
+  border-radius:12px;
+  border:1px solid transparent;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:transform .16s ease, box-shadow .25s ease, filter .25s ease, background .25s ease;
+  will-change:transform;
+}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.btn-blue{
+  background:linear-gradient(135deg,#3b82f6,#6366f1); color:#fff;
+  box-shadow:0 0 0 1px rgba(99,102,241,.5),0 10px 28px -10px rgba(59,130,246,.95);
+}
+.btn-blue:hover{filter:brightness(1.13);box-shadow:0 0 0 1px rgba(129,140,248,.75),0 14px 34px -10px rgba(99,102,241,1)}
+
+.btn-emerald{
+  background:linear-gradient(135deg,#059669,#10b981); color:#fff;
+  box-shadow:0 0 0 1px rgba(16,185,129,.5),0 10px 28px -10px rgba(5,150,105,.95);
+}
+.btn-emerald:hover{filter:brightness(1.13);box-shadow:0 0 0 1px rgba(52,211,153,.75),0 14px 34px -10px rgba(16,185,129,1)}
+
+.btn-violet{
+  background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff;
+  box-shadow:0 0 0 1px rgba(168,85,247,.5),0 10px 26px -10px rgba(124,58,237,.95);
+}
+.btn-violet:hover{filter:brightness(1.13)}
+
+.btn-pink{
+  background:linear-gradient(135deg,#db2777,#ec4899); color:#fff;
+  box-shadow:0 0 0 1px rgba(236,72,153,.5),0 10px 26px -10px rgba(219,39,119,.95);
+}
+.btn-pink:hover{filter:brightness(1.13)}
+
+.icon-btn{
+  display:inline-grid; place-items:center;
+  width:26px;height:26px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.04);
+  color:#a5b4fc;
+  cursor:pointer;
+  font-size:11px;
+  transition:background .2s, color .2s, border-color .2s, transform .15s;
+}
+.icon-btn:hover{background:rgba(139,92,246,.18);color:#e9d5ff;border-color:rgba(167,139,250,.5)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn.danger:hover{background:rgba(244,63,94,.18);color:#fda4af;border-color:rgba(244,63,94,.5)}
+
+/* ============================================================
+   4. TARJETAS DE CATEGORÍA / ZONAS DE SOLTADO
+   ============================================================ */
+.category-box{
+  --accent:#8b5cf6;
+  display:flex; flex-direction:column;
+  height:272px;
+  padding:1rem;
+  overflow:hidden;
+}
+.category-box::after{
+  content:"";
+  position:absolute; top:0; left:14%; right:14%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.65;
+  pointer-events:none;
+}
+.category-box:hover{
+  border-color:color-mix(in srgb,var(--accent) 42%,transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.09),
+    0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent),
+    0 26px 56px -26px var(--accent);
+}
+.cat-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.5rem; margin-bottom:.6rem;
+}
+.cat-title{
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.78rem; font-weight:800; letter-spacing:.02em;
+  color:#e2e8f0; text-transform:uppercase;
+}
+.cat-title i{filter:drop-shadow(0 0 6px currentColor)}
+
+.badge{
+  min-width:24px; text-align:center;
+  font-size:.65rem; font-weight:800;
+  padding:.15rem .45rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);
+  font-variant-numeric:tabular-nums;
+}
+
+.dropzone{
+  flex:1;
+  overflow-y:auto;
+  border:2px dashed rgba(148,163,255,.2);
+  border-radius:14px;
+  padding:.5rem;
+  background:linear-gradient(180deg,rgba(2,6,18,.5),rgba(2,6,18,.28));
+  transition:border-color .3s ease, background .3s ease, box-shadow .3s ease;
+}
+.dropzone:empty::after{
+  content:attr(data-empty);
+  display:block;
+  text-align:center;
+  font-size:.68rem;
+  line-height:1.5;
+  color:rgba(148,163,255,.42);
+  padding:1.3rem .6rem;
+}
+.dropzone.dz-over{
+  border-color:var(--accent,rgba(167,139,250,.9));
+  background:rgba(139,92,246,.12);
+  box-shadow:inset 0 0 26px rgba(139,92,246,.22);
+}
+
+/* ============================================================
+   5. TARJETA DE ARCHIVO
+   ============================================================ */
+.file-card{
+  display:flex; align-items:center; justify-content:between; gap:.5rem;
+  background:rgba(15,23,42,.75);
+  border:1px solid rgba(148,163,255,.12);
+  padding:.5rem .65rem;
+  border-radius:10px;
+  margin-bottom:.45rem;
+  transition:border-color .2s, background .2s, transform .15s;
+}
+.file-card:hover{
+  border-color:rgba(167,139,250,.45);
+  background:rgba(30,41,59,.85);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(148,163,255,.18);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(167,139,250,.4)}
+</style>
 </head>
-<body class="font-sans min-h-screen p-6 relative">
+
+<body class="relative min-h-screen p-4 md:p-6">
+
+    <!-- FONDO ANIMADO HIGH-TECH -->
+    <div id="bg-layer" aria-hidden="true">
+        <div class="bg-base"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="bg-aurora"></div>
+        <div class="bg-grid"></div>
+        <div class="bg-vignette"></div>
+    </div>
 
     <div class="max-w-[1400px] mx-auto relative z-10">
         
-        <!-- Encabezado -->
-        <header class="glass-card rounded-2xl p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <!-- ENCABEZADO -->
+        <header class="glass glass-hover p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-blue-500"></i> Generador de Expediente AI
+                <h1 class="text-2xl font-extrabold text-white flex items-center gap-2.5">
+                    <i class="fa-solid fa-layer-group text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,.8)]"></i> 
+                    Generador de Expediente AI
                 </h1>
-                <p class="text-gray-400 text-sm mt-1">Organiza, extrae medidas y utiliza Gemini AI para clasificar documentos escaneados.</p>
+                <p class="text-slate-400 text-xs mt-1">Organización inteligente, extracción de medidas y clasificación automatizada con Gemini Vision.</p>
             </div>
-            <div class="flex flex-wrap gap-3">
-                <label class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl cursor-pointer font-bold text-sm transition shadow-[0_0_15px_rgba(37,99,235,0.4)] flex items-center gap-2">
+            <div class="flex flex-wrap gap-3 items-center">
+                <label class="btn btn-blue cursor-pointer">
                     <i class="fa-solid fa-upload"></i> 1. Subir PDFs
                     <input type="file" id="fileInput" multiple accept=".pdf" class="hidden" onchange="handleFiles(this.files)">
                 </label>
-                <button onclick="generarArchivosSeparados()" id="btnGenerar" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition shadow-[0_0_15px_rgba(5,150,105,0.4)] flex items-center gap-2">
-                    <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente
+                <button onclick="generarArchivosSeparados()" id="btnGenerar" class="btn btn-emerald">
+                    <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente (ZIP)
                 </button>
             </div>
         </header>
 
-        <!-- Módulo IA y Herramientas Especiales -->
-        <div class="glass-card p-5 rounded-2xl mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- PANEL DE HERRAMIENTAS IA & EXTRACCIÓN -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
             <!-- Inteligencia Artificial -->
-            <div class="border border-purple-500/30 p-4 rounded-xl bg-black/40">
-                <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]"></i> Clasificación Inteligente (Gemini Vision)</h3>
-                <p class="text-xs text-gray-400 mb-3">La IA leerá visualmente los documentos escaneados que no se acomoden por nombre.</p>
+            <div class="glass glass-hover p-5">
+                <h3 class="text-white font-bold text-xs uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                    <i class="fa-solid fa-robot text-violet-400"></i> Clasificación Inteligente (Gemini Vision)
+                </h3>
+                <p class="text-[11px] text-slate-400 mb-3">La IA analiza visualmente los documentos escaneados o sin nombre claro.</p>
                 <div class="flex gap-2">
-                    <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini aquí..." class="w-full text-xs p-2 border border-gray-600/50 rounded-lg bg-gray-900/80 text-white focus:border-purple-500 outline-none transition">
-                    <button onclick="clasificarSinClasificarConIA()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-[0_0_10px_rgba(147,51,234,0.4)] shrink-0">
+                    <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini aquí..." 
+                        class="w-full text-xs px-3 py-2 rounded-xl bg-slate-950/70 border border-slate-700/60 text-white focus:border-violet-500 outline-none">
+                    <button onclick="clasificarSinClasificarConIA()" class="btn btn-violet shrink-0 text-xs">
                         <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Clasificar IA
                     </button>
                 </div>
             </div>
 
             <!-- Extracción de Escrituras -->
-            <div class="border border-pink-500/30 p-4 rounded-xl bg-black/40 flex flex-col justify-between">
+            <div class="glass glass-hover p-5 flex flex-col justify-between">
                 <div>
-                    <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-scissors text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]"></i> Extraer Medidas y Colindancias</h3>
-                    <p class="text-xs text-gray-400 mb-3">Busca dentro del texto de la Escritura la página de medidas y la mueve a Colindancia automáticamente.</p>
+                    <h3 class="text-white font-bold text-xs uppercase tracking-wider mb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-scissors text-pink-400"></i> Extraer Medidas y Colindancias
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mb-3">Busca dentro del texto de la Escritura la página de medidas y colindancias para moverla de inmediato.</p>
                 </div>
-                <button onclick="extraerColindanciasDeEscritura()" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-[0_0_10px_rgba(219,39,119,0.4)] self-start w-full">
+                <button onclick="extraerColindanciasDeEscritura()" class="btn btn-pink w-full text-xs">
                     <i class="fa-solid fa-magnifying-glass-location"></i> Procesar Escrituras
                 </button>
             </div>
         </div>
 
-        <!-- Mensaje de Estado -->
-        <div id="status-message" class="hidden bg-gray-800/90 backdrop-blur-md border border-blue-500/50 text-blue-400 px-4 py-3 rounded-xl mb-6 font-medium text-sm flex items-center gap-3 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-            <i class="fa-solid fa-circle-notch fa-spin text-lg"></i>
+        <!-- MENSAJE DE ESTADO -->
+        <div id="status-message" class="hidden glass px-4 py-3 rounded-xl mb-6 font-medium text-xs flex items-center gap-3 border-blue-500/40 text-blue-300">
+            <i class="fa-solid fa-circle-notch fa-spin text-base"></i>
             <span id="status-text">Procesando...</span>
         </div>
 
-        <!-- Contenedor Principal -->
+        <!-- CONTENEDOR PRINCIPAL -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
-            <!-- Zona sin clasificar -->
-            <div class="glass-card p-4 rounded-2xl flex flex-col h-[650px]">
-                <h2 class="font-semibold text-white mb-3 flex items-center justify-between">
-                    <span><i class="fa-solid fa-inbox text-amber-500 mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.5)]"></i> Sin Clasificar</span>
-                    <span id="unclassified-count" class="bg-gray-800 text-amber-400 border border-amber-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                </h2>
-                <div id="unclassified-container" class="flex-1 overflow-y-auto space-y-3 pr-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+            <!-- ZONA SIN CLASIFICAR -->
+            <div class="glass category-box lg:col-span-1" style="--accent:#f59e0b">
+                <div class="cat-head">
+                    <span class="cat-title">
+                        <i class="fa-solid fa-inbox text-amber-400"></i> Sin Clasificar
+                    </span>
+                    <span id="unclassified-count" class="badge text-amber-300 border-amber-500/30">0</span>
+                </div>
+                <div id="unclassified-container" class="dropzone" data-empty="Arrastra PDFs aquí o súbelos arriba. Se auto-clasificarán por su nombre."></div>
             </div>
 
-            <!-- Categorías Estáticas -->
-            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-[650px] overflow-y-auto pr-2">
+            <!-- CATEGORÍAS (CARPETAS DEL EXPEDIENTE) -->
+            <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="escritura">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-file-contract text-blue-400"></i> Escritura</h3>
-                        <span class="count-badge bg-gray-800 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 1. Escritura -->
+                <div class="glass category-box" style="--accent:#3b82f6" data-category="escritura">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-file-contract text-blue-400"></i> 1. Escritura</span>
+                        <span class="count-badge badge text-blue-400 border-blue-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Escritura"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="predio">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-house-flag text-orange-400"></i> Predio</h3>
-                        <span class="count-badge bg-gray-800 text-orange-400 border border-orange-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 2. Predio -->
+                <div class="glass category-box" style="--accent:#f97316" data-category="predio">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-house-flag text-orange-400"></i> 2. Predio</span>
+                        <span class="count-badge badge text-orange-400 border-orange-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin boletas de Predio"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="agua">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-faucet-drip text-cyan-400"></i> Agua</h3>
-                        <span class="count-badge bg-gray-800 text-cyan-400 border border-cyan-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 3. Agua -->
+                <div class="glass category-box" style="--accent:#06b6d4" data-category="agua">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-faucet-drip text-cyan-400"></i> 3. Agua</span>
+                        <span class="count-badge badge text-cyan-400 border-cyan-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin recibos de Agua"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="alineamiento">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> Alineamiento</h3>
-                        <span class="count-badge bg-gray-800 text-indigo-400 border border-indigo-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 4. Alineamiento -->
+                <div class="glass category-box" style="--accent:#6366f1" data-category="alineamiento">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> 4. Alineamiento</span>
+                        <span class="count-badge badge text-indigo-400 border-indigo-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin constancias de Alineamiento"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="colindancia">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-border-all text-pink-400"></i> Colindancia</h3>
-                        <span class="count-badge bg-gray-800 text-pink-400 border border-pink-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 5. Colindancia -->
+                <div class="glass category-box" style="--accent:#ec4899" data-category="colindancia">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-border-all text-pink-400"></i> 5. Colindancia</span>
+                        <span class="count-badge badge text-pink-400 border-pink-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin páginas de Colindancias"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="plano">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-pen-ruler text-yellow-400"></i> Plano</h3>
-                        <span class="count-badge bg-gray-800 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 6. Plano -->
+                <div class="glass category-box" style="--accent:#eab308" data-category="plano">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-pen-ruler text-yellow-400"></i> 6. Plano</span>
+                        <span class="count-badge badge text-yellow-400 border-yellow-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin Planos o Croquis"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="comprador">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-check text-emerald-400"></i> Comprador</h3>
-                        <span class="count-badge bg-gray-800 text-emerald-400 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 7. Datos Comprador -->
+                <div class="glass category-box" style="--accent:#10b981" data-category="comprador">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-user-check text-emerald-400"></i> 7. Datos Comprador</span>
+                        <span class="count-badge badge text-emerald-400 border-emerald-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Comprador"></div>
                 </div>
 
-                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="vendedor">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-tag text-purple-400"></i> Vendedor</h3>
-                        <span class="count-badge bg-gray-800 text-purple-400 border border-purple-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                <!-- 8. Datos Vendedor -->
+                <div class="glass category-box" style="--accent:#a855f7" data-category="vendedor">
+                    <div class="cat-head">
+                        <span class="cat-title"><i class="fa-solid fa-user-tag text-purple-400"></i> 8. Datos Vendedor</span>
+                        <span class="count-badge badge text-purple-400 border-purple-500/30">0</span>
                     </div>
-                    <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
+                    <div class="category-dropzone dropzone" data-empty="Sin documentos de Vendedor"></div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS LÓGICA DE PDF Y UI -->
-    <script>
-        let filesList = [];
-        const listaCategoriasParaDropdown = [
-            { id: 'escritura', title: 'Escritura' },
-            { id: 'predio', title: 'Predio' },
-            { id: 'agua', title: 'Agua' },
-            { id: 'alineamiento', title: 'Alineamiento' },
-            { id: 'colindancia', title: 'Colindancia' },
-            { id: 'plano', title: 'Plano' },
-            { id: 'comprador', title: 'Comprador' },
-            { id: 'vendedor', title: 'Vendedor' }
-        ];
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        function handleFiles(files) {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type === "application/pdf") {
-                    filesList.push({
-                        id: 'file-' + Math.random().toString(36).substr(2, 9),
-                        name: file.name,
-                        size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                        category: 'unclassified',
-                        fileUrl: URL.createObjectURL(file),
-                        file: file
-                    });
-                }
+    let filesList = [];
+    const listaCategoriasParaDropdown = [
+        { id: 'escritura', title: 'Escritura' },
+        { id: 'predio', title: 'Predio' },
+        { id: 'agua', title: 'Agua' },
+        { id: 'alineamiento', title: 'Alineamiento' },
+        { id: 'colindancia', title: 'Colindancia' },
+        { id: 'plano', title: 'Plano' },
+        { id: 'comprador', title: 'Comprador' },
+        { id: 'vendedor', title: 'Vendedor' }
+    ];
+
+    function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type === "application/pdf") {
+                filesList.push({
+                    id: 'file-' + Math.random().toString(36).substr(2, 9),
+                    name: file.name,
+                    size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                    category: 'unclassified',
+                    fileUrl: URL.createObjectURL(file),
+                    file: file
+                });
             }
-            autoClassifyFiles();
         }
+        autoClassifyFiles();
+    }
 
-        function autoClassifyFiles() {
-            filesList.forEach(item => {
-                if (item.category !== 'unclassified') return;
-                const name = item.name.toLowerCase();
-                
-                if (name.includes('escritura') || name.includes('propiedad')) item.category = 'escritura';
-                else if (name.includes('agua') || name.includes('drenaje')) item.category = 'agua';
-                else if (name.includes('predio') || name.includes('predial')) item.category = 'predio';
-                else if (name.includes('alineamiento') || name.includes('oficial')) item.category = 'alineamiento';
-                else if (name.includes('colinda')) item.category = 'colindancia';
-                else if (name.includes('plano') || name.includes('croquis') || name.includes('arquitectonico')) item.category = 'plano';
-                else if (name.includes('comprador') || name.includes('solicitud') || name.includes('ine') || name.includes('curp') || name.includes('nss') || name.includes('precalificacion')) item.category = 'comprador';
-                else if (name.includes('vendedor')) item.category = 'vendedor';
-            });
-            renderFiles();
-        }
-
-        function renderFiles() {
-            const unclassifiedContainer = document.getElementById('unclassified-container');
-            if(unclassifiedContainer) unclassifiedContainer.innerHTML = '';
+    function autoClassifyFiles() {
+        filesList.forEach(item => {
+            if (item.category !== 'unclassified') return;
+            const name = item.name.toLowerCase();
             
-            document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
-            
-            let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
+            if (name.includes('escritura') || name.includes('propiedad')) item.category = 'escritura';
+            else if (name.includes('agua') || name.includes('drenaje')) item.category = 'agua';
+            else if (name.includes('predio') || name.includes('predial')) item.category = 'predio';
+            else if (name.includes('alineamiento') || name.includes('oficial')) item.category = 'alineamiento';
+            else if (name.includes('colinda')) item.category = 'colindancia';
+            else if (name.includes('plano') || name.includes('croquis') || name.includes('arquitectonico')) item.category = 'plano';
+            else if (name.includes('comprador') || name.includes('solicitud') || name.includes('ine') || name.includes('curp') || name.includes('nss') || name.includes('precalificacion')) item.category = 'comprador';
+            else if (name.includes('vendedor')) item.category = 'vendedor';
+        });
+        renderFiles();
+    }
 
-            filesList.forEach(item => {
-                counts[item.category]++;
-                const card = document.createElement('div');
-                card.className = "bg-gray-900/90 p-3 rounded-xl border border-gray-700 shadow flex items-center justify-between gap-3 text-xs mb-2 hover:border-purple-500 transition-colors";
-                card.innerHTML = `
-                    <div class="flex items-center gap-3 overflow-hidden">
-                        <i class="fa-solid fa-file-pdf text-red-500 text-lg shrink-0 drop-shadow-md"></i>
-                        <div class="truncate">
-                            <span class="font-semibold text-gray-200 truncate block" title="${item.name}">${item.name}</span>
-                        </div>
+    function renderFiles() {
+        const unclassifiedContainer = document.getElementById('unclassified-container');
+        if(unclassifiedContainer) unclassifiedContainer.innerHTML = '';
+        
+        document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
+        
+        let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
+
+        filesList.forEach(item => {
+            counts[item.category]++;
+            const card = document.createElement('div');
+            card.className = "file-card";
+            card.innerHTML = `
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                    <i class="fa-solid fa-file-pdf text-red-500 text-sm shrink-0"></i>
+                    <div class="truncate">
+                        <span class="font-semibold text-slate-200 truncate block text-[11px]" title="${item.name}">${item.name}</span>
+                        <span class="text-[9px] text-slate-500">${item.size}</span>
                     </div>
-                    <select onchange="moveFile('${item.id}', this.value)" class="text-[11px] bg-gray-900 border border-gray-600 rounded-lg px-1 py-1 text-gray-300 focus:border-purple-500 outline-none">
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                    <a href="${item.fileUrl}" target="_blank" title="Ver PDF" class="icon-btn"><i class="fa-solid fa-eye"></i></a>
+                    <select onchange="moveFile('${item.id}', this.value)" class="text-[10px] bg-slate-950 border border-slate-700 rounded-lg px-1.5 py-1 text-slate-300 focus:border-violet-500 outline-none">
                         <option value="unclassified" ${item.category === 'unclassified' ? 'selected' : ''}>Sin clasificar</option>
                         ${listaCategoriasParaDropdown.map(c => `<option value="${c.id}" ${item.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
                     </select>
-                `;
-                
-                if (item.category === 'unclassified') {
-                    if(unclassifiedContainer) unclassifiedContainer.appendChild(card);
-                } else {
-                    const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
-                    if(zone) zone.appendChild(card);
-                }
-            });
-
-            const unclassCountEl = document.getElementById('unclassified-count');
-            if(unclassCountEl) unclassCountEl.innerText = counts.unclassified;
+                </div>
+            `;
             
-            listaCategoriasParaDropdown.forEach(cat => {
-                const badge = document.querySelector(`.category-box[data-category="${cat.id}"] .count-badge`);
+            if (item.category === 'unclassified') {
+                if(unclassifiedContainer) unclassifiedContainer.appendChild(card);
+            } else {
+                const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
+                if(zone) zone.appendChild(card);
+            }
+        });
+
+        const unclassCountEl = document.getElementById('unclassified-count');
+        if(unclassCountEl) unclassCountEl.innerText = counts.unclassified;
+        
+        listaCategoriasParaDropdown.forEach(cat => {
+            const box = document.querySelector(`.category-box[data-category="${cat.id}"]`);
+            if(box) {
+                const badge = box.querySelector('.count-badge');
                 if(badge) badge.innerText = counts[cat.id];
-            });
-        }
-
-        function moveFile(id, newCategory) {
-            const docToMove = filesList.find(f => f.id === id);
-            if(docToMove) {
-                docToMove.category = newCategory;
-                renderFiles();
             }
-        }
+        });
+    }
 
-        function mostrarStatus(texto) {
-            const statusMsg = document.getElementById('status-message');
-            const statusText = document.getElementById('status-text');
-            if(statusMsg && statusText) {
-                statusText.innerText = texto;
-                statusMsg.classList.remove('hidden');
-            }
-        }
-
-        async function extraerColindanciasDeEscritura() {
-            if (typeof pdfjsLib !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-            }
-
-            const escrituras = filesList.filter(f => f.category === 'escritura');
-            if (escrituras.length === 0) return alert("No hay escrituras clasificadas para analizar.");
-            
-            mostrarStatus("Leyendo escritura para buscar Medidas y Colindancias...");
-            const { PDFDocument } = PDFLib;
-
-            for (let doc of escrituras) {
-                try {
-                    const arrayBuffer = await doc.file.arrayBuffer();
-                    const pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-                    
-                    let paginaEncontrada = -1;
-                    
-                    for (let i = 1; i <= pdfJsDoc.numPages; i++) {
-                        const page = await pdfJsDoc.getPage(i);
-                        const textContent = await page.getTextContent();
-                        const text = textContent.items.map(s => s.str).join(' ').toLowerCase();
-                        
-                        if (text.includes('medidas y colindancias') || (text.includes('al norte') && text.includes('al sur'))) {
-                            paginaEncontrada = i - 1;
-                            break; 
-                        }
-                    }
-
-                    if (paginaEncontrada !== -1) {
-                        const originalPdf = await PDFDocument.load(arrayBuffer);
-                        const newPdf = await PDFDocument.create();
-                        const [copiedPage] = await newPdf.copyPages(originalPdf, [paginaEncontrada]);
-                        newPdf.addPage(copiedPage);
-                        
-                        const pdfBytes = await newPdf.save();
-                        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                        const fileExtracted = new File([blob], `Colindancias_Extraidas_${doc.name}`, {type: 'application/pdf'});
-                        
-                        filesList.push({
-                            id: 'file-' + Math.random().toString(36).substr(2, 9),
-                            name: fileExtracted.name,
-                            size: (fileExtracted.size / 1024 / 1024).toFixed(2) + ' MB',
-                            category: 'colindancia',
-                            fileUrl: URL.createObjectURL(fileExtracted),
-                            file: fileExtracted
-                        });
-                        alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} de ${doc.name}!`);
-                    } else {
-                        alert(`No se detectaron palabras clave de colindancias en ${doc.name}.`);
-                    }
-                } catch (e) {
-                    console.error("Error al procesar escritura:", e);
-                }
-            }
+    function moveFile(id, newCategory) {
+        const docToMove = filesList.find(f => f.id === id);
+        if(docToMove) {
+            docToMove.category = newCategory;
             renderFiles();
-            const statusMsg = document.getElementById('status-message');
-            if(statusMsg) statusMsg.classList.add('hidden');
+        }
+    }
+
+    function mostrarStatus(texto) {
+        const statusMsg = document.getElementById('status-message');
+        const statusText = document.getElementById('status-text');
+        if(statusMsg && statusText) {
+            statusText.innerText = texto;
+            statusMsg.classList.remove('hidden');
+        }
+    }
+
+    async function extraerColindanciasDeEscritura() {
+        if (typeof pdfjsLib !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         }
 
-        async function clasificarSinClasificarConIA() {
-            const apiKey = document.getElementById('geminiApiKey').value.trim();
-            if (!apiKey) return alert("Ingresa tu API Key de Gemini.");
-            
-            const noClasificados = filesList.filter(f => f.category === 'unclassified');
-            if(noClasificados.length === 0) return alert("No hay archivos sin clasificar.");
+        const escrituras = filesList.filter(f => f.category === 'escritura');
+        if (escrituras.length === 0) return alert("No hay escrituras clasificadas para analizar.");
+        
+        mostrarStatus("Leyendo escritura para buscar Medidas y Colindancias...");
+        const { PDFDocument } = PDFLib;
 
-            mostrarStatus("La IA está escaneando visualmente los documentos...");
-
-            const fileToBase64 = (file) => new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-
-            for (let doc of noClasificados) {
-                try {
-                    const base64Data = await fileToBase64(doc.file);
+        for (let doc of escrituras) {
+            try {
+                const arrayBuffer = await doc.file.arrayBuffer();
+                const pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                
+                let paginaEncontrada = -1;
+                
+                for (let i = 1; i <= pdfJsDoc.numPages; i++) {
+                    const page = await pdfJsDoc.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const text = textContent.items.map(s => s.str).join(' ').toLowerCase();
                     
-                    const prompt = `Eres un perito valuador experto en México revisando expedientes inmobiliarios. Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: 'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'. 
+                    if (text.includes('medidas y colindancias') || (text.includes('al norte') && text.includes('al sur'))) {
+                        paginaEncontrada = i - 1;
+                        break; 
+                    }
+                }
+
+                if (paginaEncontrada !== -1) {
+                    const originalPdf = await PDFDocument.load(arrayBuffer);
+                    const newPdf = await PDFDocument.create();
+                    const [copiedPage] = await newPdf.copyPages(originalPdf, [paginaEncontrada]);
+                    newPdf.addPage(copiedPage);
+                    
+                    const pdfBytes = await newPdf.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                    const fileExtracted = new File([blob], `Colindancias_Extraidas_${doc.name}`, {type: 'application/pdf'});
+                    
+                    filesList.push({
+                        id: 'file-' + Math.random().toString(36).substr(2, 9),
+                        name: fileExtracted.name,
+                        size: (fileExtracted.size / 1024 / 1024).toFixed(2) + ' MB',
+                        category: 'colindancia',
+                        fileUrl: URL.createObjectURL(fileExtracted),
+                        file: fileExtracted
+                    });
+                    alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} de ${doc.name}!`);
+                } else {
+                    alert(`No se detectaron palabras clave de colindancias en ${doc.name}.`);
+                }
+            } catch (e) {
+                console.error("Error al procesar escritura:", e);
+            }
+        }
+        renderFiles();
+        const statusMsg = document.getElementById('status-message');
+        if(statusMsg) statusMsg.classList.add('hidden');
+    }
+
+    async function clasificarSinClasificarConIA() {
+        const apiKey = document.getElementById('geminiApiKey').value.trim();
+        if (!apiKey) return alert("Ingresa tu API Key de Gemini.");
+        
+        const noClasificados = filesList.filter(f => f.category === 'unclassified');
+        if(noClasificados.length === 0) return alert("No hay archivos sin clasificar.");
+
+        mostrarStatus("La IA está escaneando visualmente los documentos...");
+
+        const fileToBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = error => reject(error);
+        });
+
+        for (let doc of noClasificados) {
+            try {
+                const base64Data = await fileToBase64(doc.file);
+                
+                const prompt = `Eres un perito valuador experto en México revisando expedientes inmobiliarios. Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: 'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'. 
 
 REGLAS ESTRICTAS:
 - Si ves un INE, pasaporte, RFC, CURP, NSS (Número de Seguridad Social) o precalificación de Infonavit, clasifícalo SIEMPRE como 'comprador'.
@@ -388,109 +703,109 @@ REGLAS ESTRICTAS:
 
 Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin puntos, sin comillas y sin explicaciones extra.`;
 
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-                    
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [
-                                    { text: prompt },
-                                    { inlineData: { mimeType: "application/pdf", data: base64Data } }
-                                ]
-                            }]
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    if(data.candidates) {
-                        let categoriaDetectada = data.candidates[0].content.parts[0].text.trim().toLowerCase();
-                        categoriaDetectada = categoriaDetectada.replace(/[^a-z]/g, ''); 
-                        
-                        const categoriasValidas = ['escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'];
-                        if (categoriasValidas.includes(categoriaDetectada)) {
-                            doc.category = categoriaDetectada;
-                        }
-                    }
-                } catch(e) {
-                    console.error("Error con Gemini Vision en archivo:", doc.name, e);
-                }
-            }
-            renderFiles();
-            const statusMsg = document.getElementById('status-message');
-            if(statusMsg) statusMsg.classList.add('hidden');
-        }
-
-        async function generarArchivosSeparados() {
-            if (filesList.length === 0) return alert("Primero debes subir archivos PDF.");
-            
-            mostrarStatus("Fusionando secciones (Aplicando Reglas de Orden)...");
-            const zip = new JSZip();
-            const { PDFDocument } = PDFLib;
-
-            const jerarquiaDocs = ['solicitud', 'ine', 'curp', 'rfc', 'precalificacion', 'nss'];
-            const identificadoresSegundo = ['conyuge', 'cónyuge', 'coacreditado', 'solicitante 2', 'titular 2', 'segundo'];
-
-            let archivosCreados = 0;
-
-            for (const cat of listaCategoriasParaDropdown) {
-                let archivos = filesList.filter(f => f.category === cat.id);
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
                 
-                if (archivos.length > 0) {
-                    if (cat.id === 'comprador' || cat.id === 'vendedor') {
-                        archivos.sort((a, b) => {
-                            const nameA = a.name.toLowerCase();
-                            const nameB = b.name.toLowerCase();
-
-                            const esSegundoA = identificadoresSegundo.some(kw => nameA.includes(kw));
-                            const esSegundoB = identificadoresSegundo.some(kw => nameB.includes(kw));
-                            
-                            if (esSegundoA && !esSegundoB) return 1;
-                            if (!esSegundoA && esSegundoB) return -1;
-
-                            let indexA = jerarquiaDocs.findIndex(kw => nameA.includes(kw));
-                            let indexB = jerarquiaDocs.findIndex(kw => nameB.includes(kw));
-                            
-                            if (indexA === -1) indexA = 99;
-                            if (indexB === -1) indexB = 99;
-
-                            return indexA - indexB;
-                        });
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                { inlineData: { mimeType: "application/pdf", data: base64Data } }
+                            ]
+                        }]
+                    })
+                });
+                
+                const data = await response.json();
+                if(data.candidates) {
+                    let categoriaDetectada = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                    categoriaDetectada = categoriaDetectada.replace(/[^a-z]/g, ''); 
+                    
+                    const categoriasValidas = ['escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'];
+                    if (categoriasValidas.includes(categoriaDetectada)) {
+                        doc.category = categoriaDetectada;
                     }
-
-                    const categoryPdf = await PDFDocument.create();
-                    for (const archivoObj of archivos) {
-                        try {
-                            const arrayBuffer = await archivoObj.file.arrayBuffer();
-                            const pdf = await PDFDocument.load(arrayBuffer);
-                            const paginas = await categoryPdf.copyPages(pdf, pdf.getPageIndices());
-                            paginas.forEach(p => categoryPdf.addPage(p));
-                        } catch (err) {
-                            console.error(`Error procesando ${archivoObj.name}:`, err);
-                        }
-                    }
-
-                    const pdfBytes = await categoryPdf.save();
-                    const index = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
-                    zip.file(`${index}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
-                    archivosCreados++;
                 }
+            } catch(e) {
+                console.error("Error con Gemini Vision en archivo:", doc.name, e);
             }
-
-            const statusMsg = document.getElementById('status-message');
-            if (archivosCreados === 0) {
-                if(statusMsg) statusMsg.classList.add('hidden');
-                return alert("No hay archivos clasificados para descargar.");
-            }
-
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(zipBlob);
-            link.download = `Expediente_${new Date().toISOString().slice(0,10)}.zip`;
-            link.click();
-            if(statusMsg) statusMsg.classList.add('hidden');
         }
-    </script>
+        renderFiles();
+        const statusMsg = document.getElementById('status-message');
+        if(statusMsg) statusMsg.classList.add('hidden');
+    }
+
+    async function generarArchivosSeparados() {
+        if (filesList.length === 0) return alert("Primero debes subir archivos PDF.");
+        
+        mostrarStatus("Fusionando secciones (Aplicando Reglas de Orden)...");
+        const zip = new JSZip();
+        const { PDFDocument } = PDFLib;
+
+        const jerarquiaDocs = ['solicitud', 'ine', 'curp', 'rfc', 'precalificacion', 'nss'];
+        const identificadoresSegundo = ['conyuge', 'cónyuge', 'coacreditado', 'solicitante 2', 'titular 2', 'segundo'];
+
+        let archivosCreados = 0;
+
+        for (const cat of listaCategoriasParaDropdown) {
+            let archivos = filesList.filter(f => f.category === cat.id);
+            
+            if (archivos.length > 0) {
+                if (cat.id === 'comprador' || cat.id === 'vendedor') {
+                    archivos.sort((a, b) => {
+                        const nameA = a.name.toLowerCase();
+                        const nameB = b.name.toLowerCase();
+
+                        const esSegundoA = identificadoresSegundo.some(kw => nameA.includes(kw));
+                        const esSegundoB = identificadoresSegundo.some(kw => nameB.includes(kw));
+                        
+                        if (esSegundoA && !esSegundoB) return 1;
+                        if (!esSegundoA && esSegundoB) return -1;
+
+                        let indexA = jerarquiaDocs.findIndex(kw => nameA.includes(kw));
+                        let indexB = jerarquiaDocs.findIndex(kw => nameB.includes(kw));
+                        
+                        if (indexA === -1) indexA = 99;
+                        if (indexB === -1) indexB = 99;
+
+                        return indexA - indexB;
+                    });
+                }
+
+                const categoryPdf = await PDFDocument.create();
+                for (const archivoObj of archivos) {
+                    try {
+                        const arrayBuffer = await archivoObj.file.arrayBuffer();
+                        const pdf = await PDFDocument.load(arrayBuffer);
+                        const paginas = await categoryPdf.copyPages(pdf, pdf.getPageIndices());
+                        paginas.forEach(p => categoryPdf.addPage(p));
+                    } catch (err) {
+                        console.error(`Error procesando ${archivoObj.name}:`, err);
+                    }
+                }
+
+                const pdfBytes = await categoryPdf.save();
+                const index = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
+                zip.file(`${index}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
+                archivosCreados++;
+            }
+        }
+
+        const statusMsg = document.getElementById('status-message');
+        if (archivosCreados === 0) {
+            if(statusMsg) statusMsg.classList.add('hidden');
+            return alert("No hay archivos clasificados para descargar.");
+        }
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(zipBlob);
+        link.download = `Expediente_${new Date().toISOString().slice(0,10)}.zip`;
+        link.click();
+        if(statusMsg) statusMsg.classList.add('hidden');
+    }
+</script>
 </body>
 </html>

@@ -15,14 +15,35 @@
     <!-- PDF.js para leer texto de los PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
-        /* Fondo base oscuro */
+        /* FONDO ANIMADO FLUIDO (Estilo Argon / High-Tech) */
         body {
-            background-color: #020617; /* Slate 950 muy oscuro */
+            background: linear-gradient(135deg, #020617, #090d16, #0f172a, #1e1b4b, #020617);
+            background-size: 400% 400%;
+            animation: gradientFlow 12s ease infinite;
             color: #d1d5db;
+            min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
         }
-        
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Efecto de brillo sutil en tarjetas al pasar el mouse */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+
         /* Scrollbar elegante */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
@@ -32,13 +53,10 @@
 </head>
 <body class="font-sans min-h-screen p-6 relative">
 
-    <!-- CANVAS PARA EL FONDO ANTIGRAVITY ARGON -->
-    <canvas id="argonCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
-
     <div class="max-w-[1400px] mx-auto relative z-10">
         
         <!-- Encabezado -->
-        <header class="bg-gray-900/80 backdrop-blur-md shadow-2xl rounded-2xl p-6 mb-6 border border-gray-700/60 flex flex-col md:flex-row justify-between items-center gap-4">
+        <header class="glass-card rounded-2xl p-6 mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-white flex items-center gap-2">
                     <i class="fa-solid fa-layer-group text-blue-500"></i> Generador de Expediente AI
@@ -57,9 +75,9 @@
         </header>
 
         <!-- Módulo IA y Herramientas Especiales -->
-        <div class="bg-gray-900/80 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-gray-700/60 mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-card p-5 rounded-2xl mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Inteligencia Artificial -->
-            <div class="border border-gray-600/50 p-4 rounded-xl bg-black/40">
+            <div class="border border-purple-500/30 p-4 rounded-xl bg-black/40">
                 <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]"></i> Clasificación Inteligente (Gemini Vision)</h3>
                 <p class="text-xs text-gray-400 mb-3">La IA leerá visualmente los documentos escaneados que no se acomoden por nombre.</p>
                 <div class="flex gap-2">
@@ -71,7 +89,7 @@
             </div>
 
             <!-- Extracción de Escrituras -->
-            <div class="border border-gray-600/50 p-4 rounded-xl bg-black/40 flex flex-col justify-between">
+            <div class="border border-pink-500/30 p-4 rounded-xl bg-black/40 flex flex-col justify-between">
                 <div>
                     <h3 class="text-white font-semibold mb-2 flex items-center gap-2"><i class="fa-solid fa-scissors text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]"></i> Extraer Medidas y Colindancias</h3>
                     <p class="text-xs text-gray-400 mb-3">Busca dentro del texto de la Escritura la página de medidas y la mueve a Colindancia automáticamente.</p>
@@ -92,7 +110,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
             <!-- Zona sin clasificar -->
-            <div class="lg:col-span-1 bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[650px]">
+            <div class="glass-card p-4 rounded-2xl flex flex-col h-[650px]">
                 <h2 class="font-semibold text-white mb-3 flex items-center justify-between">
                     <span><i class="fa-solid fa-inbox text-amber-500 mr-1 drop-shadow-[0_0_5px_rgba(245,158,11,0.5)]"></i> Sin Clasificar</span>
                     <span id="unclassified-count" class="bg-gray-800 text-amber-400 border border-amber-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -103,7 +121,7 @@
             <!-- Categorías Estáticas -->
             <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 h-[650px] overflow-y-auto pr-2">
                 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="escritura">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="escritura">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-file-contract text-blue-400"></i> Escritura</h3>
                         <span class="count-badge bg-gray-800 text-blue-400 border border-blue-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -111,7 +129,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="predio">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="predio">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-house-flag text-orange-400"></i> Predio</h3>
                         <span class="count-badge bg-gray-800 text-orange-400 border border-orange-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -119,7 +137,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="agua">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="agua">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-faucet-drip text-cyan-400"></i> Agua</h3>
                         <span class="count-badge bg-gray-800 text-cyan-400 border border-cyan-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -127,7 +145,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="alineamiento">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="alineamiento">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-map-location-dot text-indigo-400"></i> Alineamiento</h3>
                         <span class="count-badge bg-gray-800 text-indigo-400 border border-indigo-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -135,7 +153,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="colindancia">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="colindancia">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-border-all text-pink-400"></i> Colindancia</h3>
                         <span class="count-badge bg-gray-800 text-pink-400 border border-pink-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -143,7 +161,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="plano">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="plano">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-pen-ruler text-yellow-400"></i> Plano</h3>
                         <span class="count-badge bg-gray-800 text-yellow-400 border border-yellow-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -151,7 +169,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="comprador">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="comprador">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-check text-emerald-400"></i> Comprador</h3>
                         <span class="count-badge bg-gray-800 text-emerald-400 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -159,7 +177,7 @@
                     <div class="category-dropzone flex-1 overflow-y-auto space-y-2 border-2 border-dashed border-gray-600/50 rounded-xl p-2 bg-black/30"></div>
                 </div>
 
-                <div class="category-box bg-gray-900/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-gray-700/60 flex flex-col h-[280px]" data-category="vendedor">
+                <div class="category-box glass-card p-4 rounded-2xl flex flex-col h-[280px]" data-category="vendedor">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="font-bold text-gray-200 flex items-center gap-2 text-sm"><i class="fa-solid fa-user-tag text-purple-400"></i> Vendedor</h3>
                         <span class="count-badge bg-gray-800 text-purple-400 border border-purple-500/30 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
@@ -171,96 +189,308 @@
         </div>
     </div>
 
-    <!-- SCRIPT DEL FONDO ANIMADO ANTIGRAVITY ARGON -->
+    <!-- SCRIPTS LÓGICA DE PDF Y UI -->
     <script>
-        const canvas = document.getElementById('argonCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        let filesList = [];
+        const listaCategoriasParaDropdown = [
+            { id: 'escritura', title: 'Escritura' },
+            { id: 'predio', title: 'Predio' },
+            { id: 'agua', title: 'Agua' },
+            { id: 'alineamiento', title: 'Alineamiento' },
+            { id: 'colindancia', title: 'Colindancia' },
+            { id: 'plano', title: 'Plano' },
+            { id: 'comprador', title: 'Comprador' },
+            { id: 'vendedor', title: 'Vendedor' }
+        ];
 
-        let particlesArray;
-        let mouse = { x: null, y: null, radius: 150 };
-
-        window.addEventListener('mousemove', function(event) {
-            mouse.x = event.x;
-            mouse.y = event.y;
-        });
-
-        window.addEventListener('mouseout', function() {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        });
-
-        window.addEventListener('resize', function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        });
-
-        class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
+        function handleFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type === "application/pdf") {
+                    filesList.push({
+                        id: 'file-' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                        category: 'unclassified',
+                        fileUrl: URL.createObjectURL(file),
+                        file: file
+                    });
+                }
             }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-                ctx.fill();
-            }
-            update() {
-                // Efecto Antigravedad constante hacia arriba
-                this.y -= this.directionY;
-                this.x += this.directionX;
+            autoClassifyFiles();
+        }
 
-                // Reposicionar si salen de la pantalla
-                if (this.y < 0 - this.size) {
-                    this.y = canvas.height + this.size;
-                    this.x = Math.random() * canvas.width;
-                }
-                if (this.x > canvas.width || this.x < 0) {
-                    this.directionX = -this.directionX;
-                }
+        function autoClassifyFiles() {
+            filesList.forEach(item => {
+                if (item.category !== 'unclassified') return;
+                const name = item.name.toLowerCase();
+                
+                if (name.includes('escritura') || name.includes('propiedad')) item.category = 'escritura';
+                else if (name.includes('agua') || name.includes('drenaje')) item.category = 'agua';
+                else if (name.includes('predio') || name.includes('predial')) item.category = 'predio';
+                else if (name.includes('alineamiento') || name.includes('oficial')) item.category = 'alineamiento';
+                else if (name.includes('colinda')) item.category = 'colindancia';
+                else if (name.includes('plano') || name.includes('croquis') || name.includes('arquitectonico')) item.category = 'plano';
+                else if (name.includes('comprador') || name.includes('solicitud') || name.includes('ine') || name.includes('curp') || name.includes('nss') || name.includes('precalificacion')) item.category = 'comprador';
+                else if (name.includes('vendedor')) item.category = 'vendedor';
+            });
+            renderFiles();
+        }
 
-                // Interacción de repulsión con el mouse (Argon Anti-gravity)
-                if (mouse.x != null && mouse.y != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let maxDistance = mouse.radius;
-                    let force = (maxDistance - distance) / maxDistance;
-                    let directionX = forceDirectionX * force * this.density;
-                    let directionY = forceDirectionY * force * this.density;
+        function renderFiles() {
+            const unclassifiedContainer = document.getElementById('unclassified-container');
+            if(unclassifiedContainer) unclassifiedContainer.innerHTML = '';
+            
+            document.querySelectorAll('.category-box .category-dropzone').forEach(zone => zone.innerHTML = '');
+            
+            let counts = { unclassified: 0, escritura: 0, predio: 0, agua: 0, alineamiento: 0, colindancia: 0, plano: 0, comprador: 0, vendedor: 0 };
 
-                    if (distance < mouse.radius) {
-                        this.x -= directionX;
-                        this.y -= directionY;
-                    }
+            filesList.forEach(item => {
+                counts[item.category]++;
+                const card = document.createElement('div');
+                card.className = "bg-gray-900/90 p-3 rounded-xl border border-gray-700 shadow flex items-center justify-between gap-3 text-xs mb-2 hover:border-purple-500 transition-colors";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <i class="fa-solid fa-file-pdf text-red-500 text-lg shrink-0 drop-shadow-md"></i>
+                        <div class="truncate">
+                            <span class="font-semibold text-gray-200 truncate block" title="${item.name}">${item.name}</span>
+                        </div>
+                    </div>
+                    <select onchange="moveFile('${item.id}', this.value)" class="text-[11px] bg-gray-900 border border-gray-600 rounded-lg px-1 py-1 text-gray-300 focus:border-purple-500 outline-none">
+                        <option value="unclassified" ${item.category === 'unclassified' ? 'selected' : ''}>Sin clasificar</option>
+                        ${listaCategoriasParaDropdown.map(c => `<option value="${c.id}" ${item.category === c.id ? 'selected' : ''}>${c.title}</option>`).join('')}
+                    </select>
+                `;
+                
+                if (item.category === 'unclassified') {
+                    if(unclassifiedContainer) unclassifiedContainer.appendChild(card);
+                } else {
+                    const zone = document.querySelector(`.category-box[data-category="${item.category}"] .category-dropzone`);
+                    if(zone) zone.appendChild(card);
                 }
-                this.draw();
+            });
+
+            const unclassCountEl = document.getElementById('unclassified-count');
+            if(unclassCountEl) unclassCountEl.innerText = counts.unclassified;
+            
+            listaCategoriasParaDropdown.forEach(cat => {
+                const badge = document.querySelector(`.category-box[data-category="${cat.id}"] .count-badge`);
+                if(badge) badge.innerText = counts[cat.id];
+            });
+        }
+
+        function moveFile(id, newCategory) {
+            const docToMove = filesList.find(f => f.id === id);
+            if(docToMove) {
+                docToMove.category = newCategory;
+                renderFiles();
             }
         }
 
-        function initParticles() {
-            particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 12000;
-            const colors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#c084fc']; // Tonos Argon
+        function mostrarStatus(texto) {
+            const statusMsg = document.getElementById('status-message');
+            const statusText = document.getElementById('status-text');
+            if(statusMsg && statusText) {
+                statusText.innerText = texto;
+                statusMsg.classList.remove('hidden');
+            }
+        }
 
-            for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 0.4) - 0.2;
-                let directionY = (Math.random() * 1) + 0.2; // Velocidad hacia arriba
-                let color = colors[Math.floor(Math.random() * colors
+        async function extraerColindanciasDeEscritura() {
+            if (typeof pdfjsLib !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            }
+
+            const escrituras = filesList.filter(f => f.category === 'escritura');
+            if (escrituras.length === 0) return alert("No hay escrituras clasificadas para analizar.");
+            
+            mostrarStatus("Leyendo escritura para buscar Medidas y Colindancias...");
+            const { PDFDocument } = PDFLib;
+
+            for (let doc of escrituras) {
+                try {
+                    const arrayBuffer = await doc.file.arrayBuffer();
+                    const pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                    
+                    let paginaEncontrada = -1;
+                    
+                    for (let i = 1; i <= pdfJsDoc.numPages; i++) {
+                        const page = await pdfJsDoc.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const text = textContent.items.map(s => s.str).join(' ').toLowerCase();
+                        
+                        if (text.includes('medidas y colindancias') || (text.includes('al norte') && text.includes('al sur'))) {
+                            paginaEncontrada = i - 1;
+                            break; 
+                        }
+                    }
+
+                    if (paginaEncontrada !== -1) {
+                        const originalPdf = await PDFDocument.load(arrayBuffer);
+                        const newPdf = await PDFDocument.create();
+                        const [copiedPage] = await newPdf.copyPages(originalPdf, [paginaEncontrada]);
+                        newPdf.addPage(copiedPage);
+                        
+                        const pdfBytes = await newPdf.save();
+                        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                        const fileExtracted = new File([blob], `Colindancias_Extraidas_${doc.name}`, {type: 'application/pdf'});
+                        
+                        filesList.push({
+                            id: 'file-' + Math.random().toString(36).substr(2, 9),
+                            name: fileExtracted.name,
+                            size: (fileExtracted.size / 1024 / 1024).toFixed(2) + ' MB',
+                            category: 'colindancia',
+                            fileUrl: URL.createObjectURL(fileExtracted),
+                            file: fileExtracted
+                        });
+                        alert(`¡Colindancia encontrada en la página ${paginaEncontrada + 1} de ${doc.name}!`);
+                    } else {
+                        alert(`No se detectaron palabras clave de colindancias en ${doc.name}.`);
+                    }
+                } catch (e) {
+                    console.error("Error al procesar escritura:", e);
+                }
+            }
+            renderFiles();
+            const statusMsg = document.getElementById('status-message');
+            if(statusMsg) statusMsg.classList.add('hidden');
+        }
+
+        async function clasificarSinClasificarConIA() {
+            const apiKey = document.getElementById('geminiApiKey').value.trim();
+            if (!apiKey) return alert("Ingresa tu API Key de Gemini.");
+            
+            const noClasificados = filesList.filter(f => f.category === 'unclassified');
+            if(noClasificados.length === 0) return alert("No hay archivos sin clasificar.");
+
+            mostrarStatus("La IA está escaneando visualmente los documentos...");
+
+            const fileToBase64 = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
+
+            for (let doc of noClasificados) {
+                try {
+                    const base64Data = await fileToBase64(doc.file);
+                    
+                    const prompt = `Eres un perito valuador experto en México revisando expedientes inmobiliarios. Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: 'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'. 
+
+REGLAS ESTRICTAS:
+- Si ves un INE, pasaporte, RFC, CURP, NSS (Número de Seguridad Social) o precalificación de Infonavit, clasifícalo SIEMPRE como 'comprador'.
+- Si ves boletas de cobro de agua, recibos de SAPASE, CAEM o comisiones de agua municipales, es 'agua'.
+- Si ves un formato de pago de impuesto predial, tesorería municipal o catastro, es 'predio'.
+- Si ves croquis, planos arquitectónicos, dibujos con cotas o trazos de AutoCAD, es 'plano'.
+- Si ves un documento notarial con sellos, folios del Registro Público de la Propiedad o testimonios, es 'escritura'.
+- Si ves un documento oficial del municipio sobre número oficial, uso de suelo o constancia de alineamiento, es 'alineamiento'.
+
+Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin puntos, sin comillas y sin explicaciones extra.`;
+
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: prompt },
+                                    { inlineData: { mimeType: "application/pdf", data: base64Data } }
+                                ]
+                            }]
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if(data.candidates) {
+                        let categoriaDetectada = data.candidates[0].content.parts[0].text.trim().toLowerCase();
+                        categoriaDetectada = categoriaDetectada.replace(/[^a-z]/g, ''); 
+                        
+                        const categoriasValidas = ['escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'];
+                        if (categoriasValidas.includes(categoriaDetectada)) {
+                            doc.category = categoriaDetectada;
+                        }
+                    }
+                } catch(e) {
+                    console.error("Error con Gemini Vision en archivo:", doc.name, e);
+                }
+            }
+            renderFiles();
+            const statusMsg = document.getElementById('status-message');
+            if(statusMsg) statusMsg.classList.add('hidden');
+        }
+
+        async function generarArchivosSeparados() {
+            if (filesList.length === 0) return alert("Primero debes subir archivos PDF.");
+            
+            mostrarStatus("Fusionando secciones (Aplicando Reglas de Orden)...");
+            const zip = new JSZip();
+            const { PDFDocument } = PDFLib;
+
+            const jerarquiaDocs = ['solicitud', 'ine', 'curp', 'rfc', 'precalificacion', 'nss'];
+            const identificadoresSegundo = ['conyuge', 'cónyuge', 'coacreditado', 'solicitante 2', 'titular 2', 'segundo'];
+
+            let archivosCreados = 0;
+
+            for (const cat of listaCategoriasParaDropdown) {
+                let archivos = filesList.filter(f => f.category === cat.id);
+                
+                if (archivos.length > 0) {
+                    if (cat.id === 'comprador' || cat.id === 'vendedor') {
+                        archivos.sort((a, b) => {
+                            const nameA = a.name.toLowerCase();
+                            const nameB = b.name.toLowerCase();
+
+                            const esSegundoA = identificadoresSegundo.some(kw => nameA.includes(kw));
+                            const esSegundoB = identificadoresSegundo.some(kw => nameB.includes(kw));
+                            
+                            if (esSegundoA && !esSegundoB) return 1;
+                            if (!esSegundoA && esSegundoB) return -1;
+
+                            let indexA = jerarquiaDocs.findIndex(kw => nameA.includes(kw));
+                            let indexB = jerarquiaDocs.findIndex(kw => nameB.includes(kw));
+                            
+                            if (indexA === -1) indexA = 99;
+                            if (indexB === -1) indexB = 99;
+
+                            return indexA - indexB;
+                        });
+                    }
+
+                    const categoryPdf = await PDFDocument.create();
+                    for (const archivoObj of archivos) {
+                        try {
+                            const arrayBuffer = await archivoObj.file.arrayBuffer();
+                            const pdf = await PDFDocument.load(arrayBuffer);
+                            const paginas = await categoryPdf.copyPages(pdf, pdf.getPageIndices());
+                            paginas.forEach(p => categoryPdf.addPage(p));
+                        } catch (err) {
+                            console.error(`Error procesando ${archivoObj.name}:`, err);
+                        }
+                    }
+
+                    const pdfBytes = await categoryPdf.save();
+                    const index = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
+                    zip.file(`${index}_${cat.title.replace(/ /g, '_')}.pdf`, pdfBytes);
+                    archivosCreados++;
+                }
+            }
+
+            const statusMsg = document.getElementById('status-message');
+            if (archivosCreados === 0) {
+                if(statusMsg) statusMsg.classList.add('hidden');
+                return alert("No hay archivos clasificados para descargar.");
+            }
+
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(zipBlob);
+            link.download = `Expediente_${new Date().toISOString().slice(0,10)}.zip`;
+            link.click();
+            if(statusMsg) statusMsg.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

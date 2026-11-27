@@ -1,2097 +1,1402 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AZ VALUACIONES | Valuación Inmobiliaria · Estado de México, CDMX e Hidalgo</title>
-  <link rel="icon" type="image/png" href="assets/logo-icono.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    :root {
-      --vino: #3b0d17;
-      --vino-medio: #4c111f;
-      --vino-oscuro: #24060d;
-      --vino-profundo: #1b0409;
-      --crema: #f7f1e8;
-      --crema-suave: #efe5d7;
-      --tarjeta-clara: #fffdf9;
-      --dorado: #e5c7a3;
-      --dorado-fuerte: #c9a165;
-      --texto-oscuro: #1d1416;
-      --texto-suave: #5a4c4f;
-      --borde-claro: rgba(59, 13, 23, 0.14);
-      --borde-oscuro: rgba(229, 199, 163, 0.22);
-      --serif: "Cormorant Garamond", Georgia, serif;
-      --sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--sans);
-      background-color: var(--crema);
-      color: var(--texto-oscuro);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* Barra superior y navegación */
-    header.topbar {
-      background: rgba(36, 6, 13, 0.94);
-      backdrop-filter: blur(12px);
-      color: var(--crema);
-      border-bottom: 1px solid var(--borde-oscuro);
-      position: sticky;
-      top: 0;
-      z-index: 60;
-    }
-
-    .topbar-inner {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 13px 24px;
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      background: var(--crema);
-      padding: 5px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(229, 199, 163, 0.55);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
-      transition: transform 0.18s ease;
-    }
-
-    .brand:hover {
-      transform: translateY(-1px);
-    }
-
-    .brand img {
-      display: block;
-      height: 38px;
-      width: auto;
-    }
-
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-    }
-
-    nav a {
-      color: rgba(247, 241, 232, 0.86);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    nav a:hover {
-      color: var(--dorado);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      text-decoration: none;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: transform 0.18s ease, filter 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn-dorado {
-      background-color: var(--dorado);
-      color: var(--vino-oscuro);
-    }
-
-    .btn-dorado:hover {
-      filter: brightness(1.06);
-      transform: translateY(-1px);
-    }
-
-    .btn-borde-claro {
-      border-color: rgba(229, 199, 163, 0.38);
-      color: var(--crema);
-      background: rgba(27, 4, 9, 0.35);
-    }
-
-    .btn-borde-claro:hover {
-      border-color: var(--dorado);
-      color: var(--dorado);
-      background: rgba(229, 199, 163, 0.08);
-    }
-
-    .btn-vino {
-      background-color: var(--vino);
-      color: var(--crema);
-      border-radius: 8px;
-    }
-
-    .btn-vino:hover {
-      background-color: var(--vino-oscuro);
-      transform: translateY(-1px);
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      background-color: var(--vino-oscuro);
-      background-image:
-        linear-gradient(102deg, rgba(42, 7, 15, 0.94) 0%, rgba(56, 11, 22, 0.85) 54%, rgba(27, 4, 9, 0.72) 100%),
-        url("assets/hero-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      color: var(--crema);
-      padding: 48px 0 64px;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 44px;
-      align-items: center;
-    }
-
-    .hero-brand-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    /* Contenedor de video que reemplaza al logotipo principal */
-    .hero-video-logo {
-      width: 100%;
-      max-width: 460px;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(229, 199, 163, 0.35);
-      background: rgba(20, 4, 8, 0.65);
-      box-shadow: 0 24px 52px rgba(0, 0, 0, 0.48);
-      margin-bottom: 20px;
-    }
-
-    .hero-video-logo video {
-      display: block;
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-    }
-
-    .pill {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      color: var(--vino-oscuro);
-      background: var(--crema);
-      padding: 9px 20px;
-      border-radius: 999px;
-      margin-bottom: 0;
-    }
-
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.5rem, 4.8vw, 3.85rem);
-      line-height: 1.03;
-      margin-bottom: 18px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-
-    .hero h1 em {
-      font-style: italic;
-      font-weight: 500;
-      color: var(--dorado);
-    }
-
-    .hero-sub {
-      font-size: 1rem;
-      color: rgba(247, 241, 232, 0.9);
-      margin-bottom: 10px;
-      max-width: 580px;
-    }
-
-    .hero-sub strong {
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    .shf-respaldo {
-      font-size: 0.86rem;
-      color: var(--dorado);
-      margin-bottom: 26px;
-      max-width: 580px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    /* Panel izquierdo del Hero */
-    .panel-resumen {
-      background: rgba(31, 6, 12, 0.82);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--borde-oscuro);
-      border-radius: 18px;
-      padding: 20px 22px;
-      margin-bottom: 18px;
-      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.36);
-    }
-
-    .panel-respaldo {
-      margin-bottom: 0;
-    }
-
-    .panel-respaldo h1 {
-      margin-bottom: 14px;
-    }
-
-    .panel-respaldo .hero-sub {
-      max-width: none;
-    }
-
-    .panel-respaldo .shf-respaldo {
-      max-width: none;
-    }
-
-    .panel-respaldo .hero-actions {
-      margin-top: 6px;
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-
-    .panel-eyebrow {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      color: var(--dorado-fuerte);
-      margin-bottom: 4px;
-    }
-
-    .panel-resumen h2 {
-      font-family: var(--serif);
-      font-size: 1.55rem;
-      font-weight: 600;
-      color: var(--crema);
-      line-height: 1.15;
-    }
-
-    .panel-badge {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      border: 1px solid rgba(229, 199, 163, 0.28);
-      background: rgba(229, 199, 163, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--dorado);
-    }
-
-    .metricas-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 0;
-    }
-
-    .metrica-box {
-      background: rgba(65, 16, 28, 0.45);
-      border: 1px solid rgba(229, 199, 163, 0.18);
-      border-radius: 12px;
-      padding: 15px 14px;
-    }
-
-    .metrica-box strong {
-      display: block;
-      font-family: var(--serif);
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--crema);
-      margin-bottom: 4px;
-      line-height: 1.15;
-    }
-
-    .metrica-box span {
-      display: block;
-      font-size: 0.76rem;
-      color: rgba(247, 241, 232, 0.78);
-      line-height: 1.35;
-    }
-
-    /* Cintillo marquee */
-    .marquee {
-      background-color: var(--vino-profundo);
-      color: var(--dorado);
-      border-top: 1px solid var(--borde-oscuro);
-      border-bottom: 1px solid var(--borde-oscuro);
-      padding: 12px 0;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .marquee-track {
-      display: inline-flex;
-      gap: 28px;
-      animation: marqueeScroll 32s linear infinite;
-    }
-
-    .marquee:hover .marquee-track {
-      animation-play-state: paused;
-    }
-
-    @keyframes marqueeScroll {
-      from {
-        transform: translateX(0);
-      }
-      to {
-        transform: translateX(-50%);
-      }
-    }
-
-    /* Secciones generales */
-    section.seccion {
-      padding: 76px 0;
-    }
-
-    .eyebrow {
-      font-size: 0.72rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--vino);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .titulo-seccion {
-      font-family: var(--serif);
-      font-size: clamp(1.9rem, 3.4vw, 2.7rem);
-      font-weight: 600;
-      line-height: 1.12;
-      margin-bottom: 12px;
-      color: var(--vino-oscuro);
-    }
-
-    .subtitulo-seccion {
-      color: var(--texto-suave);
-      max-width: 720px;
-      margin-bottom: 34px;
-      font-size: 0.96rem;
-    }
-
-    /* Servicios */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--tarjeta-clara);
-      border: 1px solid var(--borde-claro);
-      border-radius: 14px;
-      padding: 26px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-      box-shadow: 0 8px 24px rgba(36, 6, 13, 0.04);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 32px rgba(36, 6, 13, 0.08);
-      border-color: rgba(59, 13, 23, 0.28);
-    }
-
-    .tag {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--vino);
-      background: rgba(216, 178, 110, 0.22);
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 12px;
-    }
-
-    .card h3 {
-      font-family: var(--serif);
-      font-size: 1.45rem;
-      font-weight: 600;
-      color: var(--vino-oscuro);
-      margin-bottom: 8px;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      color: var(--texto-suave);
-      margin-bottom: 12px;
-    }
-
-    .card ul {
-      list-style: none;
-      font-size: 0.85rem;
-      color: var(--texto-oscuro);
-      border-top: 1px solid var(--borde-claro);
-      padding-top: 12px;
-    }
-
-    .card ul li {
-      position: relative;
-      padding-left: 16px;
-      margin-bottom: 5px;
-    }
-
-    .card ul li::before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: var(--dorado-fuerte);
-      font-weight: 700;
-    }
-
-    /* Sección oscura: Guía Rápida de Documentación */
-    section.seccion-requisitos {
-      background: linear-gradient(180deg, #350914 0%, #24050c 100%);
-      color: var(--crema);
-      padding: 80px 0;
-      border-top: 1px solid var(--borde-oscuro);
-      border-bottom: 1px solid var(--borde-oscuro);
-    }
-
-    .req-header {
-      text-align: center;
-      max-width: 720px;
-      margin: 0 auto 30px;
-    }
-
-    .req-header .eyebrow {
-      color: var(--dorado);
-    }
-
-    .req-header .titulo-seccion {
-      color: var(--crema);
-    }
-
-    .req-header .subtitulo-seccion {
-      color: rgba(247, 241, 232, 0.8);
-      margin: 0 auto;
-    }
-
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-
-    .tab-btn {
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(229, 199, 163, 0.24);
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(247, 241, 232, 0.88);
-      font-family: var(--sans);
-      font-size: 0.73rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn:hover {
-      border-color: var(--dorado);
-      color: var(--dorado);
-    }
-
-    .tab-btn.activa {
-      background: var(--dorado);
-      color: var(--vino-oscuro);
-      border-color: var(--dorado);
-    }
-
-    .doc-box {
-      background: rgba(45, 9, 18, 0.65);
-      border: 1px solid rgba(229, 199, 163, 0.22);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
-    }
-
-    .doc-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.1fr 1.1fr;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    .doc-intro {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-      padding-right: 6px;
-    }
-
-    .doc-pill {
-      display: inline-block;
-      align-self: flex-start;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--dorado);
-      background: rgba(229, 199, 163, 0.12);
-      border: 1px solid rgba(229, 199, 163, 0.22);
-      padding: 6px 14px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-
-    .doc-intro h3 {
-      font-family: var(--serif);
-      font-size: 2rem;
-      font-weight: 600;
-      line-height: 1.12;
-      color: var(--crema);
-      margin-bottom: 12px;
-    }
-
-    .doc-intro p.doc-desc {
-      font-size: 0.9rem;
-      color: rgba(247, 241, 232, 0.82);
-      margin-bottom: 16px;
-    }
-
-    .enfoque-box {
-      background: rgba(24, 4, 9, 0.48);
-      border: 1px solid rgba(229, 199, 163, 0.18);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 18px;
-    }
-
-    .enfoque-box span.enfoque-label {
-      display: block;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: var(--dorado);
-      margin-bottom: 4px;
-    }
-
-    .enfoque-box p {
-      font-size: 0.84rem;
-      color: rgba(247, 241, 232, 0.86);
-      line-height: 1.45;
-    }
-
-    .doc-col-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .req-card {
-      background: rgba(28, 5, 11, 0.62);
-      border: 1px solid rgba(229, 199, 163, 0.2);
-      border-radius: 14px;
-      padding: 16px 18px;
-      flex: 1;
-    }
-
-    .req-card-title {
-      background: rgba(229, 199, 163, 0.13);
-      color: var(--dorado);
-      text-align: center;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 7px 12px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-
-    .req-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .req-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: rgba(247, 241, 232, 0.92);
-      line-height: 1.38;
-    }
-
-    .req-icon {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      margin-top: 1px;
-      color: var(--dorado-fuerte);
-    }
-
-    .envio-intro {
-      font-size: 0.82rem;
-      color: rgba(247, 241, 232, 0.88);
-      margin-bottom: 12px;
-      line-height: 1.45;
-    }
-
-    .envio-pill {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      background: #a58b52;
-      color: #fffdf9;
-      padding: 9px 13px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      text-decoration: none;
-      margin-bottom: 12px;
-      transition: filter 0.2s ease;
-    }
-
-    .envio-pill:hover {
-      filter: brightness(1.08);
-    }
-
-    .envio-meta {
-      font-size: 0.8rem;
-      color: rgba(247, 241, 232, 0.86);
-      margin-bottom: 8px;
-    }
-
-    .envio-meta strong {
-      color: var(--dorado);
-    }
-
-    .envio-notas {
-      list-style: disc;
-      padding-left: 16px;
-      font-size: 0.78rem;
-      color: rgba(247, 241, 232, 0.82);
-      line-height: 1.45;
-    }
-
-    .envio-notas li {
-      margin-bottom: 4px;
-    }
-
-    /* Proceso en 4 pasos */
-    .pasos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 18px;
-    }
-
-    .paso-card {
-      background: var(--tarjeta-clara);
-      border: 1px solid var(--borde-claro);
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 8px 20px rgba(36, 6, 13, 0.04);
-    }
-
-    .paso-num {
-      display: inline-block;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: var(--vino);
-      background: rgba(216, 178, 110, 0.28);
-      padding: 5px 12px;
-      border-radius: 999px;
-      margin-bottom: 12px;
-    }
-
-    .paso-card h3 {
-      font-family: var(--serif);
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--vino-oscuro);
-    }
-
-    .paso-card p {
-      font-size: 0.88rem;
-      color: var(--texto-suave);
-    }
-
-    /* ¿Quiénes somos? (estilo editorial según captura) */
-    .nosotros-section {
-      background: var(--tarjeta-clara);
-      border-top: 1px solid var(--borde-claro);
-      border-bottom: 1px solid var(--borde-claro);
-    }
-
-    .nosotros-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 44px;
-      align-items: center;
-    }
-
-    .nosotros-media {
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 44px rgba(36, 6, 13, 0.14);
-      border: 1px solid var(--borde-claro);
-    }
-
-    .nosotros-media img {
-      display: block;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      height: auto;
-      object-fit: cover;
-      object-position: center 20%;
-    }
-
-    .nosotros-caption {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 16px;
-      background: rgba(255, 253, 249, 0.94);
-      backdrop-filter: blur(8px);
-      border-radius: 10px;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 0.72rem;
-    }
-
-    .nosotros-caption strong {
-      letter-spacing: 0.12em;
-      color: var(--vino-oscuro);
-    }
-
-    .nosotros-caption span {
-      color: var(--texto-suave);
-      font-weight: 500;
-    }
-
-    .titulo-con-linea {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .titulo-con-linea .titulo-seccion {
-      margin-bottom: 0;
-      white-space: nowrap;
-    }
-
-    .titulo-linea {
-      height: 1px;
-      flex: 1;
-      background: rgba(59, 13, 23, 0.22);
-    }
-
-    .nosotros-texto p {
-      color: var(--texto-suave);
-      font-size: 0.96rem;
-      margin-bottom: 14px;
-    }
-
-    .nosotros-texto strong {
-      color: var(--vino-oscuro);
-    }
-
-    .pilares {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid var(--borde-claro);
-    }
-
-    .pilar strong {
-      display: block;
-      font-size: 0.74rem;
-      letter-spacing: 0.1em;
-      color: var(--vino-oscuro);
-      margin-bottom: 4px;
-    }
-
-    .pilar span {
-      font-size: 0.82rem;
-      color: var(--texto-suave);
-      line-height: 1.4;
-      display: block;
-    }
-
-    /* Cobertura y Contacto */
-    .dos-cols {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 32px;
-      align-items: start;
-    }
-
-    .zonas-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0 24px;
-    }
-
-    .zona-chip {
-      background: var(--tarjeta-clara);
-      border: 1px solid var(--borde-claro);
-      padding: 7px 14px;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      color: var(--vino-oscuro);
-      font-weight: 500;
-    }
-
-    .contacto-section {
-      background: var(--crema-suave);
-      border-top: 1px solid var(--borde-claro);
-    }
-
-    .contacto-info-card {
-      background: var(--vino);
-      color: var(--crema);
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 18px 36px rgba(36, 6, 13, 0.14);
-    }
-
-    .contacto-info-card .eyebrow {
-      color: var(--dorado);
-    }
-
-    .contacto-info-card .titulo-seccion {
-      color: var(--crema);
-    }
-
-    .contacto-info-card p {
-      color: rgba(247, 241, 232, 0.86);
-      font-size: 0.94rem;
-      margin-bottom: 20px;
-    }
-
-    .contacto-dato {
-      background: rgba(20, 4, 8, 0.38);
-      border: 1px solid var(--borde-oscuro);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-    }
-
-    .contacto-dato span {
-      display: block;
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--dorado);
-      margin-bottom: 4px;
-      font-weight: 700;
-    }
-
-    .contacto-dato a,
-    .contacto-dato strong {
-      color: var(--crema);
-      text-decoration: none;
-      font-size: 0.94rem;
-      font-weight: 600;
-      word-break: break-word;
-    }
-
-    .contacto-redes {
-      margin-bottom: 0;
-    }
-
-    .redes-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-      margin-top: 10px;
-      padding-left: 14px;
-    }
-
-    .red-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 16px;
-      color: var(--crema);
-      text-decoration: none;
-      transition: color 0.2s ease, transform 0.18s ease;
-    }
-
-    .red-link strong {
-      color: inherit;
-      transition: color 0.2s ease;
-    }
-
-    .red-link:hover {
-      color: var(--dorado);
-      transform: translateX(4px);
-    }
-
-    .red-icono {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    /* Formulario de cotización */
-    form.cotizacion-form {
-      background: var(--tarjeta-clara);
-      border: 1px solid var(--borde-claro);
-      border-radius: 16px;
-      padding: 28px;
-      display: grid;
-      gap: 15px;
-      box-shadow: 0 14px 30px rgba(36, 6, 13, 0.06);
-    }
-
-    .campo label {
-      display: block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--vino-oscuro);
-      margin-bottom: 6px;
-    }
-
-    .campo input,
-    .campo select {
-      width: 100%;
-      padding: 11px 13px;
-      border-radius: 8px;
-      border: 1px solid rgba(59, 13, 23, 0.22);
-      background: #fff;
-      font-family: var(--sans);
-      font-size: 0.9rem;
-      color: var(--texto-oscuro);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .campo input:focus,
-    .campo select:focus {
-      outline: none;
-      border-color: var(--vino);
-      box-shadow: 0 0 0 3px rgba(59, 13, 23, 0.1);
-    }
-
-    .mensaje-envio {
-      font-size: 0.86rem;
-      color: var(--vino);
-      font-weight: 600;
-      min-height: 20px;
-    }
-
-    footer {
-      background: var(--vino-oscuro);
-      color: rgba(247, 241, 232, 0.86);
-      padding: 28px 24px;
-      text-align: center;
-      font-size: 0.8rem;
-      letter-spacing: 0.06em;
-      border-top: 1px solid var(--borde-oscuro);
-    }
-
-    @media (max-width: 1040px) {
-      .doc-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .hero-grid,
-      .nosotros-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .nosotros-media img {
-        aspect-ratio: 4 / 3;
-      }
-
-      .pilares {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-video-logo {
-        max-width: 340px;
-      }
-    }
-
-    .footer-brand {
-      display: inline-block;
-      background: var(--crema);
-      padding: 8px 18px;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      border: 1px solid rgba(229, 199, 163, 0.4);
-    }
-
-    .footer-brand img {
-      display: block;
-      height: 44px;
-      width: auto;
-    }
-
-    /* ===== Cobertura con mapa interactivo ===== */
-    .cobertura-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 28px;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-    }
-
-    .cobertura-desc {
-      max-width: 420px;
-      color: var(--texto-suave);
-      font-size: 0.94rem;
-      line-height: 1.5;
-      padding-top: 8px;
-    }
-
-    .cobertura-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      align-items: start;
-    }
-
-    .mapa-panel {
-      background: linear-gradient(145deg, #3a0c16 0%, #24050c 100%);
-      border: 1px solid rgba(229, 199, 163, 0.2);
-      border-radius: 18px;
-      padding: 20px 24px 16px;
-      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.18);
-    }
-
-    .mapa-labels-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: rgba(229, 199, 163, 0.55);
-      margin-bottom: 6px;
-    }
-
-    .mapa-svg {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 340px;
-    }
-
-    .mapa-estado {
-      cursor: pointer;
-      transition: opacity 0.25s ease;
-    }
-
-    .mapa-estado:hover path,
-    .mapa-estado.active path {
-      fill: rgba(180, 70, 85, 0.72);
-      stroke: var(--dorado);
-      stroke-width: 1.8;
-    }
-
-    .mapa-footer-label {
-      text-align: center;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      color: rgba(229, 199, 163, 0.5);
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(229, 199, 163, 0.12);
-    }
-
-    .cobertura-info-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .estado-tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .estado-tab {
-      padding: 10px 20px;
-      border-radius: 999px;
-      border: 1px solid var(--borde-claro);
-      background: var(--tarjeta-clara);
-      color: var(--vino-oscuro);
-      font-family: var(--sans);
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .estado-tab:hover {
-      border-color: var(--vino);
-      background: rgba(216, 178, 110, 0.12);
-    }
-
-    .estado-tab.activa {
-      background: var(--vino);
-      color: var(--crema);
-      border-color: var(--vino);
-    }
-
-    .estado-detalle {
-      background: var(--tarjeta-clara);
-      border: 1px solid var(--borde-claro);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 24px rgba(36, 6, 13, 0.06);
-    }
-
-    .estado-detalle .det-badge {
-      display: inline-block;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--vino);
-      background: rgba(216, 178, 110, 0.22);
-      padding: 5px 12px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-
-    .estado-detalle h3 {
-      font-family: var(--serif);
-      font-size: 1.65rem;
-      font-weight: 600;
-      color: var(--vino-oscuro);
-      margin-bottom: 10px;
-      line-height: 1.15;
-    }
-
-    .estado-detalle .det-desc {
-      font-size: 0.9rem;
-      color: var(--texto-suave);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .det-zonas-titulo {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--vino-oscuro);
-      margin-bottom: 10px;
-    }
-
-    .det-zonas-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px 20px;
-      margin-bottom: 18px;
-    }
-
-    .det-zonas-grid li {
-      list-style: none;
-      position: relative;
-      padding-left: 14px;
-      font-size: 0.84rem;
-      color: var(--texto-oscuro);
-      line-height: 1.5;
-    }
-
-    .det-zonas-grid li::before {
-      content: "●";
-      position: absolute;
-      left: 0;
-      color: var(--dorado-fuerte);
-      font-size: 0.55rem;
-      top: 4px;
-    }
-
-    @media (max-width: 860px) {
-      .cobertura-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .cobertura-header {
-        flex-direction: column;
-      }
-
-      .det-zonas-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Generador de Expediente AI · High-Tech</title>
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+/* ============================================================
+   0. BASE
+   ============================================================ */
+:root{
+  --bg:#04060d;
+  --ink:#cbd5e1;
+  --line:rgba(148,163,255,.14);
+}
+html{background:var(--bg)}
+body{
+  margin:0; min-height:100vh;
+  background:var(--bg); color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(139,92,246,.35);color:#fff}
+:focus-visible{outline:2px solid rgba(167,139,250,.75);outline-offset:2px;border-radius:10px}
+
+/* ============================================================
+   1. FONDO ANIMADO (capa 0)
+   ============================================================ */
+#bg-layer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none; overflow:hidden;
+  contain:layout paint style;
+  background:#04060d;
+  transform:translateZ(0);
+}
+.bg-base{
+  position:absolute; inset:-25%;
+  background:
+    radial-gradient(58% 52% at 12% 18%, rgba(59,130,246,.20), transparent 62%),
+    radial-gradient(55% 48% at 88% 12%, rgba(139,92,246,.22), transparent 64%),
+    radial-gradient(70% 60% at 50% 105%, rgba(14,116,144,.20), transparent 66%),
+    linear-gradient(160deg,#04060d 0%,#070b16 45%,#0b0a1e 72%,#04060d 100%);
+  background-size:180% 180%;
+  animation:baseFlow 30s ease-in-out infinite;
+  will-change:background-position;
+}
+@keyframes baseFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.orb{
+  position:absolute; border-radius:50%;
+  filter:blur(72px); opacity:.5;
+  will-change:transform; transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+}
+.orb-1{
+  width:48vw;height:48vw;min-width:340px;min-height:340px;left:-12vw;top:-16vh;
+  background:radial-gradient(circle at 35% 35%,rgba(99,102,241,.9),rgba(37,99,235,.12) 62%,transparent 74%);
+  animation:drift1 26s ease-in-out infinite;
+}
+.orb-2{
+  width:42vw;height:42vw;min-width:300px;min-height:300px;right:-10vw;top:-10vh;
+  background:radial-gradient(circle at 60% 40%,rgba(168,85,247,.85),rgba(139,92,246,.1) 60%,transparent 72%);
+  animation:drift2 34s ease-in-out infinite;
+}
+.orb-3{
+  width:52vw;height:52vw;min-width:360px;min-height:360px;left:22vw;bottom:-26vh;
+  background:radial-gradient(circle at 50% 50%,rgba(34,211,238,.6),rgba(14,116,144,.1) 58%,transparent 72%);
+  animation:drift3 30s ease-in-out infinite;
+}
+@keyframes drift1{0%,100%{transform:translate3d(0,0,0) scale(1)}33%{transform:translate3d(7vw,-5vh,0) scale(1.14)}66%{transform:translate3d(-5vw,6vh,0) scale(.92)}}
+@keyframes drift2{0%,100%{transform:translate3d(0,0,0) scale(1)}40%{transform:translate3d(-8vw,7vh,0) scale(1.18)}75%{transform:translate3d(4vw,-4vh,0) scale(.95)}}
+@keyframes drift3{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-9vw,-8vh,0) scale(1.2)}}
+
+.bg-aurora{
+  position:absolute; left:50%; top:50%;
+  width:130vmax;height:130vmax;margin:-65vmax 0 0 -65vmax;
+  background:conic-gradient(from 0deg,
+    rgba(139,92,246,.11), rgba(34,211,238,.08),
+    rgba(236,72,153,.09), rgba(59,130,246,.09), rgba(139,92,246,.11));
+  filter:blur(38px); opacity:.6;
+  will-change:transform; animation:spin 70s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.bg-grid{
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(148,163,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,255,.055) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(circle at 50% 25%,#000 25%,transparent 80%);
+  mask-image:radial-gradient(circle at 50% 25%,#000 25%,transparent 80%);
+}
+.bg-vignette{
+  position:absolute; inset:0;
+  background:radial-gradient(120% 85% at 50% 0%,transparent 38%,rgba(0,0,0,.62) 100%);
+}
+
+/* ============================================================
+   2. CANVAS DE PARTÍCULAS (capa 1, entre fondo y cristal)
+   ============================================================ */
+#fx-canvas{
+  position:fixed; inset:0;
+  z-index:1;
+  display:block;
+  width:100%; height:100%;
+  pointer-events:none;
+  opacity:.95;
+  transition:opacity .45s ease;
+}
+body.fx-off #fx-canvas{opacity:0}
+
+/* ============================================================
+   3. ESTADOS DE RENDIMIENTO
+   ============================================================ */
+body.bg-paused #bg-layer *{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){ #bg-layer *{animation:none!important} }
+@media (max-width:768px){
+  .orb{filter:blur(52px);opacity:.4}
+  .bg-aurora{filter:blur(26px)}
+}
+
+/* ============================================================
+   4. GLASSMORPHISM
+   ============================================================ */
+.glass{
+  position:relative; border-radius:18px;
+  background:linear-gradient(158deg,rgba(32,40,68,.55),rgba(9,13,24,.74));
+  border:1px solid var(--line);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  backdrop-filter:blur(14px) saturate(150%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.4),
+    0 20px 48px -22px rgba(0,0,0,.9);
+  transition:border-color .35s ease, box-shadow .35s ease, transform .35s ease;
+}
+.glass::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:linear-gradient(135deg,
+    rgba(167,139,250,.55), rgba(96,165,250,.12) 34%,
+    rgba(34,211,238,.12) 66%, rgba(244,114,182,.42));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  opacity:.7; pointer-events:none;
+}
+.glass-hover:hover{
+  border-color:rgba(167,139,250,.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.09),
+    0 0 0 1px rgba(167,139,250,.16),
+    0 26px 56px -24px rgba(139,92,246,.55);
+}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+  .glass{background:linear-gradient(158deg,rgba(24,31,54,.94),rgba(8,11,20,.96))}
+}
+
+/* ============================================================
+   5. BOTONES
+   ============================================================ */
+.btn{
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  font-weight:700; font-size:.8rem; line-height:1;
+  padding:.62rem 1rem; border-radius:12px; border:1px solid transparent;
+  cursor:pointer; white-space:nowrap;
+  transition:transform .16s ease, box-shadow .25s ease, filter .25s ease, background .25s ease;
+  will-change:transform;
+}
+.btn:active{transform:translateY(1px) scale(.985)}
+.btn-blue{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;box-shadow:0 0 0 1px rgba(99,102,241,.5),0 10px 28px -10px rgba(59,130,246,.95)}
+.btn-blue:hover{filter:brightness(1.13)}
+.btn-emerald{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 0 0 1px rgba(16,185,129,.5),0 10px 28px -10px rgba(5,150,105,.95)}
+.btn-emerald:hover{filter:brightness(1.13)}
+.btn-violet{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 0 0 1px rgba(168,85,247,.5),0 10px 26px -10px rgba(124,58,237,.95)}
+.btn-violet:hover{filter:brightness(1.13)}
+.btn-pink{background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;box-shadow:0 0 0 1px rgba(236,72,153,.5),0 10px 26px -10px rgba(219,39,119,.95)}
+.btn-pink:hover{filter:brightness(1.13)}
+.btn-ghost{background:rgba(255,255,255,.045);border-color:var(--line);color:#c7d2fe}
+.btn-ghost:hover{background:rgba(139,92,246,.14);border-color:rgba(167,139,250,.45)}
+.btn-ghost.is-off{opacity:.5;text-decoration:line-through}
+
+.icon-btn{
+  display:inline-grid; place-items:center;
+  width:26px;height:26px;border-radius:8px;
+  border:1px solid var(--line); background:rgba(255,255,255,.04);
+  color:#a5b4fc; cursor:pointer; font-size:11px;
+  transition:background .2s,color .2s,border-color .2s,transform .15s;
+}
+.icon-btn:hover{background:rgba(139,92,246,.18);color:#e9d5ff;border-color:rgba(167,139,250,.5)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn.danger:hover{background:rgba(244,63,94,.18);color:#fda4af;border-color:rgba(244,63,94,.5)}
+
+/* ============================================================
+   6. CATEGORÍAS / DROPZONES
+   ============================================================ */
+.category-box{
+  --accent:#8b5cf6;
+  display:flex; flex-direction:column;
+  height:272px; padding:1rem; overflow:hidden;
+}
+.category-box::after{
+  content:""; position:absolute; top:0; left:14%; right:14%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.65; pointer-events:none;
+}
+.cat-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.6rem}
+.cat-title{
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.78rem; font-weight:800; letter-spacing:.02em;
+  color:#e2e8f0; text-transform:uppercase;
+}
+.cat-title i{filter:drop-shadow(0 0 6px currentColor)}
+.badge{
+  min-width:24px; text-align:center;
+  font-size:.65rem; font-weight:800; padding:.15rem .45rem;
+  border-radius:999px; background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);
+  font-variant-numeric:tabular-nums;
+}
+.dropzone{
+  flex:1; overflow-y:auto;
+  border:2px dashed rgba(148,163,255,.2);
+  border-radius:14px; padding:.5rem;
+  background:linear-gradient(180deg,rgba(2,6,18,.5),rgba(2,6,18,.28));
+  transition:border-color .3s ease, background .3s ease, box-shadow .3s ease;
+}
+.dropzone:empty::after{
+  content:attr(data-empty); display:block; text-align:center;
+  font-size:.68rem; line-height:1.5;
+  color:rgba(148,163,255,.42); padding:1.3rem .6rem;
+}
+.dropzone.dz-over{
+  border-color:var(--accent,rgba(167,139,250,.9));
+  background:rgba(139,92,246,.12);
+  box-shadow:inset 0 0 26px rgba(139,92,246,.22);
+}
+
+/* ============================================================
+   7. TARJETAS DE ARCHIVO
+   ============================================================ */
+.file-card{
+  position:relative; border-radius:12px; padding:.55rem .6rem; margin-bottom:.45rem;
+  background:linear-gradient(150deg,rgba(32,40,68,.6),rgba(11,16,30,.82));
+  border:1px solid rgba(148,163,255,.1);
+  transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  animation:fadeUp .35s ease backwards;
+}
+.file-card:hover{
+  border-color:rgba(167,139,250,.45);
+  transform:translateX(2px);
+  box-shadow:0 8px 22px -14px rgba(139,92,246,.9);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fc-top{display:flex;align-items:flex-start;gap:.5rem}
+.fc-icon{color:#f87171;font-size:1rem;flex-shrink:0;margin-top:2px}
+.fc-text{min-width:0;flex:1}
+.fc-name{display:block;font-size:.7rem;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-size{display:block;font-size:.6rem;color:#64748b;margin-top:1px;font-variant-numeric:tabular-nums}
+.fc-actions{display:flex;gap:.25rem;flex-shrink:0}
+.fc-select{
+  width:100%; margin-top:.4rem; font-size:11px;
+  padding:.3rem 1.4rem .3rem .5rem; border-radius:9px;
+  background-color:rgba(6,10,20,.9);
+  border:1px solid rgba(148,163,255,.16);
+  color:#cbd5e1; outline:none; cursor:pointer;
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right .4rem center; background-size:13px;
+  transition:border-color .2s, box-shadow .2s;
+}
+.fc-select:hover,.fc-select:focus{border-color:rgba(167,139,250,.6);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+option{background:#0b1020;color:#cbd5e1}
+
+/* ============================================================
+   8. ESTADO / TOASTS / OVERLAY
+   ============================================================ */
+#status-message{position:relative;overflow:hidden}
+#status-message::after{
+  content:""; position:absolute; top:0; bottom:0; left:0; width:38%;
+  background:linear-gradient(90deg,transparent,rgba(96,165,250,.28),transparent);
+  animation:sweep 1.9s linear infinite; will-change:transform;
+}
+@keyframes sweep{from{transform:translateX(-130%)}to{transform:translateX(330%)}}
+
+#toast-wrap{
+  position:fixed; top:1rem; right:1rem; z-index:60;
+  display:flex; flex-direction:column; gap:.5rem;
+  max-width:min(340px,90vw); pointer-events:none;
+}
+.toast{
+  display:flex; align-items:flex-start; gap:.6rem;
+  padding:.7rem .85rem; border-radius:13px;
+  font-size:.75rem; line-height:1.45; font-weight:600; color:#e2e8f0;
+  background:linear-gradient(150deg,rgba(24,32,56,.94),rgba(8,12,22,.96));
+  border:1px solid var(--line);
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.95);
+  animation:toastIn .3s cubic-bezier(.2,.9,.3,1) both;
+}
+.toast.ok{border-color:rgba(52,211,153,.45);color:#a7f3d0}
+.toast.warn{border-color:rgba(251,191,36,.45);color:#fde68a}
+.toast.err{border-color:rgba(248,113,113,.45);color:#fecaca}
+.toast.info{border-color:rgba(96,165,250,.45);color:#bfdbfe}
+.toast.out{animation:toastOut .28s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(18px) scale(.97)}}
+
+#drop-overlay{
+  position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+  background:rgba(4,6,13,.62);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden;
+  transition:opacity .22s ease, visibility .22s;
+}
+body.dragging #drop-overlay{opacity:1;visibility:visible}
+.drop-box{
+  padding:2.4rem 3rem; border-radius:22px;
+  border:2px dashed rgba(167,139,250,.6);
+  background:rgba(12,16,30,.75); text-align:center;
+}
+
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(139,92,246,.6),rgba(59,130,246,.5));
+  border-radius:99px; border:2px solid transparent; background-clip:padding-box;
+}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(167,139,250,.9),rgba(96,165,250,.8));background-clip:padding-box}
+
+.enter{animation:enterIn .5s ease backwards}
+@keyframes enterIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.logo-badge{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:13px;
+  background:linear-gradient(140deg,rgba(59,130,246,.28),rgba(139,92,246,.28));
+  border:1px solid rgba(167,139,250,.35);
+  box-shadow:0 0 22px -6px rgba(139,92,246,.8);
+}
+.grad-title{
+  background:linear-gradient(100deg,#e2e8f0 10%,#a5b4fc 45%,#67e8f9 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+</style>
 </head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="#inicio" class="brand" aria-label="AZ Valuaciones - Inicio">
-        <img src="assets/logo-az-vector.png" alt="AZ Valuaciones" />
-      </a>
-      <nav aria-label="Navegación principal">
-        <a href="#inicio">INICIO</a>
-        <a href="#servicios">SERVICIOS</a>
-        <a href="#requisitos">REQUISITOS</a>
-        <a href="#proceso">PROCESO</a>
-        <a href="#nosotros">NOSOTROS</a>
-        <a href="#cobertura">COBERTURA</a>
-      </nav>
-      <a href="#contacto" class="btn btn-dorado">COTIZAR AHORA</a>
+
+<body class="relative min-h-screen p-4 sm:p-6">
+
+<!-- ============ CAPA 0: FONDO ============ -->
+<div id="bg-layer" aria-hidden="true">
+  <div class="bg-base"></div>
+  <div class="bg-aurora"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<!-- ============ CAPA 1: PARTÍCULAS ============ -->
+<canvas id="fx-canvas" aria-hidden="true"></canvas>
+
+<!-- ============ OVERLAY ARRASTRE ============ -->
+<div id="drop-overlay">
+  <div class="drop-box">
+    <i class="fa-solid fa-file-arrow-down text-3xl text-violet-300"></i>
+    <p class="mt-3 font-bold text-white text-sm">Suelta los PDFs para agregarlos</p>
+    <p class="text-[11px] text-slate-400 mt-1">O déjalos sobre una categoría para clasificarlos directo</p>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+
+<!-- ============ CAPA 10: CONTENIDO ============ -->
+<div class="max-w-[1400px] mx-auto relative z-10">
+
+  <header class="glass glass-hover enter rounded-2xl p-5 sm:p-6 mb-5 flex flex-col lg:flex-row justify-between items-center gap-5">
+    <div class="flex items-center gap-4">
+      <div class="logo-badge"><i class="fa-solid fa-layer-group text-blue-300 text-lg"></i></div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-extrabold grad-title tracking-tight">Generador de Expediente AI</h1>
+        <p class="text-slate-400 text-xs mt-1">
+          Organiza, extrae medidas y clasifica documentos escaneados con IA.
+          <span class="text-slate-500">·</span>
+          <span class="text-indigo-300 font-semibold"><span id="totalFiles">0</span> archivos cargados</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-2.5">
+      <label class="btn btn-blue">
+        <i class="fa-solid fa-upload"></i> 1. Subir PDFs
+        <input type="file" id="fileInput" multiple accept=".pdf" class="hidden">
+      </label>
+      <button id="btnGenerar" class="btn btn-emerald">
+        <i class="fa-solid fa-file-zipper"></i> 2. Descargar Expediente
+      </button>
+      <button id="btnFX" class="btn btn-ghost" title="Activar / desactivar partículas">
+        <i class="fa-solid fa-atom"></i>
+      </button>
+      <button id="btnFondo" class="btn btn-ghost" title="Modo rendimiento: congela fondo y partículas">
+        <i class="fa-solid fa-gauge-high"></i>
+      </button>
+      <button id="btnLimpiar" class="btn btn-ghost" title="Vaciar todo">
+        <i class="fa-solid fa-broom"></i>
+      </button>
     </div>
   </header>
 
-  <section id="inicio" class="hero">
-    <div class="container hero-grid">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+    <section class="glass glass-hover enter rounded-2xl p-5" style="animation-delay:.05s">
+      <h3 class="text-white font-bold mb-2 flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-robot text-violet-300" style="filter:drop-shadow(0 0 8px rgba(167,139,250,.9))"></i>
+        Clasificación Inteligente · Gemini Vision
+      </h3>
+      <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+        La IA leerá visualmente los documentos escaneados que no se acomoden por nombre de archivo.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input type="password" id="geminiApiKey" placeholder="Pega tu API Key de Gemini…"
+          class="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-950/70 border border-slate-600/40 text-white placeholder-slate-500 outline-none transition focus:border-violet-400 focus:shadow-[0_0_0_3px_rgba(139,92,246,.15)]">
+        <button id="btnIA" class="btn btn-violet shrink-0">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Clasificar IA
+        </button>
+      </div>
+    </section>
+
+    <section class="glass glass-hover enter rounded-2xl p-5 flex flex-col justify-between" style="animation-delay:.1s">
       <div>
-        <aside class="panel-resumen" aria-label="Resumen de cobertura y organismos">
-          <div class="panel-header">
-            <div>
-              <div class="panel-eyebrow">CERTEZA PATRIMONIAL</div>
-              <h2>Dictámenes con Validez Oficial</h2>
-            </div>
-            <div class="panel-badge" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="6"></circle>
-                <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"></path>
-              </svg>
-            </div>
-          </div>
-
-          <div class="metricas-grid">
-            <div class="metrica-box">
-              <strong>Vivienda y Comercial</strong>
-              <span>Créditos, avalúo y opinión de valor</span>
-            </div>
-            <div class="metrica-box">
-              <strong>3 Entidades</strong>
-              <span>Edo. Méx., CDMX e Hidalgo</span>
-            </div>
-            <div class="metrica-box">
-              <strong>Línea II y V</strong>
-              <span>Adquisición y Pago a Pasivos</span>
-            </div>
-            <div class="metrica-box">
-              <strong>4 Organismos</strong>
-              <span>INFONAVIT, FOVISSSTE, ISSFAM, BANJERCITO</span>
-            </div>
-          </div>
-        </aside>
-
-        <div class="panel-resumen panel-respaldo">
-          <h1>
-            Respaldo técnico<br />
-            <em>para tu patrimonio.</em>
-          </h1>
-          <p class="hero-sub">
-            Especialistas en avalúos para créditos hipotecarios (<strong>INFONAVIT Línea II y V, FOVISSSTE, ISSFAM, BANJERCITO y criterios SHF</strong>) y operaciones comerciales.
-          </p>
-          <p class="shf-respaldo">
-            Dictámenes elaborados bajo lineamientos técnicos SHF y normatividad vigente del sector.
-          </p>
-          <div class="hero-actions">
-            <a href="#contacto" class="btn btn-dorado">SOLICITAR COTIZACIÓN →</a>
-            <a href="#requisitos" class="btn btn-borde-claro">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="4" y1="21" x2="4" y2="14"></line>
-                <line x1="4" y1="10" x2="4" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12" y2="3"></line>
-                <line x1="20" y1="21" x2="20" y2="16"></line>
-                <line x1="20" y1="12" x2="20" y2="3"></line>
-                <line x1="1" y1="14" x2="7" y2="14"></line>
-                <line x1="9" y1="8" x2="15" y2="8"></line>
-                <line x1="17" y1="16" x2="23" y2="16"></line>
-              </svg>
-              VER REQUISITOS POR CRÉDITO
-            </a>
-          </div>
-        </div>
+        <h3 class="text-white font-bold mb-2 flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-scissors text-pink-300" style="filter:drop-shadow(0 0 8px rgba(244,114,182,.9))"></i>
+          Extraer Medidas y Colindancias
+        </h3>
+        <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
+          Rastrea el texto de cada Escritura, detecta la página de linderos y la mueve a Colindancia.
+        </p>
       </div>
-
-      <div class="hero-brand-col">
-        <div class="hero-video-logo">
-          <video autoplay loop muted playsinline preload="auto" aria-label="Video corporativo AZ Valuaciones">
-            <source src="assets/hero-valuaciones.mp4" type="video/mp4" />
-            AZ VALUACIONES
-          </video>
-        </div>
-        <div class="pill">PRECISIÓN · VALOR · CONFIANZA</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="marquee" aria-label="Especialidades y cobertura">
-    <div class="marquee-track">
-      <span>✦ OPINIONES DE VALOR ✦ ESTADO DE MÉXICO · CDMX · HIDALGO ✦ INFONAVIT LÍNEA II (ADQUISICIÓN) ✦ INFONAVIT LÍNEA V (PAGO A PASIVOS) ✦ FOVISSSTE ✦ ISSFAM ✦ BANJERCITO ✦ AVALÚOS COMERCIALES</span>
-      <span aria-hidden="true">✦ OPINIONES DE VALOR ✦ ESTADO DE MÉXICO · CDMX · HIDALGO ✦ INFONAVIT LÍNEA II (ADQUISICIÓN) ✦ INFONAVIT LÍNEA V (PAGO A PASIVOS) ✦ FOVISSSTE ✦ ISSFAM ✦ BANJERCITO ✦ AVALÚOS COMERCIALES</span>
-    </div>
+      <button id="btnColindancia" class="btn btn-pink w-full">
+        <i class="fa-solid fa-magnifying-glass-location"></i> Procesar Escrituras
+      </button>
+    </section>
   </div>
 
-  <section id="servicios" class="seccion">
-    <div class="container">
-      <div class="eyebrow">NUESTROS SERVICIOS</div>
-      <h2 class="titulo-seccion">Avalúos Certificados y Comerciales</h2>
-      <p class="subtitulo-seccion">
-        Amplia experiencia en vivienda habitacional y residencial, departamentos en condominio, inmuebles usados y propiedades comerciales.
-      </p>
+  <div id="status-message" class="hidden glass rounded-2xl border-blue-500/40 px-4 py-3 mb-5 text-sm font-semibold text-blue-300 items-center gap-3">
+    <i class="fa-solid fa-circle-notch fa-spin text-base shrink-0"></i>
+    <span id="status-text">Procesando…</span>
+  </div>
 
-      <div class="cards-grid">
-        <article class="card">
-          <div>
-            <span class="tag">FUERTE PRINCIPAL</span>
-            <h3>Avalúos INFONAVIT</h3>
-            <p>Dictámenes hipotecarios certificados para adquisición de vivienda nueva o usada y sustitución de hipoteca en desarrollos habitacionales y residenciales.</p>
-            <ul>
-              <li>Línea II: Adquisición de vivienda</li>
-              <li>Línea V: Pago a pasivos (liquidar hipoteca)</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="INFONAVIT · Línea II (Adquisición)">COTIZAR INFONAVIT</a>
-        </article>
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
+    <section class="glass glass-hover enter rounded-2xl p-4 flex flex-col h-[640px]" data-drop="unclassified" style="animation-delay:.15s">
+      <h2 class="font-bold text-white mb-3 flex items-center justify-between text-sm">
+        <span class="flex items-center gap-2">
+          <i class="fa-solid fa-inbox text-amber-400" style="filter:drop-shadow(0 0 6px rgba(245,158,11,.8))"></i>
+          Sin Clasificar
+        </span>
+        <span id="unclassified-count" class="badge text-amber-300">0</span>
+      </h2>
+      <div id="unclassified-container" class="dropzone" data-empty="Suelta aquí los PDFs sin clasificar"></div>
+    </section>
 
-        <article class="card">
-          <div>
-            <span class="tag">VALIDEZ OFICIAL</span>
-            <h3>Avalúos FOVISSSTE</h3>
-            <p>Peritajes inmobiliarios elaborados bajo los lineamientos técnicos de FOVISSSTE para créditos tradicionales, Fovissste para Todos y aliados.</p>
-            <ul>
-              <li>Revisión de habitabilidad y superficies</li>
-              <li>Integración puntual para escrituración</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="Avalúo FOVISSSTE">COTIZAR FOVISSSTE</a>
-        </article>
+    <div id="categorias" class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 h-[640px] overflow-y-auto pr-1"></div>
+  </div>
 
-        <article class="card">
-          <div>
-            <span class="tag">CRÉDITO MILITAR</span>
-            <h3>Avalúos ISSFAM</h3>
-            <p>Valuación especializada para créditos hipotecarios del Instituto de Seguridad Social para las Fuerzas Armadas Mexicanas con estricto apego normativo.</p>
-            <ul>
-              <li>Adquisición y liberación de gravamen</li>
-              <li>Inspección física detallada</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="Avalúo ISSFAM">COTIZAR ISSFAM</a>
-        </article>
-
-        <article class="card">
-          <div>
-            <span class="tag">BANCA HIPOTECARIA</span>
-            <h3>Avalúos BANJERCITO</h3>
-            <p>Dictámenes técnicos para operaciones de crédito hipotecario ante el Banco Nacional del Ejército, Fuerza Aérea y Armada.</p>
-            <ul>
-              <li>Verificación documental y constructiva</li>
-              <li>Entrega ágil para trámite bancario</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="Avalúo BANJERCITO">COTIZAR BANJERCITO</a>
-        </article>
-
-        <article class="card">
-          <div>
-            <span class="tag">VALOR DE MERCADO</span>
-            <h3>Avalúos Comerciales</h3>
-            <p>Determinación objetiva del valor comercial real de casas, departamentos, locales y terrenos mediante análisis comparativo de mercado.</p>
-            <ul>
-              <li>Compraventa entre particulares</li>
-              <li>Respaldo para toma de decisiones</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="Avalúo Comercial">COTIZAR COMERCIAL</a>
-        </article>
-
-        <article class="card">
-          <div>
-            <span class="tag">ASESORÍA INMOBILIARIA</span>
-            <h3>Opiniones de Valor</h3>
-            <p>Estudio técnico de referencia para propietarios, asesores inmobiliarios e inversionistas que desean fijar un precio competitivo de salida.</p>
-            <ul>
-              <li>Análisis de oferta y demanda local</li>
-              <li>Entrega rápida y fundamentada</li>
-            </ul>
-          </div>
-          <a href="#contacto" class="btn btn-vino" data-servicio="Opinión de Valor">SOLICITAR OPINIÓN</a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="requisitos" class="seccion-requisitos">
-    <div class="container">
-      <div class="req-header">
-        <div class="eyebrow">PREPARA TU TRÁMITE SIN CONTRATIEMPOS</div>
-        <h2 class="titulo-seccion">Guía Rápida de Documentación</h2>
-        <p class="subtitulo-seccion">
-          Selecciona el tipo de avalúo que necesitas para conocer los documentos básicos y agilizar tu proceso de escrituración.
-        </p>
-      </div>
-
-      <div class="tabs" role="tablist">
-        <button type="button" class="tab-btn activa" data-tab="linea2" role="tab" aria-selected="true">INFONAVIT LÍNEA II</button>
-        <button type="button" class="tab-btn" data-tab="linea5" role="tab" aria-selected="false">INFONAVIT LÍNEA V (PASIVOS)</button>
-        <button type="button" class="tab-btn" data-tab="organismos" role="tab" aria-selected="false">FOVISSSTE / ISSFAM / BANJERCITO</button>
-        <button type="button" class="tab-btn" data-tab="comercial" role="tab" aria-selected="false">COMERCIAL / OPINIÓN DE VALOR</button>
-      </div>
-
-      <div class="doc-box" id="docPanel"></div>
-    </div>
-  </section>
-
-  <section id="proceso" class="seccion">
-    <div class="container">
-      <div class="eyebrow">METODOLOGÍA CLARA</div>
-      <h2 class="titulo-seccion">Nuestro Proceso en 4 Pasos</h2>
-      <p class="subtitulo-seccion">
-        Acompañamiento técnico y documental de principio a fin para que tu trámite avance sin retrasos.
-      </p>
-      <div class="pasos-grid">
-        <article class="paso-card">
-          <span class="paso-num">01</span>
-          <h3>Cotización y Revisión</h3>
-          <p>Revisamos la ubicación del inmueble y el tipo de crédito para enviarte presupuesto claro y listado de documentos.</p>
-        </article>
-        <article class="paso-card">
-          <span class="paso-num">02</span>
-          <h3>Visita Técnica</h3>
-          <p>Agendamos la inspección física del inmueble para levantamiento de medidas, calidades constructivas y entorno urbano.</p>
-        </article>
-        <article class="paso-card">
-          <span class="paso-num">03</span>
-          <h3>Análisis y Cálculo</h3>
-          <p>Integramos el estudio de mercado, costos de reposición y criterios técnicos SHF aplicables a la normatividad vigente del organismo hipotecario.</p>
-        </article>
-        <article class="paso-card">
-          <span class="paso-num">04</span>
-          <h3>Entrega Oficial</h3>
-          <p>Entregamos el dictamen certificado listo para continuar con la autorización de crédito y firma ante notario.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="nosotros" class="seccion nosotros-section">
-    <div class="container nosotros-grid">
-      <div class="nosotros-media">
-        <img src="assets/quienes-somos.jpg" alt="Revisión técnica de planos arquitectónicos en AZ Valuaciones" />
-        <div class="nosotros-caption">
-          <strong>RIGOR CONSTRUCTIVO</strong>
-          <span>Edo. Méx. · CDMX · Hidalgo</span>
-        </div>
-      </div>
-
-      <div class="nosotros-texto">
-        <div class="titulo-con-linea">
-          <h2 class="titulo-seccion">¿Quiénes somos?</h2>
-          <span class="titulo-linea" aria-hidden="true"></span>
-        </div>
-        <p>
-          En <strong>AZ VALUACIONES</strong> reunimos sólida experiencia en ingeniería civil y valuación inmobiliaria para ofrecer dictámenes objetivos, precisos y con plena validez oficial.
-        </p>
-        <p>
-          Nuestro enfoque especializado en créditos hipotecarios, vivienda y valuación comercial nos permite acompañar tanto a familias acreditadas como a asesores inmobiliarios y desarrolladores con tiempos de respuesta ágiles y atención personalizada.
-        </p>
-
-        <div class="pilares">
-          <div class="pilar">
-            <strong>OBJETIVIDAD</strong>
-            <span>Sustento técnico y normativo</span>
-          </div>
-          <div class="pilar">
-            <strong>AGILIDAD</strong>
-            <span>Visitas y entregas puntuales</span>
-          </div>
-          <div class="pilar">
-            <strong>CERCANÍA</strong>
-            <span>Asesoría directa en cada etapa</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="cobertura" class="seccion">
-    <div class="container">
-      <div class="cobertura-header">
-        <div>
-          <div class="eyebrow">PRESENCIA REGIONAL</div>
-          <h2 class="titulo-seccion">Cobertura en 3 Estados Clave</h2>
-        </div>
-        <p class="cobertura-desc">
-          Haz clic en cada entidad del mapa para consultar las principales zonas y corredores habitacionales que atendemos.
-        </p>
-      </div>
-
-      <div class="cobertura-layout">
-        <!-- Mapa SVG interactivo -->
-        <div class="mapa-panel">
-          <div class="mapa-labels-top">
-            <span>ZONA CENTRO · REPÚBLICA MEXICANA</span>
-            <span>RED ACTIVA DE VALUACIÓN</span>
-          </div>
-          <svg class="mapa-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
-            <!-- Hidalgo -->
-            <g class="mapa-estado" data-estado="hidalgo">
-              <path d="M220 60 L310 55 L340 100 L330 150 L290 170 L240 160 L210 120 Z" fill="rgba(120,40,55,0.55)" stroke="rgba(229,199,163,0.4)" stroke-width="1.2"/>
-              <circle cx="280" cy="110" r="4" fill="var(--dorado)" opacity="0.7"/>
-              <circle cx="260" cy="125" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <circle cx="300" cy="95" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <!-- Dashed connections -->
-              <line x1="280" y1="110" x2="260" y2="125" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="280" y1="110" x2="300" y2="95" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-            </g>
-            <!-- Estado de México -->
-            <g class="mapa-estado active" data-estado="edomex">
-              <path d="M120 140 L240 130 L290 170 L310 230 L280 290 L200 310 L140 280 L100 220 L90 170 Z" fill="rgba(140,50,65,0.65)" stroke="rgba(229,199,163,0.5)" stroke-width="1.4"/>
-              <circle cx="200" cy="200" r="5" fill="var(--dorado)" opacity="0.85"/>
-              <circle cx="170" cy="220" r="3.5" fill="var(--dorado)" opacity="0.6"/>
-              <circle cx="230" cy="180" r="3.5" fill="var(--dorado)" opacity="0.6"/>
-              <circle cx="210" cy="250" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <circle cx="160" cy="190" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <circle cx="240" cy="230" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <!-- Dashed connections -->
-              <line x1="200" y1="200" x2="170" y2="220" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="200" y1="200" x2="230" y2="180" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="200" y1="200" x2="210" y2="250" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="200" y1="200" x2="160" y2="190" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="200" y1="200" x2="240" y2="230" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-            </g>
-            <!-- CDMX -->
-            <g class="mapa-estado" data-estado="cdmx">
-              <path d="M250 200 L290 190 L310 230 L300 270 L260 275 L240 240 Z" fill="rgba(160,60,75,0.6)" stroke="rgba(229,199,163,0.45)" stroke-width="1.3"/>
-              <circle cx="275" cy="235" r="4.5" fill="var(--dorado)" opacity="0.8"/>
-              <circle cx="260" cy="250" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <circle cx="285" cy="215" r="3" fill="var(--dorado)" opacity="0.5"/>
-              <line x1="275" y1="235" x2="260" y2="250" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-              <line x1="275" y1="235" x2="285" y2="215" stroke="rgba(229,199,163,0.3)" stroke-width="0.8" stroke-dasharray="4,3"/>
-            </g>
-            <!-- Labels -->
-            <text x="280" y="90" fill="var(--crema)" font-size="11" font-family="var(--sans)" font-weight="600" text-anchor="middle" letter-spacing="0.06em">HIDALGO</text>
-            <text x="165" y="210" fill="var(--crema)" font-size="11" font-family="var(--sans)" font-weight="600" text-anchor="middle" letter-spacing="0.06em">ESTADO DE MÉXICO</text>
-            <text x="280" y="260" fill="var(--crema)" font-size="10" font-family="var(--sans)" font-weight="600" text-anchor="middle" letter-spacing="0.06em">CIUDAD DE MÉXICO</text>
-          </svg>
-          <div class="mapa-footer-label">PRECISIÓN · VALOR · CONFIANZA</div>
-        </div>
-
-        <!-- Panel derecho -->
-        <div class="cobertura-info-panel">
-          <div class="estado-tabs">
-            <button type="button" class="estado-tab activa" data-estado="edomex">EDO. MÉX.</button>
-            <button type="button" class="estado-tab" data-estado="cdmx">CDMX</button>
-            <button type="button" class="estado-tab" data-estado="hidalgo">HIDALGO</button>
-          </div>
-
-          <div class="estado-detalle" id="estadoDetalle"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contacto" class="seccion contacto-section">
-    <div class="container dos-cols">
-      <div class="contacto-info-card">
-        <div class="eyebrow">ATENCIÓN PERSONALIZADA</div>
-        <h2 class="titulo-seccion">Contáctanos</h2>
-        <p>
-          Será un gusto atenderte y cotizar tu avalúo hoy mismo. Respuesta directa a tu correo o teléfono con el listado exacto para tu trámite.
-        </p>
-        <div class="contacto-dato">
-          <span>CORREO DIRECTO</span>
-          <a href="mailto:inglitzyaguirre@azvaluaciones.com">inglitzyaguirre@azvaluaciones.com</a>
-        </div>
-        <div class="contacto-dato">
-          <span>COBERTURA</span>
-          <strong>Estado de México · Ciudad de México · Hidalgo</strong>
-        </div>
-        <div class="contacto-dato">
-          <span>ORGANISMOS Y OPERACIONES</span>
-          <strong>INFONAVIT (Línea II y V) · FOVISSSTE · ISSFAM · BANJERCITO · Comerciales</strong>
-        </div>
-        <div class="contacto-dato contacto-redes">
-          <span>WHATSAPP Y REDES SOCIALES</span>
-          <div class="redes-lista">
-            <a href="https://wa.link/81bzco" target="_blank" rel="noopener noreferrer" class="red-link">
-              <svg class="red-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              <strong>55 8226 1987</strong>
-            </a>
-            <a href="https://www.facebook.com/litzy.aguirre.zaraut" target="_blank" rel="noopener noreferrer" class="red-link">
-              <svg class="red-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
-              <strong>Litzy Aguirre Zaraut</strong>
-            </a>
-            <a href="https://www.tiktok.com/@inglitzy.aguirre" target="_blank" rel="noopener noreferrer" class="red-link">
-              <svg class="red-icono" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-              <strong>Ing. Litzy Aguirre</strong>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <form class="cotizacion-form" id="formCotizacion">
-        <div class="campo">
-          <label for="nombre">NOMBRE COMPLETO *</label>
-          <input id="nombre" name="nombre" type="text" placeholder="Ej. Arq. Carlos Mendoza" required />
-        </div>
-        <div class="campo">
-          <label for="contactoInput">TELÉFONO / CORREO ELECTRÓNICO *</label>
-          <input id="contactoInput" name="contactoInput" type="text" placeholder="Ej. 55 1234 5678 / correo@dominio.com" required />
-        </div>
-        <div class="campo">
-          <label for="tipoAvaluo">TIPO DE AVALÚO *</label>
-          <select id="tipoAvaluo" name="tipoAvaluo">
-            <option value="INFONAVIT · Línea II (Adquisición)">INFONAVIT · Línea II (Adquisición)</option>
-            <option value="INFONAVIT · Línea V (Pago a Pasivos)">INFONAVIT · Línea V (Pago a Pasivos)</option>
-            <option value="Avalúo FOVISSSTE">Avalúo FOVISSSTE</option>
-            <option value="Avalúo ISSFAM">Avalúo ISSFAM</option>
-            <option value="Avalúo BANJERCITO">Avalúo BANJERCITO</option>
-            <option value="Avalúo Comercial">Avalúo Comercial</option>
-            <option value="Opinión de Valor">Opinión de Valor</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="entidad">ENTIDAD DEL INMUEBLE *</label>
-          <select id="entidad" name="entidad">
-            <option value="Estado de México">Estado de México</option>
-            <option value="Ciudad de México">Ciudad de México</option>
-            <option value="Hidalgo">Hidalgo</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="municipio">MUNICIPIO / ALCALDÍA</label>
-          <input id="municipio" name="municipio" type="text" placeholder="Ej. Tecámac, Ecatepec, Tizayuca, GAM..." />
-        </div>
-        <button type="submit" class="btn btn-vino">SOLICITA UNA COTIZACIÓN</button>
-        <div class="mensaje-envio" id="mensajeEnvio" aria-live="polite"></div>
-      </form>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <div class="footer-brand">
-        <img src="assets/logo-az-completo.png" alt="AZ Valuaciones" />
-      </div>
-      <div>AZ VALUACIONES · PRECISIÓN · VALOR · CONFIANZA · © 2026 AZ Valuaciones · Estado de México · CDMX · Hidalgo</div>
-    </div>
+  <footer class="text-center text-[10px] text-slate-600 mt-6 pb-2">
+    Procesamiento 100% local en tu navegador · Nada sale de tu equipo excepto lo que envíes a Gemini
   </footer>
+</div>
 
-  <script>
-    const iconos = {
-      doc: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>`,
-      medidas: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>`,
-      agua: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
-      regla: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/></svg>`,
-      plano: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
-      pin: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
-      id: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><line x1="13" y1="10" x2="18" y2="10"/><line x1="13" y1="14" x2="17" y2="14"/></svg>`,
-      escudo: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-      grafica: `<svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`
-    };
+<script>
+/* ============================================================
+   MOTOR DE ANTIGRAVEDAD — partículas + nodos interactivos
+   ============================================================ */
+const ParticleFX = (function(){
+  const canvas = document.getElementById('fx-canvas');
+  const ctx = canvas && canvas.getContext('2d', { alpha:true, desynchronized:true });
+  const API = { toggle(){}, on(){}, off(){}, burst(){}, isOn(){ return enabled; }, setLowPower(){} };
+  if (!ctx) return API;
 
-    const guias = {
-      linea2: {
-        badge: "ADQUISICIÓN · COMPRA - VENTA",
-        titulo: "Avalúo INFONAVIT Línea II (Adquisición de Vivienda)",
-        descripcion:
-          "Dictamen técnico obligatorio para comprar vivienda nueva o usada mediante crédito INFONAVIT tradicional, Unamos Créditos o Cofinavit.",
-        enfoque:
-          "Casas habitación, departamentos en condominio y propiedades residenciales en Edo. Méx., CDMX e Hidalgo.",
-        servicio: "INFONAVIT · Línea II (Adquisición)",
-        asunto: "Nombre del comprador",
-        inmueble: [
-          { icono: "doc", texto: "Escritura completa y anexos" },
-          { icono: "medidas", texto: "Medidas y colindancias" },
-          { icono: "doc", texto: "Boleta predial (año en curso)" },
-          { icono: "agua", texto: "Boleta de agua (último bimestre)" },
-          { icono: "regla", texto: "Constancia de alineamiento y número oficial" },
-          { icono: "plano", texto: "Plano acotado" },
-          { icono: "pin", texto: "Ubicación exacta (Google Maps)" }
-        ],
-        propietario: [
-          { icono: "id", texto: "INE vigente (ambos lados)" },
-          { icono: "id", texto: "CURP" },
-          { icono: "doc", texto: "Constancia de Situación Fiscal (RFC)" }
-        ],
-        solicitanteTitulo: "COMPRADOR",
-        solicitante: [
-          { icono: "doc", texto: "Solicitud de avalúo (requisitada y firmada)" },
-          { icono: "id", texto: "INE vigente (ambos lados)" },
-          { icono: "id", texto: "CURP" },
-          { icono: "doc", texto: "Constancia de Situación Fiscal (RFC)" },
-          { icono: "escudo", texto: "Número de Seguridad Social (NSS)" },
-          { icono: "grafica", texto: "Precalificación vigente" }
-        ]
-      },
-      linea5: {
-        badge: "LIQUIDACIÓN · PAGO A PASIVOS",
-        titulo: "Avalúo INFONAVIT Línea V (Pago a Pasivos)",
-        descripcion:
-          "Evaluación técnica para liquidar o sustituir una hipoteca vigente con apego a los criterios técnicos y normativos actuales.",
-        enfoque:
-          "Vivienda particular y departamentos en condominio en Edo. Méx., CDMX e Hidalgo.",
-        servicio: "INFONAVIT · Línea V (Pago a Pasivos)",
-        asunto: "Nombre del acreditado",
-        inmueble: [
-          { icono: "doc", texto: "Escritura pública inscrita y anexos" },
-          { icono: "medidas", texto: "Medidas y colindancias" },
-          { icono: "doc", texto: "Boleta predial (año en curso)" },
-          { icono: "agua", texto: "Boleta de agua (último bimestre)" },
-          { icono: "regla", texto: "Constancia de alineamiento y número oficial" },
-          { icono: "plano", texto: "Plano acotado o croquis del inmueble" },
-          { icono: "pin", texto: "Ubicación exacta (Google Maps)" }
-        ],
-        propietario: [
-          { icono: "doc", texto: "Estado de cuenta o carta saldo del crédito actual" },
-          { icono: "id", texto: "INE vigente del propietario / acreditado" },
-          { icono: "doc", texto: "Constancia de Situación Fiscal (RFC)" }
-        ],
-        solicitanteTitulo: "ACREDITADO",
-        solicitante: [
-          { icono: "doc", texto: "Solicitud de avalúo (requisitada y firmada)" },
-          { icono: "id", texto: "INE vigente (ambos lados)" },
-          { icono: "id", texto: "CURP" },
-          { icono: "escudo", texto: "Número de Seguridad Social (NSS)" },
-          { icono: "grafica", texto: "Precalificación vigente INFONAVIT" }
-        ]
-      },
-      organismos: {
-        badge: "SECTOR PÚBLICO Y FUERZAS ARMADAS",
-        titulo: "Avalúos FOVISSSTE / ISSFAM / BANJERCITO",
-        descripcion:
-          "Dictámenes técnicos para trámites hipotecarios y de escrituración ante organismos federales y banca militar.",
-        enfoque:
-          "Propiedades habitacionales y residenciales con estricto apego a los lineamientos de cada organismo.",
-        servicio: "Avalúo FOVISSSTE",
-        asunto: "Nombre del acreditado y organismo",
-        inmueble: [
-          { icono: "doc", texto: "Escritura pública completa con inscripción" },
-          { icono: "medidas", texto: "Medidas y colindancias" },
-          { icono: "doc", texto: "Boleta predial (año en curso)" },
-          { icono: "agua", texto: "Boleta de agua (último bimestre)" },
-          { icono: "regla", texto: "Alineamiento y número oficial" },
-          { icono: "plano", texto: "Planos arquitectónicos o croquis acotado" },
-          { icono: "pin", texto: "Ubicación exacta (Google Maps)" }
-        ],
-        propietario: [
-          { icono: "id", texto: "INE vigente del vendedor / propietario" },
-          { icono: "id", texto: "CURP" },
-          { icono: "doc", texto: "Constancia de Situación Fiscal (RFC)" }
-        ],
-        solicitanteTitulo: "ACREDITADO / SOLICITANTE",
-        solicitante: [
-          { icono: "doc", texto: "Folio o solicitud de crédito del organismo" },
-          { icono: "id", texto: "INE vigente (ambos lados)" },
-          { icono: "id", texto: "CURP y Constancia de Situación Fiscal (RFC)" },
-          { icono: "pin", texto: "Datos de contacto para agendar visita física" }
-        ]
-      },
-      comercial: {
-        badge: "VALOR DE MERCADO · ASESORÍA",
-        titulo: "Avalúo Comercial / Opinión de Valor",
-        descripcion:
-          "Estudios comparativos de mercado y referencia patrimonial para operaciones privadas, compraventa o fijación de precio competitivo.",
-        enfoque:
-          "Casas, departamentos, locales comerciales y terrenos en Edo. Méx., CDMX e Hidalgo.",
-        servicio: "Avalúo Comercial",
-        asunto: "Nombre del solicitante · Tipo de inmueble",
-        inmueble: [
-          { icono: "pin", texto: "Ubicación exacta (Google Maps)" },
-          { icono: "medidas", texto: "Superficie de terreno y construcción" },
-          { icono: "doc", texto: "Escritura o boleta predial (recomendado en avalúo comercial)" },
-          { icono: "plano", texto: "Planos o croquis de distribución (si cuenta con ellos)" }
-        ],
-        propietario: [
-          { icono: "id", texto: "Datos generales del solicitante o propietario" },
-          { icono: "doc", texto: "Uso actual y estado de conservación del inmueble" }
-        ],
-        solicitanteTitulo: "DATOS COMPLEMENTARIOS",
-        solicitante: [
-          { icono: "doc", texto: "Finalidad del estudio (compraventa, referencia, inversión)" },
-          { icono: "grafica", texto: "Amenidades, remodelaciones o características especiales" },
-          { icono: "pin", texto: "Disponibilidad de horario para inspección física" }
-        ]
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const PALETTE = ['#a78bfa','#60a5fa','#22d3ee','#f472b6','#818cf8','#67e8f9'];
+
+  const CFG = {
+    cell: 132,
+    linkDist: 122,
+    linkDist2: 122*122,
+    mouseLink: 190,
+    mouseLink2: 190*190,
+    mouseRadius: 168,
+    repel: 1.15,
+    swirl: 0.42,
+    mousePush: 0.42,
+    spring: 0.022,
+    damping: 0.965,
+    maxCount: 150,
+    minCount: 34,
+    speedScale: reduce ? 0.45 : 1
+  };
+
+  let W=0,H=0,DPR=1;
+  let parts=[], sprites=[], glowSprite=null;
+  let raf=null, last=performance.now(), running=false;
+  let enabled=true, lowPower=false;
+  let gridCols=0, gridRows=0, grid=null;
+
+  const mouse = { x:-1e4, y:-1e4, vx:0, vy:0, has:false, gx:0, gy:0, gAlpha:0 };
+
+  function rgba(hex,a){
+    const n = parseInt(hex.slice(1),16);
+    return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+  }
+  function makeSprite(color, size){
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d');
+    const r = size/2;
+    const grd = g.createRadialGradient(r,r,0,r,r,r);
+    grd.addColorStop(0,    rgba(color,1));
+    grd.addColorStop(0.18, rgba(color,0.85));
+    grd.addColorStop(0.45, rgba(color,0.30));
+    grd.addColorStop(1,    rgba(color,0));
+    g.fillStyle = grd;
+    g.fillRect(0,0,size,size);
+    return c;
+  }
+
+  function targetCount(){
+    const area = W*H;
+    let n = Math.round(area * 0.000072);
+    const cores = navigator.hardwareConcurrency || 4;
+    if (cores <= 4) n = Math.round(n*0.72);
+    if (W < 768)    n = Math.round(n*0.62);
+    if (reduce)     n = Math.round(n*0.7);
+    return Math.max(CFG.minCount, Math.min(CFG.maxCount, n));
+  }
+
+  function resize(){
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = Math.max(1, Math.floor(W*DPR));
+    canvas.height = Math.max(1, Math.floor(H*DPR));
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    buildGridLayout();
+    syncCount(targetCount());
+  }
+
+  function buildGridLayout(){
+    gridCols = Math.ceil(W/CFG.cell) + 2;
+    gridRows = Math.ceil(H/CFG.cell) + 2;
+    if (!grid || grid.length !== gridCols*gridRows){
+      grid = new Array(gridCols*gridRows);
+      for (let i=0;i<grid.length;i++) grid[i] = [];
+    } else {
+      for (let i=0;i<grid.length;i++) grid[i].length = 0;
+    }
+  }
+
+  function spawn(p, fromBottom){
+    p.x = Math.random()*W;
+    p.y = fromBottom ? H + 20 + Math.random()*90 : Math.random()*H;
+    p.r = 0.55 + Math.random()*1.75;
+    p.buoy = (0.10 + Math.random()*0.42) * CFG.speedScale;
+    p.vx = (Math.random()-0.5)*0.16;
+    p.vy = -p.buoy;
+    p.a = 0.18 + Math.random()*0.42;
+    p.ci = (Math.random()*PALETTE.length)|0;
+    p.sprite = sprites[p.ci];
+    p.phase = Math.random()*Math.PI*2;
+    p.wob = 0.4 + Math.random()*0.9;
+    p.depth = 0.35 + Math.random()*0.65;
+    return p;
+  }
+
+  function syncCount(n){
+    while (parts.length < n) parts.push(spawn({}, false));
+    if (parts.length > n) parts.length = n;
+  }
+
+  function rebuildGrid(){
+    for (let i=0;i<grid.length;i++) grid[i].length = 0;
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      let cx = ((p.x / CFG.cell)|0) + 1;
+      let cy = ((p.y / CFG.cell)|0) + 1;
+      if (cx < 0) cx = 0; if (cx >= gridCols) cx = gridCols-1;
+      if (cy < 0) cy = 0; if (cy >= gridRows) cy = gridRows-1;
+      grid[cy*gridCols + cx].push(i);
+    }
+  }
+
+  function update(dt){
+    const R = CFG.mouseRadius, R2 = R*R;
+    const dtl = Math.min(dt, 2.4);
+
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+
+      p.phase += 0.006*dtl;
+      p.vx += Math.sin(p.phase*1.3) * 0.0075 * p.wob * dtl;
+      p.vy += Math.cos(p.phase*0.9) * 0.0045 * p.wob * dtl;
+
+      p.vy += (-p.buoy - p.vy) * CFG.spring * dtl;
+      p.vx += (0 - p.vx) * CFG.spring * dtl;
+
+      if (mouse.has){
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const d2 = dx*dx + dy*dy;
+        if (d2 < R2 && d2 > 0.5){
+          const d = Math.sqrt(d2);
+          const f = (1 - d/R);
+          const nx = dx/d, ny = dy/d;
+          p.vx += nx * f * CFG.repel * dtl;
+          p.vy += ny * f * CFG.repel * dtl;
+          p.vx += -ny * f * CFG.swirl * dtl;
+          p.vy +=  nx * f * CFG.swirl * dtl;
+          p.vx += mouse.vx * f * CFG.mousePush * dtl;
+          p.vy += mouse.vy * f * CFG.mousePush * dtl;
+        }
       }
-    };
 
-    const docPanel = document.getElementById("docPanel");
-    const tabBtns = document.querySelectorAll(".tab-btn");
+      p.vx *= Math.pow(CFG.damping, dtl);
+      p.vy *= Math.pow(CFG.damping, dtl);
 
-    function renderLista(items) {
-      return items
-        .map(
-          (item) => `
-          <li>
-            ${iconos[item.icono] || iconos.doc}
-            <span>${item.texto}</span>
-          </li>`
-        )
-        .join("");
+      p.x += p.vx * dtl;
+      p.y += p.vy * dtl;
+
+      if (p.y < -40) spawn(p, true);
+      else if (p.y > H + 60) p.y = -30;
+      if (p.x < -40) p.x = W + 30;
+      else if (p.x > W + 40) p.x = -30;
     }
 
-    function renderTab(key) {
-      const item = guias[key];
-      docPanel.innerHTML = `
-        <div class="doc-layout">
-          <div class="doc-intro">
-            <div>
-              <span class="doc-pill">${item.badge}</span>
-              <h3>${item.titulo}</h3>
-              <p class="doc-desc">${item.descripcion}</p>
-              <div class="enfoque-box">
-                <span class="enfoque-label">ENFOQUE PRINCIPAL</span>
-                <p>${item.enfoque}</p>
-              </div>
-            </div>
-            <div>
-              <a href="#contacto" class="btn btn-dorado" data-servicio-tab="${item.servicio}">COTIZAR ESTE TRÁMITE →</a>
-            </div>
-          </div>
+    mouse.vx *= 0.90;
+    mouse.vy *= 0.90;
+    mouse.gx += (mouse.x - mouse.gx) * 0.16;
+    mouse.gy += (mouse.y - mouse.gy) * 0.16;
+    mouse.gAlpha += ((mouse.has ? 1 : 0) - mouse.gAlpha) * 0.08;
+  }
 
-          <div class="doc-col-stack">
-            <div class="req-card">
-              <div class="req-card-title">INFORMACIÓN DEL INMUEBLE</div>
-              <ul class="req-list">${renderLista(item.inmueble)}</ul>
-            </div>
-            <div class="req-card">
-              <div class="req-card-title">PROPIETARIO</div>
-              <ul class="req-list">${renderLista(item.propietario)}</ul>
-            </div>
-          </div>
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation = 'lighter';
 
-          <div class="doc-col-stack">
-            <div class="req-card">
-              <div class="req-card-title">${item.solicitanteTitulo}</div>
-              <ul class="req-list">${renderLista(item.solicitante)}</ul>
-            </div>
-            <div class="req-card">
-              <div class="req-card-title">INSTRUCCIONES DE ENVÍO</div>
-              <p class="envio-intro">
-                Toda la documentación debe enviarse en formato PDF, legible y ordenada.
-              </p>
-              <a class="envio-pill" href="mailto:inglitzyaguirre@azvaluaciones.com?subject=${encodeURIComponent(item.titulo)}">
-                <span>Enviar a: inglitzyaguirre@azvaluaciones.com</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-              </a>
-              <p class="envio-meta"><strong>Asunto:</strong> ${item.asunto}</p>
-              <p class="envio-meta" style="margin-bottom: 4px;"><strong>Notas importantes:</strong></p>
-              <ul class="envio-notas">
-                <li>Incluir en el cuerpo del correo el enlace de ubicación y el valor de operación.</li>
-                <li>Si no cuenta con el plano, ofrecemos el servicio de levantamiento y elaboración (sujeto a cotización).</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      `;
+    if (mouse.gAlpha > 0.01 && glowSprite){
+      const s = 300;
+      ctx.globalAlpha = 0.20 * mouse.gAlpha;
+      ctx.drawImage(glowSprite, mouse.gx - s/2, mouse.gy - s/2, s, s);
+    }
 
-      const ctaBtn = docPanel.querySelector("[data-servicio-tab]");
-      if (ctaBtn) {
-        ctaBtn.addEventListener("click", () => {
-          document.getElementById("tipoAvaluo").value = ctaBtn.dataset.servicioTab;
-        });
+    const LD2 = CFG.linkDist2;
+    ctx.lineWidth = 0.65;
+    for (let i=0;i<parts.length;i++){
+      const a = parts[i];
+      const cx = ((a.x / CFG.cell)|0) + 1;
+      const cy = ((a.y / CFG.cell)|0) + 1;
+
+      for (let oy=-1; oy<=1; oy++){
+        const ry = cy+oy;
+        if (ry < 0 || ry >= gridRows) continue;
+        for (let ox=-1; ox<=1; ox++){
+          const rx = cx+ox;
+          if (rx < 0 || rx >= gridCols) continue;
+          const bucket = grid[ry*gridCols + rx];
+          for (let k=0;k<bucket.length;k++){
+            const j = bucket[k];
+            if (j <= i) continue;
+            const b = parts[j];
+            const dx = a.x-b.x, dy = a.y-b.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 > LD2) continue;
+            const t = 1 - Math.sqrt(d2)/CFG.linkDist;
+            ctx.globalAlpha = t*t*0.30;
+            ctx.strokeStyle = PALETTE[a.ci];
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
       }
     }
 
-    tabBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        tabBtns.forEach((b) => {
-          b.classList.remove("activa");
-          b.setAttribute("aria-selected", "false");
-        });
-        btn.classList.add("activa");
-        btn.setAttribute("aria-selected", "true");
-        renderTab(btn.dataset.tab);
-      });
-    });
-
-    renderTab("linea2");
-
-    // Seleccionar servicio desde tarjetas
-    document.querySelectorAll("[data-servicio]").forEach((link) => {
-      link.addEventListener("click", () => {
-        const select = document.getElementById("tipoAvaluo");
-        select.value = link.dataset.servicio;
-      });
-    });
-
-    // Envío de formulario
-    document.getElementById("formCotizacion").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const nombre = document.getElementById("nombre").value.trim();
-      const contacto = document.getElementById("contactoInput").value.trim();
-      const tipo = document.getElementById("tipoAvaluo").value;
-      const entidad = document.getElementById("entidad").value;
-      const municipio = document.getElementById("municipio").value.trim();
-
-      const cuerpo = `Nombre: ${nombre}\nContacto: ${contacto}\nTipo de avalúo: ${tipo}\nEntidad: ${entidad}${municipio ? `\nMunicipio/Alcaldía: ${municipio}` : ""}`;
-      const mailto = `mailto:inglitzyaguirre@azvaluaciones.com?subject=${encodeURIComponent(`Cotización ${tipo} - ${nombre}`)}&body=${encodeURIComponent(cuerpo)}`;
-
-      const msgEl = document.getElementById("mensajeEnvio");
-      msgEl.innerHTML = `Solicitud preparada para <strong>${nombre}</strong> (${tipo} · ${entidad}). <a href="${mailto}" style="color: var(--vino); text-decoration: underline;">Abrir en tu correo</a> o envíala a <strong>inglitzyaguirre@azvaluaciones.com</strong>.`;
-    });
-
-    // ===== Mapa interactivo de cobertura =====
-    const estadosData = {
-      edomex: {
-        badge: "SEDE PRINCIPAL · COBERTURA TOTAL",
-        titulo: "Estado de México",
-        desc: "Atención prioritaria en los principales corredores habitacionales y residenciales del Valle de México y Valle de Toluca.",
-        zonas: [
-          "Tecámac y Ojo de Agua",
-          "Zumpango y Huehuetoca",
-          "Ecatepec y Coacalco",
-          "Tultitlán, Cuautitlán y Tlalnepantla",
-          "Toluca, Metepec y Lerma",
-          "Texcoco, Chalco e Ixtapaluca"
-        ],
-        cta: "COTIZAR AVALÚO EN ESTADO DE MÉXICO →"
-      },
-      cdmx: {
-        badge: "COBERTURA COMPLETA",
-        titulo: "Ciudad de México",
-        desc: "Valuaciones en todas las alcaldías de la CDMX: desde Gustavo A. Madero hasta Tlalpan, Coyoacán, Iztapalapa y más.",
-        zonas: [
-          "Gustavo A. Madero",
-          "Iztapalapa",
-          "Álvaro Obregón",
-          "Coyoacán y Tlalpan",
-          "Azcapotzalco y Miguel Hidalgo",
-          "Cuauhtémoc y Benito Juárez"
-        ],
-        cta: "COTIZAR AVALÚO EN CDMX →"
-      },
-      hidalgo: {
-        badge: "COBERTURA EN EXPANSIÓN",
-        titulo: "Hidalgo",
-        desc: "Presencia creciente en los municipios más demandados del estado de Hidalgo, especialmente la zona conurbada al Valle de México.",
-        zonas: [
-          "Tizayuca",
-          "Pachuca de Soto",
-          "Mineral de la Reforma",
-          "Atotonilco de Tula",
-          "Tulancingo",
-          "Tula de Allende"
-        ],
-        cta: "COTIZAR AVALÚO EN HIDALGO →"
+    if (mouse.has){
+      const ML2 = CFG.mouseLink2;
+      for (let i=0;i<parts.length;i++){
+        const p = parts[i];
+        const dx = p.x-mouse.x, dy = p.y-mouse.y;
+        const d2 = dx*dx+dy*dy;
+        if (d2 > ML2) continue;
+        const t = 1 - Math.sqrt(d2)/CFG.mouseLink;
+        ctx.globalAlpha = t*t*0.55;
+        ctx.strokeStyle = '#c4b5fd';
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(mouse.x,mouse.y);
+        ctx.stroke();
       }
+    }
+
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      const size = p.r * 8;
+      ctx.globalAlpha = p.a * (0.55 + p.depth*0.45);
+      ctx.drawImage(p.sprite, p.x - size/2, p.y - size/2, size, size);
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function frame(now){
+    raf = requestAnimationFrame(frame);
+    const dt = (now - last) / 16.667;
+    last = now;
+    if (dt <= 0) return;
+    update(dt);
+    rebuildGrid();
+    draw();
+  }
+
+  function start(){
+    if (running || !enabled || lowPower || document.hidden) return;
+    running = true;
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  }
+  function stop(){
+    if (!running) return;
+    running = false;
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+    ctx.clearRect(0,0,W,H);
+  }
+  function sync(){ (enabled && !lowPower && !document.hidden) ? start() : stop(); }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 160);
+  }, { passive:true });
+
+  window.addEventListener('pointermove', e => {
+    if (!mouse.has){ mouse.gx = e.clientX; mouse.gy = e.clientY; }
+    mouse.vx = e.clientX - mouse.x;
+    mouse.vy = e.clientY - mouse.y;
+    if (!isFinite(mouse.vx)) mouse.vx = 0;
+    if (!isFinite(mouse.vy)) mouse.vy = 0;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.has = true;
+  }, { passive:true });
+
+  window.addEventListener('pointerdown', e => { API.burst(e.clientX, e.clientY, 2.6); }, { passive:true });
+  window.addEventListener('pointerleave', () => { mouse.has = false; }, { passive:true });
+  window.addEventListener('blur',        () => { mouse.has = false; });
+  document.addEventListener('visibilitychange', sync);
+
+  API.burst = function(x, y, power){
+    if (x === undefined) x = W/2;
+    if (y === undefined) y = H/2;
+    power = power || 2.2;
+    for (let i=0;i<parts.length;i++){
+      const p = parts[i];
+      const dx = p.x - x, dy = p.y - y;
+      const d = Math.hypot(dx,dy) || 1;
+      if (d > 380) continue;
+      const f = (1 - d/380) * power;
+      p.vx += (dx/d) * f;
+      p.vy += (dy/d) * f;
+    }
+    if (!running) start();
+  };
+  API.on  = function(){ enabled = true;  document.body.classList.remove('fx-off'); sync(); };
+  API.off = function(){ enabled = false; document.body.classList.add('fx-off'); sync(); };
+  API.toggle = function(){ enabled ? API.off() : API.on(); return enabled; };
+  API.setLowPower = function(v){ lowPower = !!v; sync(); };
+
+  sprites = PALETTE.map(c => makeSprite(c, 64));
+  glowSprite = makeSprite('#a78bfa', 256);
+  resize();
+  sync();
+  window.addEventListener('load', resize);
+
+  return API;
+})();
+
+/* ============================================================
+   APP — configuración y lógica
+   ============================================================ */
+const CATS = [
+  {id:'escritura',    title:'Escritura',    icon:'fa-file-contract',    accent:'#60a5fa'},
+  {id:'predio',       title:'Predio',       icon:'fa-house-flag',       accent:'#fb923c'},
+  {id:'agua',         title:'Agua',         icon:'fa-faucet-drip',      accent:'#22d3ee'},
+  {id:'alineamiento', title:'Alineamiento', icon:'fa-map-location-dot', accent:'#818cf8'},
+  {id:'colindancia',  title:'Colindancia',  icon:'fa-border-all',       accent:'#f472b6'},
+  {id:'plano',        title:'Plano',        icon:'fa-pen-ruler',        accent:'#facc15'},
+  {id:'comprador',    title:'Comprador',    icon:'fa-user-check',       accent:'#34d399'},
+  {id:'vendedor',     title:'Vendedor',     icon:'fa-user-tag',         accent:'#c084fc'}
+];
+const listaCategoriasParaDropdown = CATS.map(c => ({id:c.id, title:c.title}));
+
+let filesList = [];
+let uid = 0;
+const newId = () => 'f' + (++uid) + Math.random().toString(36).slice(2,7);
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, m =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+const TOAST_ICON = {ok:'fa-circle-check', warn:'fa-triangle-exclamation', err:'fa-circle-xmark', info:'fa-circle-info'};
+function toast(msg, type='info'){
+  const wrap = $('#toast-wrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = '<i class="fa-solid ' + TOAST_ICON[type] + ' mt-[2px]"></i><span>' + esc(msg) + '</span>';
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 4300);
+}
+
+function mostrarStatus(txt){
+  $('#status-text').textContent = txt;
+  $('#status-message').classList.remove('hidden');
+  $('#status-message').classList.add('flex');
+}
+function ocultarStatus(){
+  $('#status-message').classList.add('hidden');
+  $('#status-message').classList.remove('flex');
+}
+
+function buildCategorias(){
+  $('#categorias').innerHTML = CATS.map((c,i) =>
+    '<section class="glass category-box enter" data-category="' + c.id + '" data-drop="' + c.id + '" ' +
+            'style="--accent:' + c.accent + ';animation-delay:' + (0.16 + i*0.03) + 's">' +
+      '<header class="cat-head">' +
+        '<h3 class="cat-title"><i class="fa-solid ' + c.icon + '" style="color:' + c.accent + '"></i><span>' + c.title + '</span></h3>' +
+        '<span class="badge" style="color:' + c.accent + '">0</span>' +
+      '</header>' +
+      '<div class="dropzone category-dropzone" data-empty="Suelta aquí los PDF de ' + c.title + '"></div>' +
+    '</section>').join('');
+}
+
+function handleFiles(files, forcedCategory){
+  const nuevos = [];
+  for (const file of files){
+    const esPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    if (!esPdf) continue;
+    const item = {
+      id: newId(),
+      name: file.name,
+      size: (file.size/1024/1024).toFixed(2) + ' MB',
+      category: forcedCategory || 'unclassified',
+      fileUrl: URL.createObjectURL(file),
+      file
     };
+    filesList.push(item);
+    nuevos.push(item);
+  }
+  if (!nuevos.length){ toast('No se encontraron archivos PDF válidos.', 'warn'); return; }
 
-    const estadoDetalle = document.getElementById("estadoDetalle");
-    const estadoTabs = document.querySelectorAll(".estado-tab");
-    const mapaEstados = document.querySelectorAll(".mapa-estado");
+  autoClassifyFiles(nuevos);
+  renderFiles();
+  ParticleFX.burst(window.innerWidth*0.5, window.innerHeight*0.35, 1.6);
+  toast(nuevos.length + ' PDF agregado' + (nuevos.length>1?'s':'') +
+        (forcedCategory && forcedCategory!=='unclassified' ? ' en ' + forcedCategory : '') + '.', 'ok');
+}
 
-    function renderEstado(key) {
-      const e = estadosData[key];
-      estadoDetalle.innerHTML = `
-        <span class="det-badge">${e.badge}</span>
-        <h3>${e.titulo}</h3>
-        <p class="det-desc">${e.desc}</p>
-        <div class="det-zonas-titulo">MUNICIPIOS Y ZONAS FRECUENTES</div>
-        <ul class="det-zonas-grid">
-          ${e.zonas.map(z => `<li>${z}</li>`).join("")}
-        </ul>
-        <a href="#contacto" class="btn btn-vino" style="width:100%;text-align:center;">${e.cta}</a>
-      `;
+function autoClassifyFiles(soloEstos){
+  const objetivo = soloEstos && soloEstos.length ? soloEstos : filesList;
+  objetivo.forEach(item => {
+    if (item.category !== 'unclassified') return;
+    const n = item.name.toLowerCase();
+    if      (n.includes('escritura') || n.includes('propiedad'))  item.category = 'escritura';
+    else if (n.includes('agua') || n.includes('drenaje'))         item.category = 'agua';
+    else if (n.includes('predio') || n.includes('predial'))       item.category = 'predio';
+    else if (n.includes('alineamiento') || n.includes('oficial')) item.category = 'alineamiento';
+    else if (n.includes('colinda'))                               item.category = 'colindancia';
+    else if (n.includes('plano') || n.includes('croquis') || n.includes('arquitectonico')) item.category = 'plano';
+    else if (n.includes('comprador') || n.includes('solicitud') || n.includes('ine') ||
+             n.includes('curp') || n.includes('nss') || n.includes('precalificacion'))     item.category = 'comprador';
+    else if (n.includes('vendedor'))                              item.category = 'vendedor';
+  });
+}
+
+function renderFiles(){
+  const un = $('#unclassified-container');
+  un.innerHTML = '';
+  document.querySelectorAll('.category-dropzone').forEach(z => z.innerHTML = '');
+
+  const counts = {unclassified:0};
+  CATS.forEach(c => counts[c.id] = 0);
+
+  filesList.forEach(item => {
+    if (!(item.category in counts)) item.category = 'unclassified';
+    counts[item.category]++;
+
+    const card = document.createElement('div');
+    card.className = 'file-card';
+    card.innerHTML =
+      '<div class="fc-top">' +
+        '<i class="fa-solid fa-file-pdf fc-icon"></i>' +
+        '<div class="fc-text">' +
+          '<span class="fc-name" title="' + esc(item.name) + '">' + esc(item.name) + '</span>' +
+          '<span class="fc-size">' + esc(item.size) + '</span>' +
+        '</div>' +
+        '<div class="fc-actions">' +
+          '<button class="icon-btn" title="Abrir PDF" data-act="ver"><i class="fa-solid fa-eye"></i></button>' +
+          '<button class="icon-btn danger" title="Quitar" data-act="del"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>' +
+      '</div>' +
+      '<select class="fc-select">' +
+        '<option value="unclassified"' + (item.category==='unclassified'?' selected':'') + '>Sin clasificar</option>' +
+        listaCategoriasParaDropdown.map(c =>
+          '<option value="' + c.id + '"' + (item.category===c.id?' selected':'') + '>' + c.title + '</option>').join('') +
+      '</select>';
+
+    card.querySelector('[data-act="ver"]').onclick = () => window.open(item.fileUrl, '_blank');
+    card.querySelector('[data-act="del"]').onclick = () => quitarArchivo(item.id);
+    card.querySelector('select').onchange = e => moveFile(item.id, e.target.value);
+
+    if (item.category === 'unclassified') un.appendChild(card);
+    else {
+      const zone = document.querySelector('.category-box[data-category="' + item.category + '"] .category-dropzone');
+      (zone || un).appendChild(card);
+    }
+  });
+
+  $('#unclassified-count').textContent = counts.unclassified;
+  CATS.forEach(c => {
+    const b = document.querySelector('.category-box[data-category="' + c.id + '"] .badge');
+    if (b) b.textContent = counts[c.id];
+  });
+  $('#totalFiles').textContent = filesList.length;
+}
+
+function moveFile(id, cat){
+  const f = filesList.find(x => x.id === id);
+  if (f){ f.category = cat; renderFiles(); }
+}
+
+function quitarArchivo(id){
+  const i = filesList.findIndex(x => x.id === id);
+  if (i === -1) return;
+  URL.revokeObjectURL(filesList[i].fileUrl);
+  filesList.splice(i, 1);
+  renderFiles();
+}
+
+let dragDepth = 0;
+function initDnD(){
+  document.querySelectorAll('[data-drop]').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      if (!e.dataTransfer || !e.dataTransfer.types || e.dataTransfer.types.indexOf('Files') === -1) return;
+      e.preventDefault(); e.stopPropagation();
+      zone.classList.add('dz-over');
+    });
+    zone.addEventListener('dragleave', e => {
+      if (!zone.contains(e.relatedTarget)) zone.classList.remove('dz-over');
+    });
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); e.stopPropagation();
+      zone.classList.remove('dz-over');
+      document.body.classList.remove('dragging');
+      dragDepth = 0;
+      handleFiles(e.dataTransfer.files, zone.dataset.drop);
+    });
+  });
+}
+window.addEventListener('dragenter', e => {
+  if (!e.dataTransfer || !e.dataTransfer.types || e.dataTransfer.types.indexOf('Files') === -1) return;
+  dragDepth++;
+  document.body.classList.add('dragging');
+});
+window.addEventListener('dragleave', () => {
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) document.body.classList.remove('dragging');
+});
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dragDepth = 0;
+  document.body.classList.remove('dragging');
+  if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+});
+
+/* ============================================================================
+   ███  MOTOR DE DETECCIÓN DE LINDEROS / MEDIDAS / COLINDANCIAS  ███
+   Ajustado a la redacción real de escrituras notariales mexicanas.
+   ============================================================================ */
+
+const CONFIG_COLINDIANCIAS = {
+  // Puntaje mínimo para considerar que una página es la de linderos
+  umbralPuntaje: 14,
+  // Si la sección continúa en la(s) página(s) siguiente(s), incluirla(s)
+  incluirPaginasContinuacion: true,
+  maxPaginasContinuacion: 2,
+  minRumbosContinuacion: 2,
+  // Ignora páginas casi vacías (carátulas, separadores) cuando hay varias
+  minPalabrasPagina: 18
+};
+
+/* --- Patrones con peso. El texto se evalúa ya normalizado (sin acentos,
+       sin signos, en minúsculas), por lo que "LINDEROS, MEDIDAS Y
+       COLINDANCIAS" se ve como "linderos medidas y colindancias". --- */
+const PATRONES_COLINDIANCIAS = [
+  { peso: 16, nombre: 'Linderos, medidas y colindancias',
+    re: /linderos\s+medidas\s+y\s+colindancias/g },
+  { peso: 12, nombre: 'Siguientes linderos, medidas y colindancias',
+    re: /(los\s+)?siguientes\s+linderos(\s+medidas\s+y\s+colindancias)?/g },
+  { peso: 10, nombre: 'Medidas y colindancias',
+    re: /medidas\s+y\s+colindancias/g },
+  { peso: 8,  nombre: 'Linderos y colindancias',
+    re: /linderos\s+y\s+colindancias/g },
+  { peso: 5,  nombre: 'Linderos',
+    re: /\blinderos\b/g },
+  { peso: 5,  nombre: 'Colindancias',
+    re: /\bcolindancias?\b/g },
+  { peso: 4,  nombre: 'Colindantes',
+    re: /\bcolindantes?\b/g },
+  { peso: 5,  nombre: 'Planta baja / alta / nivel',
+    re: /\bplanta\s+(baja|alta|principal|unica|primera|segunda|tercera|cuarta)\b/g },
+  { peso: 4,  nombre: 'Nivel o piso',
+    re: /\b(nivel|piso)\s+(planta\s+)?(baja|alta|unico|primero|segundo|tercero)\b/g },
+  { peso: 4,  nombre: 'Superficie de',
+    re: /\bsuperficie\s+de\b/g },
+  { peso: 2,  nombre: 'Superficie',
+    re: /\bsuperficie\b/g },
+  { peso: 4,  nombre: 'Metros cuadrados / m2',
+    re: /(metros?\s+cuadrados?|\bm2\b|\bmts2\b|\bmts\b)/g },
+  { peso: 5,  nombre: 'Rumbo cardinal (AL NORTE / AL SUROESTE…)',
+    re: /\bal\s+(norte|sur|este|oeste|oriente|poniente|noreste|noroeste|sureste|suroeste)\b/g },
+  { peso: 3,  nombre: 'Con rumbo / rumbos / vientos',
+    re: /\b(con\s+rumbo|rumbos?|vientos)\b/g },
+  { peso: 2,  nombre: 'Fracción / lote / manzana',
+    re: /\b(fraccion|fracciones|manzana|lote|predio)\b/g }
+];
+
+const RUMBOS_RE = /\bal\s+(norte|sur|este|oeste|oriente|poniente|noreste|noroeste|sureste|suroeste)\b/g;
+
+/* Reconstruye el texto de una página respetando el orden de lectura real,
+   agrupando fragmentos por coordenada vertical y ordenando por horizontal.
+   Sin esto, PDF.js entrega el texto en orden arbitrario y las frases
+   clave aparecen partidas. */
+function reconstruirTexto(textContent){
+  const items = (textContent.items || []).filter(it =>
+    it && typeof it.str === 'string' && it.str.trim() !== '');
+  if (!items.length) return '';
+
+  const lineas = new Map();
+  for (const it of items){
+    const tr = it.transform || [1,0,0,1,0,0];
+    const y = Math.round((tr[5] || 0) / 3.5) * 3.5;
+    if (!lineas.has(y)) lineas.set(y, []);
+    lineas.get(y).push({ x: tr[4] || 0, s: it.str });
+  }
+
+  return Array.from(lineas.entries())
+    .sort((a, b) => b[0] - a[0])                       // de arriba hacia abajo
+    .map(([, arr]) => arr
+      .sort((p, q) => p.x - q.x)                       // de izquierda a derecha
+      .map(o => o.s)
+      .join(' '))
+    .join('\n');
+}
+
+/* Normaliza: superíndices, acentos, mayúsculas y signos.
+   Conserva dígitos y puntos para no romper superficies tipo "12.50". */
+function normalizarTexto(t){
+  return String(t)
+    .replace(/²/g, '2')
+    .replace(/³/g, '3')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9.\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/* Puntúa una página según la densidad de patrones notariales detectados */
+function analizarPagina(textoNorm){
+  let score = 0;
+  const hits = [];
+
+  for (const p of PATRONES_COLINDIANCIAS){
+    const m = textoNorm.match(p.re);
+    if (!m || !m.length) continue;
+    score += p.peso * Math.min(m.length, 4);   // tope para no inflar por repetición
+    hits.push(p.nombre);
+  }
+
+  // Bonus por secuencia de rumbos cardinales (estructura típica del bloque de linderos)
+  const rumbos = (textoNorm.match(RUMBOS_RE) || []).length;
+  if (rumbos >= 3) score += (rumbos - 2) * 3;
+
+  return { score: score, hits: hits, rumbos: rumbos };
+}
+
+/* ---------------------------------------------------------------------------
+   PROCESAR ESCRITURAS
+   --------------------------------------------------------------------------- */
+async function extraerColindanciasDeEscritura(){
+  if (window.pdfjsLib && !pdfjsLib.GlobalWorkerOptions.workerSrc){
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+
+  const escrituras = filesList.filter(f => f.category === 'escritura');
+  if (!escrituras.length){ toast('No hay escrituras clasificadas para analizar.', 'warn'); return; }
+
+  const { PDFDocument } = PDFLib;
+  const reporte = [];
+  let sinResultado = 0;
+
+  for (let e = 0; e < escrituras.length; e++){
+    const doc = escrituras[e];
+
+    try{
+      const arrayBuffer = await doc.file.arrayBuffer();
+      const pdfJsDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const totalPaginas = pdfJsDoc.numPages;
+      const analisis = new Array(totalPaginas);
+
+      /* --- Fase 1: puntuar todas las páginas --- */
+      for (let i = 1; i <= totalPaginas; i++){
+        mostrarStatus('Analizando ' + (e + 1) + '/' + escrituras.length +
+                      ' · página ' + i + ' de ' + totalPaginas);
+
+        const page = await pdfJsDoc.getPage(i);
+        const tc = await page.getTextContent();
+        const textoNorm = normalizarTexto(reconstruirTexto(tc));
+        const palabras = textoNorm ? textoNorm.split(' ').length : 0;
+
+        if (palabras < CONFIG_COLINDIANCIAS.minPalabrasPagina && totalPaginas > 1){
+          analisis[i - 1] = { score: 0, hits: [], rumbos: 0, palabras: palabras };
+        } else {
+          const a = analizarPagina(textoNorm);
+          a.palabras = palabras;
+          analisis[i - 1] = a;
+        }
+      }
+
+      /* --- Fase 2: elegir la página con mayor puntaje --- */
+      const ordenadas = analisis
+        .map((a, idx) => ({ idx: idx, score: a.score, hits: a.hits, rumbos: a.rumbos }))
+        .sort((a, b) => (b.score - a.score) || (a.idx - b.idx));
+
+      const mejor = ordenadas[0];
+      if (!mejor || mejor.score < CONFIG_COLINDIANCIAS.umbralPuntaje){
+        sinResultado++;
+        continue;
+      }
+
+      /* --- Fase 3: anexar páginas de continuación con rumbos --- */
+      const paginasAExtraer = [mejor.idx];
+      if (CONFIG_COLINDIANCIAS.incluirPaginasContinuacion){
+        for (let k = 1; k <= CONFIG_COLINDIANCIAS.maxPaginasContinuacion; k++){
+          const sig = analisis[mejor.idx + k];
+          if (sig && sig.rumbos >= CONFIG_COLINDIANCIAS.minRumbosContinuacion){
+            paginasAExtraer.push(mejor.idx + k);
+          } else break;
+        }
+      }
+
+      /* --- Fase 4: recortar y crear el PDF de colindancias --- */
+      const originalPdf = await PDFDocument.load(arrayBuffer);
+      const nuevoPdf = await PDFDocument.create();
+      const copiadas = await nuevoPdf.copyPages(originalPdf, paginasAExtraer);
+      copiadas.forEach(p => nuevoPdf.addPage(p));
+
+      const bytes = await nuevoPdf.save();
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const nombreSalida = 'Colindancias_Extraidas_' + doc.name;
+      const archivo = new File([blob], nombreSalida, { type: 'application/pdf' });
+
+      filesList.push({
+        id: newId(),
+        name: nombreSalida,
+        size: (archivo.size/1024/1024).toFixed(2) + ' MB',
+        category: 'colindancia',
+        fileUrl: URL.createObjectURL(archivo),
+        file: archivo
+      });
+
+      reporte.push({
+        Archivo: doc.name,
+        Paginas: paginasAExtraer.map(n => n + 1).join(', '),
+        Puntaje: mejor.score,
+        Rumbos: mejor.rumbos,
+        Detectado_por: mejor.hits.slice(0, 4).join(' · ')
+      });
+
+    }catch(err){
+      console.error('Error al procesar escritura:', doc.name, err);
+      sinResultado++;
+    }
+  }
+
+  renderFiles();
+  ocultarStatus();
+
+  if (reporte.length){
+    console.table(reporte);
+    const primera = reporte[0];
+    toast('Colindancias extraídas de ' + reporte.length + ' escritura(s).', 'ok');
+    toast('«' + primera.Archivo + '» → página ' + primera.Paginas +
+          ' (detectado por: ' + primera.Detectado_por + ')', 'info');
+  }
+  if (sinResultado){
+    toast(sinResultado + ' escritura(s) sin linderos ni colindancias detectables.', 'warn');
+  }
+}
+
+/* ============================================================================
+   FIN DEL MOTOR DE DETECCIÓN
+   ============================================================================ */
+
+/* ---------- Gemini Vision ---------- */
+async function clasificarSinClasificarConIA(){
+  const apiKey = $('#geminiApiKey').value.trim();
+  if (!apiKey){ toast('Ingresa tu API Key de Gemini.', 'warn'); return; }
+
+  const pendientes = filesList.filter(f => f.category === 'unclassified');
+  if (!pendientes.length){ toast('No hay archivos sin clasificar.', 'info'); return; }
+
+  const fileToBase64 = file => new Promise((res, rej) => {
+    const r = new FileReader();
+    r.readAsDataURL(file);
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+  });
+
+  const prompt = "Eres un perito valuador experto en México revisando expedientes inmobiliarios. " +
+    "Analiza visualmente este documento y clasifícalo en UNA sola de estas categorías: " +
+    "'escritura', 'predio', 'agua', 'alineamiento', 'colindancia', 'plano', 'comprador', 'vendedor'.\n\n" +
+    "REGLAS ESTRICTAS:\n" +
+    "- Si ves un INE, pasaporte, RFC, CURP, NSS o precalificación de Infonavit, clasifícalo SIEMPRE como 'comprador'.\n" +
+    "- Si ves boletas de cobro de agua, recibos de SAPASE, CAEM o comisiones de agua municipales, es 'agua'.\n" +
+    "- Si ves un formato de pago de impuesto predial, tesorería municipal o catastro, es 'predio'.\n" +
+    "- Si ves croquis, planos arquitectónicos, dibujos con cotas o trazos de AutoCAD, es 'plano'.\n" +
+    "- Si ves un documento notarial con sellos, folios del Registro Público de la Propiedad o testimonios, es 'escritura'.\n" +
+    "- Si ves un documento oficial del municipio sobre número oficial, uso de suelo o constancia de alineamiento, es 'alineamiento'.\n\n" +
+    "Responde ÚNICAMENTE con la palabra exacta de la categoría en minúsculas, sin puntos, sin comillas y sin explicaciones extra.";
+
+  const validas = ['escritura','predio','agua','alineamiento','colindancia','plano','comprador','vendedor'];
+  let clasificados = 0, i = 0;
+
+  for (const doc of pendientes){
+    i++;
+    mostrarStatus('La IA está escaneando ' + i + ' de ' + pendientes.length + ': ' + doc.name);
+    try{
+      const base64Data = await fileToBase64(doc.file);
+      const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey;
+
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          contents:[{ parts:[
+            { text: prompt },
+            { inlineData:{ mimeType:'application/pdf', data: base64Data } }
+          ]}]
+        })
+      });
+
+      const data = await res.json();
+      if (data && data.candidates){
+        let cat = (data.candidates[0].content.parts[0].text || '').trim().toLowerCase().replace(/[^a-z]/g,'');
+        if (validas.indexOf(cat) !== -1){ doc.category = cat; clasificados++; }
+      }
+    }catch(e){
+      console.error('Error con Gemini Vision en:', doc.name, e);
+    }
+  }
+
+  renderFiles();
+  ocultarStatus();
+  toast(clasificados ? ('La IA clasificó ' + clasificados + ' documento(s).')
+                     : 'La IA no pudo clasificar los documentos pendientes.', clasificados ? 'ok' : 'warn');
+}
+
+/* ---------- ZIP final ---------- */
+async function generarArchivosSeparados(){
+  if (!filesList.length){ toast('Primero debes subir archivos PDF.', 'warn'); return; }
+
+  mostrarStatus('Fusionando secciones (aplicando reglas de orden)…');
+  const zip = new JSZip();
+  const { PDFDocument } = PDFLib;
+
+  const jerarquiaDocs = ['solicitud','ine','curp','rfc','precalificacion','nss'];
+  const identificadoresSegundo = ['conyuge','cónyuge','coacreditado','solicitante 2','titular 2','segundo'];
+  let creados = 0;
+
+  for (const cat of listaCategoriasParaDropdown){
+    const archivos = filesList.filter(f => f.category === cat.id);
+    if (!archivos.length) continue;
+
+    if (cat.id === 'comprador' || cat.id === 'vendedor'){
+      archivos.sort((a,b) => {
+        const na = a.name.toLowerCase(), nb = b.name.toLowerCase();
+        const sA = identificadoresSegundo.some(k => na.indexOf(k) !== -1);
+        const sB = identificadoresSegundo.some(k => nb.indexOf(k) !== -1);
+        if (sA && !sB) return 1;
+        if (!sA && sB) return -1;
+        let iA = jerarquiaDocs.findIndex(k => na.indexOf(k) !== -1);
+        let iB = jerarquiaDocs.findIndex(k => nb.indexOf(k) !== -1);
+        if (iA === -1) iA = 99;
+        if (iB === -1) iB = 99;
+        return iA - iB;
+      });
     }
 
-    function activarEstado(key) {
-      estadoTabs.forEach(t => {
-        t.classList.toggle("activa", t.dataset.estado === key);
-      });
-      mapaEstados.forEach(g => {
-        g.classList.toggle("active", g.dataset.estado === key);
-      });
-      renderEstado(key);
+    const pdfCat = await PDFDocument.create();
+    for (const obj of archivos){
+      try{
+        const buf = await obj.file.arrayBuffer();
+        const pdf = await PDFDocument.load(buf);
+        const pags = await pdfCat.copyPages(pdf, pdf.getPageIndices());
+        pags.forEach(p => pdfCat.addPage(p));
+      }catch(err){
+        console.error('Error procesando ' + obj.name + ':', err);
+      }
     }
 
-    estadoTabs.forEach(tab => {
-      tab.addEventListener("click", () => activarEstado(tab.dataset.estado));
-    });
+    const bytes = await pdfCat.save();
+    const idx = listaCategoriasParaDropdown.findIndex(c => c.id === cat.id) + 1;
+    zip.file(idx + '_' + cat.title.replace(/ /g,'_') + '.pdf', bytes);
+    creados++;
+  }
 
-    mapaEstados.forEach(g => {
-      g.addEventListener("click", () => activarEstado(g.dataset.estado));
-    });
+  if (!creados){ ocultarStatus(); toast('No hay archivos clasificados para descargar.', 'warn'); return; }
 
-    activarEstado("edomex");
-  </script>
+  const blob = await zip.generateAsync({type:'blob'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'Expediente_' + new Date().toISOString().slice(0,10) + '.zip';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 4000);
+
+  ocultarStatus();
+  toast('Expediente generado con ' + creados + ' sección(es).', 'ok');
+}
+
+/* ---------- init ---------- */
+function init(){
+  buildCategorias();
+  initDnD();
+  renderFiles();
+
+  if (window.pdfjsLib && !pdfjsLib.GlobalWorkerOptions.workerSrc){
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+
+  $('#fileInput').addEventListener('change', function(){
+    handleFiles(this.files);
+    this.value = '';
+  });
+
+  $('#btnGenerar').addEventListener('click', generarArchivosSeparados);
+  $('#btnIA').addEventListener('click', clasificarSinClasificarConIA);
+  $('#btnColindancia').addEventListener('click', extraerColindanciasDeEscritura);
+
+  $('#btnLimpiar').addEventListener('click', () => {
+    if (!filesList.length) return;
+    filesList.forEach(f => URL.revokeObjectURL(f.fileUrl));
+    filesList = [];
+    renderFiles();
+    ParticleFX.burst(window.innerWidth*0.5, window.innerHeight*0.5, 3);
+    toast('Lista vaciada.', 'info');
+  });
+
+  const btnFX = $('#btnFX');
+  btnFX.addEventListener('click', () => {
+    const on = ParticleFX.toggle();
+    btnFX.classList.toggle('is-off', !on);
+    toast(on ? 'Partículas activadas.' : 'Partículas desactivadas.', 'info');
+  });
+
+  const btnFondo = $('#btnFondo');
+  btnFondo.addEventListener('click', () => {
+    const pausado = !document.body.classList.contains('bg-paused');
+    document.body.classList.toggle('bg-paused', pausado);
+    btnFondo.classList.toggle('is-off', pausado);
+    ParticleFX.setLowPower(pausado);
+    toast(pausado ? 'Modo rendimiento: efectos congelados.' : 'Efectos reactivados.', 'info');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
